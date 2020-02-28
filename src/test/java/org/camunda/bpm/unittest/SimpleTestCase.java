@@ -49,7 +49,7 @@ public class SimpleTestCase {
 		// When we complete that task
 		complete(task(processInstance));
 		
-		// Then the process instance should be ended
+		// Then the process instance should be ended...
 		assertThat(processInstance).isEnded();
 	}
 
