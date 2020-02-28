@@ -12,7 +12,14 @@ public class AutomaticReviewDelegate implements JavaDelegate {
 	// value 10000 and over
 	private static final String ERR_ARM_EXT = "ERR_ARM_EXT";
 
+	// process variable
 	public static final String VAR_AMOUNT = "amount";
+	
+	// tasks
+	public static final String TASK_MAN_EXT_REV = "TaskManExtReview";
+	public static final String TASK_MAN_REV = "TaskManReview";
+	public static final String TASK_STD_REV = "TaskStdReview";
+	public static final String TASK_PASSED_REV = "TaskPassedReview";
 
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {

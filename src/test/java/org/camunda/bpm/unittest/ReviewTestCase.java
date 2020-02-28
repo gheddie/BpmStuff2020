@@ -31,7 +31,7 @@ public class ReviewTestCase {
 		runtimeService().startProcessInstanceByKey("reviewProcess", variables);
 		List<Task> taskList = taskService().createTaskQuery().list();
 		assertEquals(1, taskList.size());
-		assertEquals("pass", taskList.get(0).getName());
+		assertEquals(AutomaticReviewDelegate.TASK_PASSED_REV, taskList.get(0).getTaskDefinitionKey());
 	}
 	
 	@Test
@@ -43,7 +43,7 @@ public class ReviewTestCase {
 		runtimeService().startProcessInstanceByKey("reviewProcess", variables);
 		List<Task> taskList = taskService().createTaskQuery().list();
 		assertEquals(1, taskList.size());
-		assertEquals("standard review", taskList.get(0).getName());
+		assertEquals(AutomaticReviewDelegate.TASK_STD_REV, taskList.get(0).getTaskDefinitionKey());
 	}
 	
 	@Test
@@ -55,7 +55,7 @@ public class ReviewTestCase {
 		runtimeService().startProcessInstanceByKey("reviewProcess", variables);
 		List<Task> taskList = taskService().createTaskQuery().list();
 		assertEquals(1, taskList.size());
-		assertEquals("manual review", taskList.get(0).getName());
+		assertEquals(AutomaticReviewDelegate.TASK_MAN_REV, taskList.get(0).getTaskDefinitionKey());
 	}
 	
 	@Test
@@ -67,6 +67,6 @@ public class ReviewTestCase {
 		runtimeService().startProcessInstanceByKey("reviewProcess", variables);
 		List<Task> taskList = taskService().createTaskQuery().list();
 		assertEquals(1, taskList.size());
-		assertEquals("manual review extended", taskList.get(0).getName());
+		assertEquals(AutomaticReviewDelegate.TASK_MAN_EXT_REV, taskList.get(0).getTaskDefinitionKey());
 	}
 }

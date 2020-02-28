@@ -21,7 +21,7 @@
     <bpmn:endEvent id="EndEvent_1kmnfwy">
       <bpmn:incoming>SequenceFlow_0j60xck</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_1eyj489" sourceRef="ExclusiveGateway_1aw2p7z" targetRef="Task_1u1t1yx">
+    <bpmn:sequenceFlow id="SequenceFlow_1eyj489" sourceRef="ExclusiveGateway_1aw2p7z" targetRef="TaskPassedReview">
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property />
@@ -34,8 +34,8 @@
       <bpmn:outgoing>SequenceFlow_0j60xck</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_0j60xck" sourceRef="ExclusiveGateway_0m0ptco" targetRef="EndEvent_1kmnfwy" />
-    <bpmn:sequenceFlow id="SequenceFlow_1ugbsp3" sourceRef="Task_1u1t1yx" targetRef="ExclusiveGateway_0m0ptco" />
-    <bpmn:userTask id="Task_1u1t1yx" name="pass">
+    <bpmn:sequenceFlow id="SequenceFlow_1ugbsp3" sourceRef="TaskPassedReview" targetRef="ExclusiveGateway_0m0ptco" />
+    <bpmn:userTask id="TaskPassedReview" name="pass">
       <bpmn:incoming>SequenceFlow_1eyj489</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1ugbsp3</bpmn:outgoing>
     </bpmn:userTask>
@@ -55,7 +55,7 @@
         <bpmn:outgoing>SequenceFlow_18rig7f</bpmn:outgoing>
       </bpmn:serviceTask>
     </bpmn:subProcess>
-    <bpmn:sequenceFlow id="SequenceFlow_1120jdh" name="2500-4999" sourceRef="SubProcess_0lj1q5r" targetRef="Task_0ip9zdc" />
+    <bpmn:sequenceFlow id="SequenceFlow_1120jdh" name="2500-4999" sourceRef="SubProcess_0lj1q5r" targetRef="TaskStdReview" />
     <bpmn:boundaryEvent id="BoundaryEvent_0rxzc03" attachedToRef="SubProcess_0lj1q5r">
       <bpmn:outgoing>SequenceFlow_1ets3p1</bpmn:outgoing>
       <bpmn:errorEventDefinition errorRef="Error_1wvasy6" />
@@ -67,9 +67,9 @@
       <bpmn:outgoing>SequenceFlow_0z1pe0r</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_0z1pe0r" sourceRef="ExclusiveGateway_12dwvc0" targetRef="ExclusiveGateway_0m0ptco" />
-    <bpmn:sequenceFlow id="SequenceFlow_1ets3p1" name="10000 and over" sourceRef="BoundaryEvent_0rxzc03" targetRef="Task_10w1fer" />
-    <bpmn:sequenceFlow id="SequenceFlow_0s5t84j" sourceRef="Task_10w1fer" targetRef="ExclusiveGateway_12dwvc0" />
-    <bpmn:userTask id="Task_10w1fer" name="manual review extended">
+    <bpmn:sequenceFlow id="SequenceFlow_1ets3p1" name="10000 and over" sourceRef="BoundaryEvent_0rxzc03" targetRef="TaskManExtReview" />
+    <bpmn:sequenceFlow id="SequenceFlow_0s5t84j" sourceRef="TaskManExtReview" targetRef="ExclusiveGateway_12dwvc0" />
+    <bpmn:userTask id="TaskManExtReview" name="manual review extended">
       <bpmn:incoming>SequenceFlow_1ets3p1</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0s5t84j</bpmn:outgoing>
     </bpmn:userTask>
@@ -77,14 +77,14 @@
       <bpmn:outgoing>SequenceFlow_18qevfe</bpmn:outgoing>
       <bpmn:errorEventDefinition errorRef="Error_0cyf6ct" />
     </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_18qevfe" name="5000-9999" sourceRef="BoundaryEvent_1e8vghe" targetRef="Task_0yn7uwn" />
-    <bpmn:sequenceFlow id="SequenceFlow_0twhjty" sourceRef="Task_0yn7uwn" targetRef="ExclusiveGateway_12dwvc0" />
-    <bpmn:userTask id="Task_0yn7uwn" name="manual review">
+    <bpmn:sequenceFlow id="SequenceFlow_18qevfe" name="5000-9999" sourceRef="BoundaryEvent_1e8vghe" targetRef="TaskManReview" />
+    <bpmn:sequenceFlow id="SequenceFlow_0twhjty" sourceRef="TaskManReview" targetRef="ExclusiveGateway_12dwvc0" />
+    <bpmn:userTask id="TaskManReview" name="manual review">
       <bpmn:incoming>SequenceFlow_18qevfe</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0twhjty</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="SequenceFlow_0aoo7rs" sourceRef="Task_0ip9zdc" targetRef="ExclusiveGateway_12dwvc0" />
-    <bpmn:userTask id="Task_0ip9zdc" name="standard review">
+    <bpmn:sequenceFlow id="SequenceFlow_0aoo7rs" sourceRef="TaskStdReview" targetRef="ExclusiveGateway_12dwvc0" />
+    <bpmn:userTask id="TaskStdReview" name="standard review">
       <bpmn:incoming>SequenceFlow_1120jdh</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0aoo7rs</bpmn:outgoing>
     </bpmn:userTask>
@@ -138,7 +138,7 @@
         <di:waypoint x="1466" y="335" />
         <di:waypoint x="1466" y="250" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_0cx6xw5_di" bpmnElement="Task_1u1t1yx">
+      <bpmndi:BPMNShape id="UserTask_0cx6xw5_di" bpmnElement="TaskPassedReview">
         <dc:Bounds x="746" y="295" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="SubProcess_0lj1q5r_di" bpmnElement="SubProcess_0lj1q5r" isExpanded="true">
@@ -191,7 +191,7 @@
         <di:waypoint x="1466" y="-262" />
         <di:waypoint x="1466" y="-14" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_19r91is_di" bpmnElement="Task_10w1fer">
+      <bpmndi:BPMNShape id="UserTask_19r91is_di" bpmnElement="TaskManExtReview">
         <dc:Bounds x="857" y="-302" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BoundaryEvent_04x3d6u_di" bpmnElement="BoundaryEvent_1e8vghe">
@@ -210,14 +210,14 @@
         <di:waypoint x="1466" y="-361" />
         <di:waypoint x="1466" y="-14" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_131i0ep_di" bpmnElement="Task_0yn7uwn">
+      <bpmndi:BPMNShape id="UserTask_131i0ep_di" bpmnElement="TaskManReview">
         <dc:Bounds x="633" y="-401" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0aoo7rs_di" bpmnElement="SequenceFlow_0aoo7rs">
         <di:waypoint x="1362" y="11" />
         <di:waypoint x="1441" y="11" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_00x9f7r_di" bpmnElement="Task_0ip9zdc">
+      <bpmndi:BPMNShape id="UserTask_00x9f7r_di" bpmnElement="TaskStdReview">
         <dc:Bounds x="1262" y="-29" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
