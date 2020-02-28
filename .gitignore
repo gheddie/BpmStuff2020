@@ -17,3 +17,5 @@ dependency-reduced-pom.xml
 *.sublime-project
 *.sublime-workspace
 
+/hs_err_pid22648.log
+/hs_err_pid35780.log
