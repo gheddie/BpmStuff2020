@@ -16,6 +16,6 @@ public class BpmTestCase {
 	}
 	
 	protected void fireTimer(String timerName) {
-		// TODO Auto-generated method stub
+		
 	}
 }

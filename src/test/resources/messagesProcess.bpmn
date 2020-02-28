@@ -31,20 +31,8 @@
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1v3rhnx" sourceRef="ExclusiveGateway_1wexw8e" targetRef="TimerOne" />
-    <bpmn:task id="TaskOne" name="Task One">
-      <bpmn:incoming>SequenceFlow_0bvzn9v</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0sa4bk8</bpmn:outgoing>
-    </bpmn:task>
     <bpmn:sequenceFlow id="SequenceFlow_0bvzn9v" sourceRef="IntermediateCatchEvent_1np34lf" targetRef="TaskOne" />
-    <bpmn:task id="TaskTwo" name="Task Two">
-      <bpmn:incoming>SequenceFlow_0pt9k9t</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0rkg7ec</bpmn:outgoing>
-    </bpmn:task>
     <bpmn:sequenceFlow id="SequenceFlow_0pt9k9t" sourceRef="IntermediateCatchEvent_1gttvm3" targetRef="TaskTwo" />
-    <bpmn:task id="TaskThree" name="Task Three">
-      <bpmn:incoming>SequenceFlow_1elbm30</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_14hz2mv</bpmn:outgoing>
-    </bpmn:task>
     <bpmn:sequenceFlow id="SequenceFlow_1elbm30" sourceRef="TimerOne" targetRef="TaskThree" />
     <bpmn:exclusiveGateway id="ExclusiveGateway_1g6pai6">
       <bpmn:incoming>SequenceFlow_0rkg7ec</bpmn:incoming>
@@ -59,6 +47,18 @@
       <bpmn:incoming>SequenceFlow_19hycgv</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_19hycgv" sourceRef="ExclusiveGateway_1g6pai6" targetRef="EndEvent_0d1xfwl" />
+    <bpmn:userTask id="TaskOne" name="Task One">
+      <bpmn:incoming>SequenceFlow_0bvzn9v</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0sa4bk8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="TaskTwo" name="Task Two">
+      <bpmn:incoming>SequenceFlow_0pt9k9t</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0rkg7ec</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="TaskThree" name="Task Three">
+      <bpmn:incoming>SequenceFlow_1elbm30</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_14hz2mv</bpmn:outgoing>
+    </bpmn:userTask>
   </bpmn:process>
   <bpmn:message id="Message_0l74ma1" name="MSG_ONE" />
   <bpmn:message id="Message_05u28mq" name="MSG_TWO" />
@@ -100,23 +100,14 @@
         <di:waypoint x="444" y="418" />
         <di:waypoint x="543" y="418" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Task_1mgz75r_di" bpmnElement="TaskOne">
-        <dc:Bounds x="653" y="158" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0bvzn9v_di" bpmnElement="SequenceFlow_0bvzn9v">
         <di:waypoint x="579" y="198" />
         <di:waypoint x="653" y="198" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Task_1textrn_di" bpmnElement="TaskTwo">
-        <dc:Bounds x="653" y="268" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0pt9k9t_di" bpmnElement="SequenceFlow_0pt9k9t">
         <di:waypoint x="579" y="308" />
         <di:waypoint x="653" y="308" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Task_0svssb3_di" bpmnElement="TaskThree">
-        <dc:Bounds x="653" y="378" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1elbm30_di" bpmnElement="SequenceFlow_1elbm30">
         <di:waypoint x="579" y="418" />
         <di:waypoint x="653" y="418" />
@@ -145,6 +136,15 @@
         <di:waypoint x="877" y="308" />
         <di:waypoint x="951" y="308" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_0v1ymz2_di" bpmnElement="TaskOne">
+        <dc:Bounds x="653" y="158" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_051e0p5_di" bpmnElement="TaskTwo">
+        <dc:Bounds x="653" y="268" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0ntxoyp_di" bpmnElement="TaskThree">
+        <dc:Bounds x="653" y="378" width="100" height="80" />
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
