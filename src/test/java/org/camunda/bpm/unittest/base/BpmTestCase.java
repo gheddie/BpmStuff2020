@@ -14,4 +14,8 @@ public class BpmTestCase {
 		assertEquals(1, taskList.size());
 		assertEquals(taskName, taskList.get(0).getTaskDefinitionKey());
 	}
+	
+	protected void fireTimer(String timerName) {
+		// TODO Auto-generated method stub
+	}
 }

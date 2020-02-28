@@ -15,6 +15,8 @@ public class ReviewTestCase extends BpmTestCase {
 	
 	@Rule
 	public ProcessEngineRule rule = new ProcessEngineRule();
+	
+	private static final String PROCESS_REVIEW = "reviewProcess";
 
 	/**
 	 * for loan values up to 2500
@@ -25,7 +27,7 @@ public class ReviewTestCase extends BpmTestCase {
 		HashMap<String, Object> variables = new HashMap<String, Object>();
 		variables.put(AutomaticReviewDelegate.VAR_AMOUNT, 2000);
 		// Given we create a new process instance
-		runtimeService().startProcessInstanceByKey("reviewProcess", variables);
+		runtimeService().startProcessInstanceByKey(PROCESS_REVIEW, variables);
 		checkSingleTaskPresent(AutomaticReviewDelegate.TASK_PASSED_REV);
 	}
 	
@@ -35,7 +37,7 @@ public class ReviewTestCase extends BpmTestCase {
 		HashMap<String, Object> variables = new HashMap<String, Object>();
 		variables.put(AutomaticReviewDelegate.VAR_AMOUNT, 3000);
 		// Given we create a new process instance
-		runtimeService().startProcessInstanceByKey("reviewProcess", variables);
+		runtimeService().startProcessInstanceByKey(PROCESS_REVIEW, variables);
 		checkSingleTaskPresent(AutomaticReviewDelegate.TASK_STD_REV);
 	}
 	
@@ -45,7 +47,7 @@ public class ReviewTestCase extends BpmTestCase {
 		HashMap<String, Object> variables = new HashMap<String, Object>();
 		variables.put(AutomaticReviewDelegate.VAR_AMOUNT, 7000);
 		// Given we create a new process instance
-		runtimeService().startProcessInstanceByKey("reviewProcess", variables);
+		runtimeService().startProcessInstanceByKey(PROCESS_REVIEW, variables);
 		checkSingleTaskPresent(AutomaticReviewDelegate.TASK_MAN_REV);
 	}
 	
@@ -55,7 +57,7 @@ public class ReviewTestCase extends BpmTestCase {
 		HashMap<String, Object> variables = new HashMap<String, Object>();
 		variables.put(AutomaticReviewDelegate.VAR_AMOUNT, 12000);
 		// Given we create a new process instance
-		runtimeService().startProcessInstanceByKey("reviewProcess", variables);
+		runtimeService().startProcessInstanceByKey(PROCESS_REVIEW, variables);
 		checkSingleTaskPresent(AutomaticReviewDelegate.TASK_MAN_EXT_REV);
 	}
 }

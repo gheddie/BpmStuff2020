@@ -14,16 +14,18 @@ import org.junit.Rule;
 import org.junit.Test;
 
 public class SimpleTestCase {
-
+	
 	@Rule
 	public ProcessEngineRule rule = new ProcessEngineRule();
+	
+	private static final String PROCESS_SIMPLE = "simpleProcess";
 
 	@Test
 	@Deployment(resources = { "simpleProcess.bpmn" })
 	public void testSimpleProcess() {
 
 		// Given we create a new process instance
-		ProcessInstance processInstance = runtimeService().startProcessInstanceByKey("simpleProcess");
+		ProcessInstance processInstance = runtimeService().startProcessInstanceByKey(PROCESS_SIMPLE);
 		
 		// Then it should be active
 		assertThat(processInstance).isActive();
