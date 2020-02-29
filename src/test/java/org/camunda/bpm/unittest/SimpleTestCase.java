@@ -21,7 +21,7 @@ public class SimpleTestCase {
 	private static final String PROCESS_SIMPLE = "simpleProcess";
 
 	@Test
-	@Deployment(resources = { "simpleProcess.bpmn" })
+	@Deployment(resources = { "simple/simpleProcess.bpmn" })
 	public void testSimpleProcess() {
 
 		// Given we create a new process instance

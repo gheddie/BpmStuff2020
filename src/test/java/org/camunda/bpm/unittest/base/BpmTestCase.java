@@ -9,10 +9,11 @@ import org.camunda.bpm.engine.task.Task;
 
 public class BpmTestCase {
 
-	protected void checkSingleTaskPresent(String taskName) {
+	protected Task checkSingleTaskPresent(String taskName) {
 		List<Task> taskList = taskService().createTaskQuery().list();
 		assertEquals(1, taskList.size());
 		assertEquals(taskName, taskList.get(0).getTaskDefinitionKey());
+		return taskList.get(0);
 	}
 	
 	protected void fireTimer(String timerName) {

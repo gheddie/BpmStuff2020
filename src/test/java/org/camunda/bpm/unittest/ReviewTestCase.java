@@ -22,7 +22,7 @@ public class ReviewTestCase extends BpmTestCase {
 	 * for loan values up to 2500
 	 */
 	@Test
-	@Deployment(resources = { "reviewProcess.bpmn" })
+	@Deployment(resources = { "review/reviewProcess.bpmn" })
 	public void testPass() {
 		HashMap<String, Object> variables = new HashMap<String, Object>();
 		variables.put(AutomaticReviewDelegate.VAR_AMOUNT, 2000);
@@ -32,7 +32,7 @@ public class ReviewTestCase extends BpmTestCase {
 	}
 	
 	@Test
-	@Deployment(resources = { "reviewProcess.bpmn" })
+	@Deployment(resources = { "review/reviewProcess.bpmn" })
 	public void testStandardReview() {
 		HashMap<String, Object> variables = new HashMap<String, Object>();
 		variables.put(AutomaticReviewDelegate.VAR_AMOUNT, 3000);
@@ -42,7 +42,7 @@ public class ReviewTestCase extends BpmTestCase {
 	}
 	
 	@Test
-	@Deployment(resources = { "reviewProcess.bpmn" })
+	@Deployment(resources = { "review/reviewProcess.bpmn" })
 	public void testManualReview() {
 		HashMap<String, Object> variables = new HashMap<String, Object>();
 		variables.put(AutomaticReviewDelegate.VAR_AMOUNT, 7000);
@@ -52,7 +52,7 @@ public class ReviewTestCase extends BpmTestCase {
 	}
 	
 	@Test
-	@Deployment(resources = { "reviewProcess.bpmn" })
+	@Deployment(resources = { "review/reviewProcess.bpmn" })
 	public void testManualExtendedReview() {
 		HashMap<String, Object> variables = new HashMap<String, Object>();
 		variables.put(AutomaticReviewDelegate.VAR_AMOUNT, 12000);

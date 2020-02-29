@@ -38,7 +38,7 @@ public class MessagesTestCase extends BpmTestCase {
 	private static final String TASK_THREE = "TaskThree";
 
 	@Test
-	@Deployment(resources = { "messagesProcess.bpmn" })
+	@Deployment(resources = { "messages/messagesProcess.bpmn" })
 	public void testTaskOne() {
 	
 		runtimeService().startProcessInstanceByKey(PROCESS_MESSAGES);
@@ -49,7 +49,7 @@ public class MessagesTestCase extends BpmTestCase {
 	}
 	
 	@Test
-	@Deployment(resources = { "messagesProcess.bpmn" })
+	@Deployment(resources = { "messages/messagesProcess.bpmn" })
 	public void testTaskTwo() {
 		
 		runtimeService().startProcessInstanceByKey(PROCESS_MESSAGES);
@@ -60,16 +60,10 @@ public class MessagesTestCase extends BpmTestCase {
 	}
 	
 	@Test
-	@Deployment(resources = { "messagesProcess.bpmn" })
+	@Deployment(resources = { "messages/messagesProcess.bpmn" })
 	public void testTimerOne() {
 		
 		runtimeService().startProcessInstanceByKey(PROCESS_MESSAGES);
-		
-		// fire timer 'TimerOne' --> leads to task definition key 'TaskThree'
-		// fireTimer(TIMER_ONE);
-		
-		// runtimeService().create
-		long count = jobQuery().count();
 		
 		List<Job> jobs = jobQuery().list();
 		
