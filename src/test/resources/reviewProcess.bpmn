@@ -50,7 +50,7 @@
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="SequenceFlow_1y6kldu" sourceRef="StartEvent_0dvd8zh" targetRef="Task_01ldnd8" />
       <bpmn:sequenceFlow id="SequenceFlow_18rig7f" sourceRef="Task_01ldnd8" targetRef="EndEvent_0o69730" />
-      <bpmn:serviceTask id="Task_01ldnd8" name="automatic review" camunda:class="org.camunda.bpm.unittest.delegate.AutomaticReviewDelegate">
+      <bpmn:serviceTask id="Task_01ldnd8" name="automatic review" camunda:class="org.camunda.bpm.unittest.delegate.review.AutomaticReviewDelegate">
         <bpmn:incoming>SequenceFlow_1y6kldu</bpmn:incoming>
         <bpmn:outgoing>SequenceFlow_18rig7f</bpmn:outgoing>
       </bpmn:serviceTask>

@@ -7,7 +7,7 @@ import java.util.HashMap;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
-import org.camunda.bpm.unittest.delegate.AutomaticReviewDelegate;
+import org.camunda.bpm.unittest.delegate.review.AutomaticReviewDelegate;
 import org.junit.Rule;
 import org.junit.Test;
 

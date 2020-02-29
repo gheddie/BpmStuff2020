@@ -1,18 +1,19 @@
 package org.camunda.bpm.unittest;
 
+import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.jobQuery;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.runtimeService;
+import static org.junit.Assert.assertEquals;
+import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.managementService;
 
 import java.util.List;
 
-import org.camunda.bpm.engine.impl.jobexecutor.JobHandlerConfiguration;
-import org.camunda.bpm.engine.impl.persistence.entity.TimerEntity;
 import org.camunda.bpm.engine.runtime.Job;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
+import org.camunda.bpm.unittest.util.DataGrid;
 import org.junit.Rule;
 import org.junit.Test;
-import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.jobQuery;
 
 public class MessagesTestCase extends BpmTestCase {
 	
@@ -33,6 +34,8 @@ public class MessagesTestCase extends BpmTestCase {
 	private static final String TASK_ONE = "TaskOne";
 	
 	private static final String TASK_TWO = "TaskTwo";
+
+	private static final String TASK_THREE = "TaskThree";
 
 	@Test
 	@Deployment(resources = { "messagesProcess.bpmn" })
@@ -56,7 +59,7 @@ public class MessagesTestCase extends BpmTestCase {
 		checkSingleTaskPresent(TASK_TWO);
 	}
 	
-	// @Test
+	@Test
 	@Deployment(resources = { "messagesProcess.bpmn" })
 	public void testTimerOne() {
 		
@@ -70,11 +73,10 @@ public class MessagesTestCase extends BpmTestCase {
 		
 		List<Job> jobs = jobQuery().list();
 		
-		TimerEntity timerEntity = (TimerEntity) jobs.get(0);
-		JobHandlerConfiguration poo = timerEntity.getJobHandlerConfiguration();
-		
-		String moo = timerEntity.getJobDefinitionId();
-		
-		checkSingleTaskPresent("TaskThree");
+		assertEquals(1, jobs.size());
+
+		// fire timer 'TimerOne' --> leads to task definition key 'TaskThree'
+		managementService().executeJob(jobs.get(0).getId());
+		checkSingleTaskPresent(TASK_THREE);
 	}
 }
