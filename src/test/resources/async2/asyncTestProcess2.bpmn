@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_01awgbq" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
+  <bpmn:process id="asyncTestProcess2" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_1bxixmk</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1bxixmk" sourceRef="StartEvent_1" targetRef="TaskDoIt" />
+    <bpmn:sequenceFlow id="flowDoItStep1" sourceRef="TaskDoIt" targetRef="TaskStep1" />
+    <bpmn:sequenceFlow id="flowStep1Step2" sourceRef="TaskStep1" targetRef="TaskStep2" />
+    <bpmn:sequenceFlow id="SequenceFlow_1thlt3q" sourceRef="TaskStep2" targetRef="IntermediateThrowEvent_0wnbvth" />
+    <bpmn:endEvent id="EndEvent_1jahvbn">
+      <bpmn:incoming>SequenceFlow_129jgky</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_129jgky" sourceRef="IntermediateThrowEvent_0wnbvth" targetRef="EndEvent_1jahvbn" />
+    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_0wnbvth">
+      <bpmn:incoming>SequenceFlow_1thlt3q</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_129jgky</bpmn:outgoing>
+      <bpmn:timerEventDefinition>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P5M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:userTask id="TaskDoIt" name="do it" camunda:asyncAfter="true">
+      <bpmn:incoming>SequenceFlow_1bxixmk</bpmn:incoming>
+      <bpmn:outgoing>flowDoItStep1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="TaskStep1" name="step 1" camunda:class="org.camunda.bpm.unittest.delegate.async2.Step1Delegate">
+      <bpmn:incoming>flowDoItStep1</bpmn:incoming>
+      <bpmn:outgoing>flowStep1Step2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="TaskStep2" name="step 2" camunda:class="org.camunda.bpm.unittest.delegate.async2.Step2Delegate">
+      <bpmn:incoming>flowStep1Step2</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1thlt3q</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:textAnnotation id="TextAnnotation_1dk8mvs">
+      <bpmn:text>throws exception</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_06yt5vi" sourceRef="TaskStep2" targetRef="TextAnnotation_1dk8mvs" />
+    <bpmn:textAnnotation id="TextAnnotation_1oexz55">
+      <bpmn:text>async after</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1usp42b" sourceRef="TaskDoIt" targetRef="TextAnnotation_1oexz55" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="asyncTestProcess2">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="289" y="208" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1bxixmk_di" bpmnElement="SequenceFlow_1bxixmk">
+        <di:waypoint x="325" y="226" />
+        <di:waypoint x="375" y="226" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0dselmu_di" bpmnElement="flowDoItStep1">
+        <di:waypoint x="475" y="226" />
+        <di:waypoint x="525" y="226" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1t4a4zg_di" bpmnElement="flowStep1Step2">
+        <di:waypoint x="625" y="226" />
+        <di:waypoint x="675" y="226" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1thlt3q_di" bpmnElement="SequenceFlow_1thlt3q">
+        <di:waypoint x="775" y="226" />
+        <di:waypoint x="825" y="226" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1jahvbn_di" bpmnElement="EndEvent_1jahvbn">
+        <dc:Bounds x="911" y="208" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_129jgky_di" bpmnElement="SequenceFlow_129jgky">
+        <di:waypoint x="861" y="226" />
+        <di:waypoint x="911" y="226" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_1cbyokf_di" bpmnElement="IntermediateThrowEvent_0wnbvth">
+        <dc:Bounds x="825" y="208" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0vf1wdk_di" bpmnElement="TaskDoIt">
+        <dc:Bounds x="375" y="186" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0bvghoi_di" bpmnElement="TaskStep1">
+        <dc:Bounds x="525" y="186" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0jffjlj_di" bpmnElement="TaskStep2">
+        <dc:Bounds x="675" y="186" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1dk8mvs_di" bpmnElement="TextAnnotation_1dk8mvs">
+        <dc:Bounds x="775" y="106" width="100" height="41" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_06yt5vi_di" bpmnElement="Association_06yt5vi">
+        <di:waypoint x="765" y="186" />
+        <di:waypoint x="805" y="147" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_1oexz55_di" bpmnElement="TextAnnotation_1oexz55">
+        <dc:Bounds x="475" y="106" width="100" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1usp42b_di" bpmnElement="Association_1usp42b">
+        <di:waypoint x="463" y="186" />
+        <di:waypoint x="511" y="136" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_13x3mw1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
+  <bpmn:process id="asyncTestProcess" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_1jctru2</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1jctru2" sourceRef="StartEvent_1" targetRef="TaskXYZ" />
+    <bpmn:sequenceFlow id="SequenceFlow_0uydsan" sourceRef="TaskXYZ" targetRef="DieOn10" />
+    <bpmn:sequenceFlow id="SequenceFlow_1rl81ss" sourceRef="DieOn10" targetRef="DieOn20" />
+    <bpmn:sequenceFlow id="SequenceFlow_00duver" sourceRef="DieOn20" targetRef="DieOn30" />
+    <bpmn:endEvent id="EndEvent_10o6ga0">
+      <bpmn:incoming>SequenceFlow_01j62bb</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0fh6lm8" sourceRef="DieOn30" targetRef="PrintValuesTask" />
+    <bpmn:serviceTask id="DieOn10" name="Die on 10" camunda:class="org.camunda.bpm.unittest.delegate.async.AsyncBaseDieForLevel10Delegate">
+      <bpmn:incoming>SequenceFlow_0uydsan</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1rl81ss</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="DieOn20" name="Die on 20" camunda:asyncBefore="true" camunda:class="org.camunda.bpm.unittest.delegate.async.AsyncBaseDieForLevel20Delegate">
+      <bpmn:incoming>SequenceFlow_1rl81ss</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_00duver</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="DieOn30" name="Die on 30" camunda:asyncBefore="true" camunda:class="org.camunda.bpm.unittest.delegate.async.AsyncBaseDieForLevel30Delegate">
+      <bpmn:incoming>SequenceFlow_00duver</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0fh6lm8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="TaskXYZ" name="Task XYZ">
+      <bpmn:incoming>SequenceFlow_1jctru2</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0uydsan</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_01j62bb" sourceRef="PrintValuesTask" targetRef="EndEvent_10o6ga0" />
+    <bpmn:serviceTask id="PrintValuesTask" name="print values" camunda:class="org.camunda.bpm.unittest.delegate.async.print.PrintValuesDelegate">
+      <bpmn:incoming>SequenceFlow_0fh6lm8</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_01j62bb</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="asyncTestProcess">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="269" y="182" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1jctru2_di" bpmnElement="SequenceFlow_1jctru2">
+        <di:waypoint x="305" y="200" />
+        <di:waypoint x="355" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0uydsan_di" bpmnElement="SequenceFlow_0uydsan">
+        <di:waypoint x="455" y="200" />
+        <di:waypoint x="505" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1rl81ss_di" bpmnElement="SequenceFlow_1rl81ss">
+        <di:waypoint x="605" y="200" />
+        <di:waypoint x="655" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_00duver_di" bpmnElement="SequenceFlow_00duver">
+        <di:waypoint x="755" y="200" />
+        <di:waypoint x="805" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_10o6ga0_di" bpmnElement="EndEvent_10o6ga0">
+        <dc:Bounds x="1089" y="182" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0fh6lm8_di" bpmnElement="SequenceFlow_0fh6lm8">
+        <di:waypoint x="905" y="200" />
+        <di:waypoint x="952" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_00t8o3f_di" bpmnElement="DieOn10">
+        <dc:Bounds x="505" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_10xbloz_di" bpmnElement="DieOn20">
+        <dc:Bounds x="655" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1wzgbw8_di" bpmnElement="DieOn30">
+        <dc:Bounds x="805" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0ptvh4i_di" bpmnElement="TaskXYZ">
+        <dc:Bounds x="355" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_01j62bb_di" bpmnElement="SequenceFlow_01j62bb">
+        <di:waypoint x="1052" y="200" />
+        <di:waypoint x="1089" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0sq5etn_di" bpmnElement="PrintValuesTask">
+        <dc:Bounds x="952" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -45,7 +45,8 @@ public class SignalsTestCase extends BpmTestCase {
 		
 		Task taskMainProcess = checkSingleTaskPresent("TaskA");
 		
-		// execute user task A in main --> signal fires (?)
+		// execute user task A in main --> signal fires from delegate code
+		// TODO: do it from bpm element 'throw signal intermediate event' ?!?
 		taskService().complete(taskMainProcess.getId());
 		
 		// we have 1 'TaskB' in main process...
