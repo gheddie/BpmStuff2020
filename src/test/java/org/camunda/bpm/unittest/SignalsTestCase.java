@@ -54,5 +54,7 @@ public class SignalsTestCase extends BpmTestCase {
 		
 		// and 3 'TaskC' in sub processes...
 		assertEquals(3, taskService().createTaskQuery().taskDefinitionKey("TaskC").list().size());
+		
+		debugEngineState();
 	}
 }

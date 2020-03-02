@@ -5,11 +5,8 @@ import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskSer
 import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.camunda.bpm.engine.runtime.ProcessInstance;
-import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
@@ -53,6 +50,8 @@ public class CompensationSubProcessTest extends BpmTestCase {
 	public void testBookingNotOk() {
 		
 		prepareWork(false);
+		
+		debugEngineState();
 		
 		// cancel fligt
 		 taskService().complete(assertSingleTaskPresent(TASK_CANCEL_FLIGHT).getId());
