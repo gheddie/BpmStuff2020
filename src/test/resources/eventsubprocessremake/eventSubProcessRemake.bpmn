@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_09iyjo6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
+  <bpmn:process id="eventSubProcessRemake" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_1mjwd0p</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1mjwd0p" sourceRef="StartEvent_1" targetRef="TaskReview" />
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0zgvjzm" name="enough data?" default="SequenceFlow_0phis6h">
+      <bpmn:incoming>SequenceFlow_0qiavrl</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_05eoyqz</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0phis6h</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_0qiavrl" sourceRef="TaskReview" targetRef="ExclusiveGateway_0zgvjzm" />
+    <bpmn:endEvent id="EndEvent_02hmx6l">
+      <bpmn:incoming>SequenceFlow_05eoyqz</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_05eoyqz" name="yes" sourceRef="ExclusiveGateway_0zgvjzm" targetRef="EndEvent_02hmx6l">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${enoughData == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0phis6h" name="no" sourceRef="ExclusiveGateway_0zgvjzm" targetRef="EndEvent_1rybmd8" />
+    <bpmn:subProcess id="providerSubProcess" triggeredByEvent="true">
+      <bpmn:sequenceFlow id="SequenceFlow_0vn3l7d" sourceRef="StartEvent_18vpqjo" targetRef="TaskProvide" />
+      <bpmn:endEvent id="EndEvent_0tio7oc">
+        <bpmn:incoming>SequenceFlow_1brphr2</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="SequenceFlow_1brphr2" sourceRef="TaskProvide" targetRef="EndEvent_0tio7oc" />
+      <bpmn:userTask id="TaskProvide" name="Provide">
+        <bpmn:incoming>SequenceFlow_0vn3l7d</bpmn:incoming>
+        <bpmn:outgoing>SequenceFlow_1brphr2</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:startEvent id="StartEvent_18vpqjo">
+        <bpmn:outgoing>SequenceFlow_0vn3l7d</bpmn:outgoing>
+        <bpmn:errorEventDefinition errorRef="Error_0zgzxsn" />
+      </bpmn:startEvent>
+    </bpmn:subProcess>
+    <bpmn:userTask id="TaskReview" name="Review">
+      <bpmn:incoming>SequenceFlow_1mjwd0p</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0qiavrl</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_1rybmd8">
+      <bpmn:incoming>SequenceFlow_0phis6h</bpmn:incoming>
+      <bpmn:errorEventDefinition errorRef="Error_0zgzxsn" />
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmn:error id="Error_0zgzxsn" name="ERROR_NOT_ENOUGH_DATA" errorCode="ERROR_NOT_ENOUGH_DATA" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="eventSubProcessRemake">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="275" y="135" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1mjwd0p_di" bpmnElement="SequenceFlow_1mjwd0p">
+        <di:waypoint x="311" y="153" />
+        <di:waypoint x="361" y="153" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0zgvjzm_di" bpmnElement="ExclusiveGateway_0zgvjzm" isMarkerVisible="true">
+        <dc:Bounds x="546" y="128" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="537" y="98" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0qiavrl_di" bpmnElement="SequenceFlow_0qiavrl">
+        <di:waypoint x="461" y="153" />
+        <di:waypoint x="546" y="153" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_02hmx6l_di" bpmnElement="EndEvent_02hmx6l">
+        <dc:Bounds x="726" y="135" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_05eoyqz_di" bpmnElement="SequenceFlow_05eoyqz">
+        <di:waypoint x="596" y="153" />
+        <di:waypoint x="726" y="153" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="653" y="135" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0phis6h_di" bpmnElement="SequenceFlow_0phis6h">
+        <di:waypoint x="571" y="178" />
+        <di:waypoint x="571" y="263" />
+        <di:waypoint x="726" y="263" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="580" y="218" width="13" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="SubProcess_1lk6p1v_di" bpmnElement="providerSubProcess" isExpanded="true">
+        <dc:Bounds x="283" y="333" width="498" height="202" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0vn3l7d_di" bpmnElement="SequenceFlow_0vn3l7d">
+        <di:waypoint x="392" y="434" />
+        <di:waypoint x="442" y="434" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_0tio7oc_di" bpmnElement="EndEvent_0tio7oc">
+        <dc:Bounds x="592" y="416" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1brphr2_di" bpmnElement="SequenceFlow_1brphr2">
+        <di:waypoint x="542" y="434" />
+        <di:waypoint x="592" y="434" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_02klhl4_di" bpmnElement="TaskReview">
+        <dc:Bounds x="361" y="113" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_1xdg6fv_di" bpmnElement="TaskProvide">
+        <dc:Bounds x="442" y="394" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0y2hrgz_di" bpmnElement="EndEvent_1rybmd8">
+        <dc:Bounds x="726" y="245" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_0i88xt2_di" bpmnElement="StartEvent_18vpqjo">
+        <dc:Bounds x="356" y="416" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

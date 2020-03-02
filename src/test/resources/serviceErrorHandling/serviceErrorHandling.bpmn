@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1q34i71" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
+  <bpmn:process id="serviceErrorHandlingProcess" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_0ke2d2w</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0ke2d2w" sourceRef="StartEvent_1" targetRef="TaskService1" />
+    <bpmn:sequenceFlow id="SequenceFlow_0ogez7z" sourceRef="TaskService1" targetRef="TaskMoo1" />
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1fiah1z">
+      <bpmn:incoming>SequenceFlow_094c11p</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0xd41m2</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0mbcryq</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_094c11p" sourceRef="TaskMoo1" targetRef="ExclusiveGateway_1fiah1z" />
+    <bpmn:sequenceFlow id="SequenceFlow_0xd41m2" sourceRef="TaskMoo2" targetRef="ExclusiveGateway_1fiah1z" />
+    <bpmn:endEvent id="EndEvent_1l8uhhq">
+      <bpmn:incoming>SequenceFlow_0mbcryq</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0mbcryq" sourceRef="ExclusiveGateway_1fiah1z" targetRef="EndEvent_1l8uhhq" />
+    <bpmn:sequenceFlow id="SequenceFlow_05s3vkr" sourceRef="BoundaryEvent_17gxmqu" targetRef="TaskMoo2" />
+    <bpmn:boundaryEvent id="BoundaryEvent_17gxmqu" attachedToRef="TaskService1">
+      <bpmn:outgoing>SequenceFlow_05s3vkr</bpmn:outgoing>
+      <bpmn:errorEventDefinition errorRef="Error_0hilmwn" />
+    </bpmn:boundaryEvent>
+    <bpmn:serviceTask id="TaskService1" name="Service 1" camunda:class="org.camunda.bpm.unittest.delegate.serviceerrorhandling.Service1Delegate">
+      <bpmn:incoming>SequenceFlow_0ke2d2w</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0ogez7z</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="TaskMoo1" name="Moo 1">
+      <bpmn:incoming>SequenceFlow_0ogez7z</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_094c11p</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="TaskMoo2" name="Moo 2">
+      <bpmn:incoming>SequenceFlow_05s3vkr</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0xd41m2</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmn:error id="Error_0hilmwn" name="ERROR_THE_ONLY" errorCode="ERROR_THE_ONLY" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="serviceErrorHandlingProcess">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="315" y="230" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0ke2d2w_di" bpmnElement="SequenceFlow_0ke2d2w">
+        <di:waypoint x="351" y="248" />
+        <di:waypoint x="401" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0ogez7z_di" bpmnElement="SequenceFlow_0ogez7z">
+        <di:waypoint x="501" y="248" />
+        <di:waypoint x="551" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1fiah1z_di" bpmnElement="ExclusiveGateway_1fiah1z" isMarkerVisible="true">
+        <dc:Bounds x="701" y="223" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_094c11p_di" bpmnElement="SequenceFlow_094c11p">
+        <di:waypoint x="651" y="248" />
+        <di:waypoint x="701" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0xd41m2_di" bpmnElement="SequenceFlow_0xd41m2">
+        <di:waypoint x="651" y="368" />
+        <di:waypoint x="726" y="368" />
+        <di:waypoint x="726" y="273" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1l8uhhq_di" bpmnElement="EndEvent_1l8uhhq">
+        <dc:Bounds x="801" y="230" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0mbcryq_di" bpmnElement="SequenceFlow_0mbcryq">
+        <di:waypoint x="751" y="248" />
+        <di:waypoint x="801" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_05s3vkr_di" bpmnElement="SequenceFlow_05s3vkr">
+        <di:waypoint x="455" y="306" />
+        <di:waypoint x="455" y="368" />
+        <di:waypoint x="551" y="368" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BoundaryEvent_0ygm6jk_di" bpmnElement="BoundaryEvent_17gxmqu">
+        <dc:Bounds x="437" y="270" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0qo9s90_di" bpmnElement="TaskService1">
+        <dc:Bounds x="401" y="208" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_10d06s0_di" bpmnElement="TaskMoo1">
+        <dc:Bounds x="551" y="208" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_01avm1r_di" bpmnElement="TaskMoo2">
+        <dc:Bounds x="551" y="328" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
