@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.camunda.bpm.engine.runtime.Job;
+import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
@@ -21,17 +22,22 @@ public class EventSubProcessTest extends BpmTestCase {
 	@Rule
 	public ProcessEngineRule rule = new ProcessEngineRule();
 	
+	// processes
 	private static final String PROCESS_EVENT_MAIN = "eventMainProcess";
 	
-	private static final String PROCESS_EVENT_FAILURE = "eventFailureProcess";
+	private static final String PROCESS_EVENT_MAIN_SIMPLIFIED = "eventMainSimplifiedProcess";
+	
+	private static final String PROCESS_EVENT_FAILURE = "eventFailureSubProcess";
 	
 	// variables
 	private static final String VAR_SEVERE = "varSevere";
 	
 	public static final String VAR_ERROR_RAISER = "varErrorRaiser";
 	
+	public static final String VAR_PREREQ_CHECKED = "varPrereqChecked";
+	
 	// errors
-	public static final String ERROR_ON_CHECK = "errorOnCheck";
+	public static final String ERROR_CHECK = "ERROR_CHECK";
 	
 	// tasks
 	private static final String TASK_START = "TaskStart";
@@ -46,7 +52,20 @@ public class EventSubProcessTest extends BpmTestCase {
 	
 	@Test
 	@Deployment(resources = { "eventsubprocess/eventSubProcess.bpmn" })
-	public void testEventSubProcess() {
+	public void testEventSubProcessWithoutError() {
+		
+		HashMap<String, Object> variables = new HashMap<String, Object>();
+		variables.put(VAR_ERROR_RAISER, false);
+		runtimeService().startProcessInstanceByKey(PROCESS_EVENT_MAIN, variables);
+		
+		taskService().complete(assertSingleTaskPresent(TASK_START).getId());
+		
+		assertSingleTaskPresent(TASK_NORMAL_HANDLING);
+	}
+	
+	@Test
+	@Deployment(resources = { "eventsubprocess/eventSubProcess.bpmn" })
+	public void testEventSubProcessWithError() {
 
 		HashMap<String, Object> variables = new HashMap<String, Object>();
 		variables.put(VAR_ERROR_RAISER, true);
@@ -55,10 +74,18 @@ public class EventSubProcessTest extends BpmTestCase {
 		// finish check --> it fails
 		taskService().complete(assertSingleTaskPresent(TASK_START).getId());
 		
-		// do we have a gateway job?
-		List<Job> jobs = managementService().createJobQuery().list();
+		List<ProcessInstance> processList = runtimeService().createProcessInstanceQuery().list();
 		
 		// we have task 'FixIt'
 		assertSingleTaskPresent(TASK_FIX_IT);
+	}
+	
+	@Test
+	@Deployment(resources = { "eventsubprocess/eventSubProcessSimplified.bpmn" })
+	public void testEventSubProcessSimplifiedWithError() {
+		
+		HashMap<String, Object> variables = new HashMap<String, Object>();
+		variables.put(VAR_ERROR_RAISER, true);
+		runtimeService().startProcessInstanceByKey(PROCESS_EVENT_MAIN_SIMPLIFIED, variables);
 	}
 }

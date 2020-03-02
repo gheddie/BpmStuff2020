@@ -12,7 +12,7 @@ public class CheckPrerequisitesDelegate implements JavaDelegate {
 		
 		boolean errorRaiser = (boolean) execution.getVariable(EventSubProcessTest.VAR_ERROR_RAISER);
 		if (errorRaiser) {
-			throw new BpmnError(EventSubProcessTest.ERROR_ON_CHECK);
+			throw new BpmnError(EventSubProcessTest.ERROR_CHECK);
 		}
 	}
 }
