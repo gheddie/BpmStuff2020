@@ -23,9 +23,6 @@ public class BpmTestCase {
 	}
 
 	protected void assertProcessesRunning(String processDefinitionKey, int count) {
-		
-		List<ProcessInstance> processInstances = runtimeService().createProcessInstanceQuery().list();
-		
 		List<ProcessInstance> processInstancesList = runtimeService().createProcessInstanceQuery()
 				.processDefinitionKey(processDefinitionKey).list();
 		assertEquals(count, processInstancesList.size());
