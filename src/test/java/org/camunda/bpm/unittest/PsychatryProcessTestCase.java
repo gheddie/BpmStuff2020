@@ -26,6 +26,7 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 	private static final String TASK_DATA_AQUISITION = "TaskDataAqusition";
 	private static final String TASK_ADVISE_THERAPIST = "TaskAdviseTherapist";
 	private static final String TASK_MOO = "TaskMoo";
+	private static final String TASK_MEE = "TaskMee";
 
 	// messages
 	public static final String MESSAGE_ADMISSION = "MESSAGE_ADMISSION";
@@ -42,23 +43,8 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 	@Deployment(resources = { "psychatry/psychatryProcess.bpmn" })
 	public void testExternalAdmission() {
 		
-		// Given we create a new process instance
-		ProcessInstance processInstance = runtimeService().startProcessInstanceByKey(PROCESS_PSYCHATRY_EXTERNAL_ADMISSION);
+		runtimeService().startProcessInstanceByMessage("MSG_ADMISSION");
 		
-		List<Task> t = taskService().createTaskQuery().list();
-		
-		List<EventSubscription> events = runtimeService().createEventSubscriptionQuery().list();
-		
-		taskService().complete(ensureSingleTaskPresent(TASK_DATA_AQUISITION).getId());
-		
-		taskService().complete(ensureSingleTaskPresent(TASK_MOO).getId());
-		
-		/*
-		ensureVariableSet(VAR_INTERNAL_ADMISSION);
-		
-		ensureSingleTaskPresent(TASK_ADVISE_THERAPIST);
-		*/
-		
-		ensureSingleTaskPresent(TASK_ADVISE_THERAPIST);
+		taskService().complete(ensureSingleTaskPresent("TaskGatherData").getId());
 	}
 }

@@ -9,7 +9,7 @@ import org.junit.Test;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.runtimeService;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskService;
 
-public class CollaborationTest extends BpmTestCase {
+public class CollaborationTestCase extends BpmTestCase {
 	
 	@Rule
 	public ProcessEngineRule rule = new ProcessEngineRule();
