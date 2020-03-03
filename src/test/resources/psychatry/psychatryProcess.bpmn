@@ -48,7 +48,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_0smkggt" sourceRef="TaskReleasePatient" targetRef="EndEvent_1h3w75a" />
     <bpmn:sequenceFlow id="SequenceFlow_14pv5i7" sourceRef="IntermediateThrowEvent_0ttzfm9" targetRef="ExclusiveGateway_16zhtau" />
     <bpmn:sequenceFlow id="SequenceFlow_1ptwkdh" sourceRef="ExclusiveGateway_16zhtau" targetRef="TaskReleasePatient">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${1==2}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${costTakenOver == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_1j32gc5" sourceRef="ExclusiveGateway_16zhtau" targetRef="TaskChooseMeal" />
     <bpmn:endEvent id="EndEvent_06za770">
@@ -63,11 +63,11 @@
       <bpmn:incoming>SequenceFlow_1y91vmt</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1m2en1h</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:parallelGateway id="ExclusiveGateway_16zhtau">
+    <bpmn:exclusiveGateway id="ExclusiveGateway_16zhtau" default="SequenceFlow_1j32gc5">
       <bpmn:incoming>SequenceFlow_14pv5i7</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1ptwkdh</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_1j32gc5</bpmn:outgoing>
-    </bpmn:parallelGateway>
+    </bpmn:exclusiveGateway>
   </bpmn:process>
   <bpmn:message id="Message_12rezt6" name="MSG_ADMISSION" />
   <bpmn:process id="Process_0fq17w4" isExecutable="true">
@@ -208,7 +208,7 @@
         <di:waypoint x="786" y="216" />
         <di:waypoint x="923" y="216" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="ParallelGateway_0qj5czd_di" bpmnElement="ExclusiveGateway_16zhtau">
+      <bpmndi:BPMNShape id="ExclusiveGateway_13r7dbn_di" bpmnElement="ExclusiveGateway_16zhtau" isMarkerVisible="true">
         <dc:Bounds x="761" y="68" width="50" height="50" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>

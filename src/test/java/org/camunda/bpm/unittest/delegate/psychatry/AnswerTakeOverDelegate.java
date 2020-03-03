@@ -10,7 +10,7 @@ public class AnswerTakeOverDelegate implements JavaDelegate {
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
 		HashMap<String, Object> variables = new HashMap<String, Object>();
-		variables.put("costTakenOver", true);
+		variables.put("costTakenOver", false);
 		execution.getProcessEngine().getRuntimeService().correlateMessage("MSG_REQ_PROCESSED", new HashMap<String, Object>(), variables);
 	}
 }
