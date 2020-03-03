@@ -16,7 +16,7 @@
       </bpmn:lane>
       <bpmn:lane id="Lane_18ua3zl" name="Patient">
         <bpmn:flowNodeRef>EndEvent_06za770</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_0othbkd</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TaskChooseMeal</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="StartEvent_0sgo1jw" name="MSG_ADMISSION">
@@ -39,12 +39,12 @@
       <bpmn:outgoing>SequenceFlow_09so06b</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_1ynad28" />
     </bpmn:intermediateCatchEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_09so06b" sourceRef="IntermediateThrowEvent_0ttzfm9" targetRef="Task_0othbkd" />
-    <bpmn:sequenceFlow id="SequenceFlow_16j9wfy" sourceRef="Task_0othbkd" targetRef="EndEvent_06za770" />
+    <bpmn:sequenceFlow id="SequenceFlow_09so06b" sourceRef="IntermediateThrowEvent_0ttzfm9" targetRef="TaskChooseMeal" />
+    <bpmn:sequenceFlow id="SequenceFlow_16j9wfy" sourceRef="TaskChooseMeal" targetRef="EndEvent_06za770" />
     <bpmn:endEvent id="EndEvent_06za770">
       <bpmn:incoming>SequenceFlow_16j9wfy</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:userTask id="Task_0othbkd" name="Choose Meal">
+    <bpmn:userTask id="TaskChooseMeal" name="Choose Meal">
       <bpmn:incoming>SequenceFlow_09so06b</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_16j9wfy</bpmn:outgoing>
     </bpmn:userTask>
@@ -162,7 +162,7 @@
         <di:waypoint x="905" y="216" />
         <di:waypoint x="1032" y="216" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_01zz7gs_di" bpmnElement="Task_0othbkd">
+      <bpmndi:BPMNShape id="UserTask_01zz7gs_di" bpmnElement="TaskChooseMeal">
         <dc:Bounds x="805" y="176" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="MessageFlow_0zwwlqn_di" bpmnElement="MessageFlow_0zwwlqn">
