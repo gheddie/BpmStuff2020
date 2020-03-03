@@ -44,7 +44,7 @@ public class InterruptingVsNotInterruptingTestCase extends BpmTestCase {
 		variables.put(VAR_INTERRUPTING, true);
 		runtimeService().startProcessInstanceByKey(PROCESS, variables);
 		
-		assertSingleTaskPresent(TASK_B);
+		ensureSingleTaskPresent(TASK_B);
 		
 		// we have a (timer) job...
 		List<Job> jobs = managementService().createJobQuery().list();
@@ -54,9 +54,9 @@ public class InterruptingVsNotInterruptingTestCase extends BpmTestCase {
 		managementService().executeJob(jobs.get(0).getId());
 		
 		// we have 'TaskF', but 'TaskB' and 'TaskE' are gone...
-		assertTaskNotPresent(TASK_E);
-		assertTaskNotPresent(TASK_B);
-		taskService().complete(assertSingleTaskPresent(TASK_F).getId());
+		ensureTaskNotPresent(TASK_E);
+		ensureTaskNotPresent(TASK_B);
+		taskService().complete(ensureSingleTaskPresent(TASK_F).getId());
 		
 		// execution is gone
 		assertEquals(0, runtimeService().createProcessInstanceQuery().list().size());
@@ -70,7 +70,7 @@ public class InterruptingVsNotInterruptingTestCase extends BpmTestCase {
 		variables.put(VAR_INTERRUPTING, false);
 		runtimeService().startProcessInstanceByKey(PROCESS, variables);
 		
-		 assertSingleTaskPresent(TASK_A);
+		 ensureSingleTaskPresent(TASK_A);
 		
 		// we have a (timer) job...
 		List<Job> jobs = managementService().createJobQuery().list();
@@ -80,15 +80,15 @@ public class InterruptingVsNotInterruptingTestCase extends BpmTestCase {
 		managementService().executeJob(jobs.get(0).getId());
 		
 		// we still have 'TaskA' and also 'TaskC' and NOT 'TaskD'...
-		Task taskA = assertSingleTaskPresent(TASK_A);
-		assertSingleTaskPresent(TASK_C);
-		assertTaskNotPresent(TASK_D);
+		Task taskA = ensureSingleTaskPresent(TASK_A);
+		ensureSingleTaskPresent(TASK_C);
+		ensureTaskNotPresent(TASK_D);
 		
 		// execute 'A'
 		taskService().complete(taskA.getId());
 		
-		taskService().complete(assertSingleTaskPresent(TASK_C).getId());
-		taskService().complete(assertSingleTaskPresent(TASK_D).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_C).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_D).getId());
 		
 		// execution is gone
 		assertEquals(0, runtimeService().createProcessInstanceQuery().list().size());

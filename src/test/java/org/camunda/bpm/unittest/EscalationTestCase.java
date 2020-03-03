@@ -41,10 +41,10 @@ public class EscalationTestCase extends BpmTestCase {
 	public void testImmediately() {
 		
 		startOrderProcess(0);
-		taskService().complete(assertSingleTaskPresent(TASK_PLACE_ORDER).getId());
-		assertSingleTaskPresent(TASK_RECEIVE_GOODS);
-		assertTaskNotPresent(TASK_REMOVE_PRODUCT);
-		assertTaskNotPresent(TASK_INFORM_CUSTOMER);
+		taskService().complete(ensureSingleTaskPresent(TASK_PLACE_ORDER).getId());
+		ensureSingleTaskPresent(TASK_RECEIVE_GOODS);
+		ensureTaskNotPresent(TASK_REMOVE_PRODUCT);
+		ensureTaskNotPresent(TASK_INFORM_CUSTOMER);
 	}
 
 	@Test
@@ -52,9 +52,9 @@ public class EscalationTestCase extends BpmTestCase {
 	public void testMoreThan2Days() {
 		
 		startOrderProcess(7);
-		taskService().complete(assertSingleTaskPresent(TASK_PLACE_ORDER).getId());
-		assertSingleTaskPresent(TASK_RECEIVE_GOODS);
-		assertSingleTaskPresent(TASK_INFORM_CUSTOMER);
+		taskService().complete(ensureSingleTaskPresent(TASK_PLACE_ORDER).getId());
+		ensureSingleTaskPresent(TASK_RECEIVE_GOODS);
+		ensureSingleTaskPresent(TASK_INFORM_CUSTOMER);
 	}
 	
 	@Test
@@ -62,9 +62,9 @@ public class EscalationTestCase extends BpmTestCase {
 	public void testUnshipable() {
 		
 		startOrderProcess(21);
-		taskService().complete(assertSingleTaskPresent(TASK_PLACE_ORDER).getId());
-		assertTaskNotPresent(TASK_RECEIVE_GOODS);
-		assertSingleTaskPresent(TASK_REMOVE_PRODUCT);
+		taskService().complete(ensureSingleTaskPresent(TASK_PLACE_ORDER).getId());
+		ensureTaskNotPresent(TASK_RECEIVE_GOODS);
+		ensureSingleTaskPresent(TASK_REMOVE_PRODUCT);
 	}
 	
 	// ---

@@ -54,13 +54,13 @@ public class CompensationSubProcessTest extends BpmTestCase {
 		debugEngineState();
 		
 		// cancel fligt
-		 taskService().complete(assertSingleTaskPresent(TASK_CANCEL_FLIGHT).getId());
+		 taskService().complete(ensureSingleTaskPresent(TASK_CANCEL_FLIGHT).getId());
 		
 		// cancel hotel
-		 taskService().complete(assertSingleTaskPresent(TASK_CANCEL_HOTEL).getId());
+		 taskService().complete(ensureSingleTaskPresent(TASK_CANCEL_HOTEL).getId());
 		
 		// update customers record
-		 taskService().complete(assertSingleTaskPresent(TASK_UPDATE_CUSTOMER_RECORD).getId());
+		 taskService().complete(ensureSingleTaskPresent(TASK_UPDATE_CUSTOMER_RECORD).getId());
 	}
 
 	private void prepareWork(boolean bookingValid) {
@@ -68,12 +68,12 @@ public class CompensationSubProcessTest extends BpmTestCase {
 		runtimeService().startProcessInstanceByKey(PROCESS_COMPENSATION_MAIN);
 		
 		// someone must book hotel and flight...
-		taskService().complete(assertSingleTaskPresent(TASK_BOOK_FLIGHT).getId());
-		taskService().complete(assertSingleTaskPresent(TASK_BOOK_HOTEL).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_BOOK_FLIGHT).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_BOOK_HOTEL).getId());
 		
 		// someone must check the booking
 		Map<String, Object> variables = new HashMap<String, Object>();
 		variables.put(VAR_BOOKING_VALID, bookingValid);
-		taskService().complete(assertSingleTaskPresent(TASK_CHECK_BOOKING).getId(), variables);
+		taskService().complete(ensureSingleTaskPresent(TASK_CHECK_BOOKING).getId(), variables);
 	}
 }

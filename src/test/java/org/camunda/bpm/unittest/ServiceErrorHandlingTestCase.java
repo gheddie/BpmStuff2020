@@ -42,7 +42,7 @@ public class ServiceErrorHandlingTestCase extends BpmTestCase {
 		
 		runtimeService().startProcessInstanceByKey(PROCESS_SERVICE_ERROR_HANDLING, variables);
 		
-		assertSingleTaskPresent(TASK_MOO_2);
+		ensureSingleTaskPresent(TASK_MOO_2);
 	}
 	
 	@Test
@@ -54,6 +54,6 @@ public class ServiceErrorHandlingTestCase extends BpmTestCase {
 		
 		runtimeService().startProcessInstanceByKey(PROCESS_SERVICE_ERROR_HANDLING, variables);
 		
-		assertSingleTaskPresent(TASK_MOO_1);
+		ensureSingleTaskPresent(TASK_MOO_1);
 	}
 }

@@ -38,12 +38,12 @@ public class EventSubProcessRemakeTest extends BpmTestCase {
 
 		runtimeService().startProcessInstanceByKey(PROCESS_SUBPROCESS_EVENT_REMAKE);
 		
-		assertProcessesRunning("eventSubProcessRemake", 1);
+		ensureProcessesRunning("eventSubProcessRemake", 1);
 		
 		Map<String, Object> variables = new HashMap<String, Object>();
 		variables.put(VAR_ENOUGH_DATA, false);
-		taskService().complete(assertSingleTaskPresent(TASK_REVIEW).getId(), variables);
+		taskService().complete(ensureSingleTaskPresent(TASK_REVIEW).getId(), variables);
 		
-		assertSingleTaskPresent(TASK_PROVIDE);
+		ensureSingleTaskPresent(TASK_PROVIDE);
 	}
 }
