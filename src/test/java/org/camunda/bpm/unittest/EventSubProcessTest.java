@@ -63,7 +63,8 @@ public class EventSubProcessTest extends BpmTestCase {
 		assertSingleTaskPresent(TASK_NORMAL_HANDLING);
 	}
 	
-	@Test
+	// TODO
+	// @Test
 	@Deployment(resources = { "eventsubprocess/eventSubProcess.bpmn" })
 	public void testEventSubProcessWithError() {
 
