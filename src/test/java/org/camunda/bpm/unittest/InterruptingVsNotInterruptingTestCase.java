@@ -1,6 +1,7 @@
 package org.camunda.bpm.unittest;
 
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.runtimeService;
+import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskService;
 import static org.junit.Assert.assertEquals;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.managementService;
 
@@ -9,6 +10,7 @@ import java.util.List;
 
 import org.camunda.bpm.engine.runtime.Job;
 import org.camunda.bpm.engine.runtime.JobQuery;
+import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
@@ -54,7 +56,10 @@ public class InterruptingVsNotInterruptingTestCase extends BpmTestCase {
 		// we have 'TaskF', but 'TaskB' and 'TaskE' are gone...
 		assertTaskNotPresent(TASK_E);
 		assertTaskNotPresent(TASK_B);
-		assertSingleTaskPresent(TASK_F);
+		taskService().complete(assertSingleTaskPresent(TASK_F).getId());
+		
+		// execution is gone
+		assertEquals(0, runtimeService().createProcessInstanceQuery().list().size());
 	}
 	
 	@Test
@@ -65,7 +70,7 @@ public class InterruptingVsNotInterruptingTestCase extends BpmTestCase {
 		variables.put(VAR_INTERRUPTING, false);
 		runtimeService().startProcessInstanceByKey(PROCESS, variables);
 		
-		assertSingleTaskPresent(TASK_A);
+		 assertSingleTaskPresent(TASK_A);
 		
 		// we have a (timer) job...
 		List<Job> jobs = managementService().createJobQuery().list();
@@ -75,8 +80,17 @@ public class InterruptingVsNotInterruptingTestCase extends BpmTestCase {
 		managementService().executeJob(jobs.get(0).getId());
 		
 		// we still have 'TaskA' and also 'TaskC' and NOT 'TaskD'...
-		assertSingleTaskPresent(TASK_A);
+		Task taskA = assertSingleTaskPresent(TASK_A);
 		assertSingleTaskPresent(TASK_C);
 		assertTaskNotPresent(TASK_D);
+		
+		// execute 'A'
+		taskService().complete(taskA.getId());
+		
+		taskService().complete(assertSingleTaskPresent(TASK_C).getId());
+		taskService().complete(assertSingleTaskPresent(TASK_D).getId());
+		
+		// execution is gone
+		assertEquals(0, runtimeService().createProcessInstanceQuery().list().size());
 	}
 }
