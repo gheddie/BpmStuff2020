@@ -10,10 +10,11 @@ import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.task;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
+import org.camunda.bpm.unittest.base.BpmTestCase;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class SimpleTestCase {
+public class SimpleTestCase extends BpmTestCase {
 	
 	@Rule
 	public ProcessEngineRule rule = new ProcessEngineRule();
