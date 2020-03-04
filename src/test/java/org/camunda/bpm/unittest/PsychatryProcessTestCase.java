@@ -29,15 +29,31 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 	private static final String MSG_ADMISSION = "MSG_ADMISSION";
 	private static final String MSG_RULE_BREAK = "MSG_RULE_BREAK";
 	private static final String MSG_CONDITION_CHANGE = "MSG_CONDITION_CHANGE";
+	private static final String MSG_EVALUATE_PATIENT = "MSG_EVALUATE_PATIENT";
 	
 	// tasks
 	private static final String TASK_CHOOSE_MEAL = "TaskChooseMeal";
 	private static final String TASK_GATHER_DATA = "TaskGatherData";
 	private static final String TASK_REVIEW_DATA = "TaskReviewData";
 	private static final String TASK_RELEASE_PATIENT = "TaskReleasePatient";
+	private static final String TASK_EVALUATE_PATIENT = "TaskEvaluatePatient";
 
 	// process
 	private static final String PROCESS_IDENTIFER = "ADMISSION_PROCESS";
+
+	@Test
+	@Deployment(resources = { "psychatry/psychatryProcess.bpmn" })
+	public void testCylicEvaluation() {
+		
+		HashMap<String, String> processInstancesToBusinessKeys = runProcesses(true, false, 1);
+		
+		taskService().complete(ensureSingleTaskPresent(TASK_CHOOSE_MEAL).getId());
+		
+		// fire evaluation
+		runtimeService().correlateMessage(MSG_EVALUATE_PATIENT);
+		
+		ensureSingleTaskPresent(TASK_EVALUATE_PATIENT);
+	}
 	
 	@Test
 	@Deployment(resources = { "psychatry/psychatryProcess.bpmn" })
