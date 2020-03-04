@@ -160,25 +160,25 @@
       <bpmn:outgoing>SequenceFlow_0dz9b8m</bpmn:outgoing>
       <bpmn:errorEventDefinition errorRef="Error_13ah4ef" />
     </bpmn:boundaryEvent>
-    <bpmn:endEvent id="EndEvent_1h3w75a" name="MSG_THERAPY_DONE">
-      <bpmn:incoming>SequenceFlow_0smkggt</bpmn:incoming>
-      <bpmn:messageEventDefinition messageRef="Message_1roq9tm" />
-    </bpmn:endEvent>
     <bpmn:subProcess id="SubProcessApp" triggeredByEvent="true">
       <bpmn:endEvent id="EndEvent_0ryf2jf">
         <bpmn:incoming>SequenceFlow_185v36o</bpmn:incoming>
       </bpmn:endEvent>
-      <bpmn:startEvent id="StartEvent_0894ue4" name="MSG_THERAPY_DONE">
-        <bpmn:outgoing>SequenceFlow_0dkr0nw</bpmn:outgoing>
-        <bpmn:messageEventDefinition messageRef="Message_1roq9tm" />
-      </bpmn:startEvent>
       <bpmn:sequenceFlow id="SequenceFlow_185v36o" sourceRef="TaskCallApp" targetRef="EndEvent_0ryf2jf" />
       <bpmn:sequenceFlow id="SequenceFlow_0dkr0nw" sourceRef="StartEvent_0894ue4" targetRef="TaskCallApp" />
       <bpmn:userTask id="TaskCallApp" name="Call APP">
         <bpmn:incoming>SequenceFlow_0dkr0nw</bpmn:incoming>
         <bpmn:outgoing>SequenceFlow_185v36o</bpmn:outgoing>
       </bpmn:userTask>
+      <bpmn:startEvent id="StartEvent_0894ue4" name="ERR_THERAPY_DONE">
+        <bpmn:outgoing>SequenceFlow_0dkr0nw</bpmn:outgoing>
+        <bpmn:errorEventDefinition errorRef="Error_1n1c29e" />
+      </bpmn:startEvent>
     </bpmn:subProcess>
+    <bpmn:endEvent id="EndEvent_1h3w75a" name="ERR_THERAPY_DONE">
+      <bpmn:incoming>SequenceFlow_0smkggt</bpmn:incoming>
+      <bpmn:errorEventDefinition errorRef="Error_1n1c29e" />
+    </bpmn:endEvent>
   </bpmn:process>
   <bpmn:message id="Message_12rezt6" name="MSG_ADMISSION" />
   <bpmn:process id="ProcessCarrier" isExecutable="true">
@@ -210,6 +210,7 @@
   <bpmn:error id="Error_13ah4ef" name="ERR_FURTHER_THERAPY" errorCode="ERR_FURTHER_THERAPY" />
   <bpmn:error id="Error_1sj8vo6" name="ERR_CHANGE_STATION" errorCode="ERR_CHANGE_STATION" />
   <bpmn:message id="Message_1roq9tm" name="MSG_THERAPY_DONE" />
+  <bpmn:error id="Error_1n1c29e" name="ERR_THERAPY_DONE" errorCode="ERR_THERAPY_DONE" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_14zzahf">
       <bpmndi:BPMNShape id="Participant_0qmgzvm_di" bpmnElement="Participant_0qmgzvm">
@@ -464,23 +465,11 @@
           <dc:Bounds x="951" y="636" width="83" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndEvent_07r52st_di" bpmnElement="EndEvent_1h3w75a">
-        <dc:Bounds x="1536" y="75" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1512" y="118" width="84" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="SubProcess_0gtxsx6_di" bpmnElement="SubProcessApp" isExpanded="true">
         <dc:Bounds x="285" y="738" width="353" height="120" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_0ryf2jf_di" bpmnElement="EndEvent_0ryf2jf">
         <dc:Bounds x="553" y="780" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="StartEvent_1u3gwx7_di" bpmnElement="StartEvent_0894ue4">
-        <dc:Bounds x="317" y="780" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="293" y="823" width="84" height="27" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="UserTask_162hhea_di" bpmnElement="TaskCallApp">
         <dc:Bounds x="403" y="758" width="100" height="80" />
@@ -493,6 +482,18 @@
         <di:waypoint x="353" y="798" />
         <di:waypoint x="403" y="798" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="StartEvent_1uwchxc_di" bpmnElement="StartEvent_0894ue4">
+        <dc:Bounds x="317" y="780" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="294" y="823" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0yrpm2n_di" bpmnElement="EndEvent_1h3w75a">
+        <dc:Bounds x="1536" y="75" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1513" y="118" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

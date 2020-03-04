@@ -81,8 +81,8 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 		
 		taskService().complete(ensureSingleTaskPresent(TASK_RELEASE_PATIENT).getId());
 		
-		// TODO why does the sub process not fire?!?
-		// ensureSingleTaskPresent(TASK_CALL_APP);
+		// TODO sub process fires with error end event, but not with message end event?!?
+		ensureSingleTaskPresent(TASK_CALL_APP);
 	}
 
 	@Test
