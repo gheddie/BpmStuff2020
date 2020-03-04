@@ -18,6 +18,12 @@ public class BpmTestCase {
 		assertEquals(1, taskList.size());
 		return taskList.get(0);
 	}
+	
+	protected List<Task> ensureTaskCountPresent(String taskName, int taskCount) {
+		List<Task> taskList = taskService().createTaskQuery().taskDefinitionKey(taskName).list();
+		assertEquals(taskCount, taskList.size());
+		return taskList;
+	}
 
 	protected boolean ensureTaskNotPresent(String taskName) {
 		return (taskService().createTaskQuery().taskDefinitionKey(taskName).list().size() == 0);
