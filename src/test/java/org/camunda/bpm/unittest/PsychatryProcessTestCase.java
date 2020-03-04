@@ -12,36 +12,32 @@ import org.junit.Rule;
 import org.junit.Test;
 
 public class PsychatryProcessTestCase extends BpmTestCase {
-	
+
 	@Rule
 	public ProcessEngineRule rule = new ProcessEngineRule();
-	
+
 	@Test
 	@Deployment(resources = { "psychatry/psychatryProcess.bpmn" })
 	public void testAdmissions() {
-		runProcess(false, false);
-		runProcess(false, false);
-		runProcess(false, false);
-		runProcess(true, false);
-		runProcess(true, false);
-		runProcess(true, false);
-		runProcess(true, false);
-		runProcess(true, false);
-		runProcess(true, true);
-		runProcess(true, true);
+
+		runProcess(false, false, 3);
+		runProcess(true, false, 5);
+		runProcess(true, true, 2);
+
 		ensureTaskCountPresent("TaskReleasePatient", 3);
 		ensureTaskCountPresent("TaskChooseMeal", 5);
 		ensureTaskCountPresent("TaskReviewData", 2);
 	}
 
-	private void runProcess(boolean costTakenOver, boolean stopAtReview) {
-		runtimeService().startProcessInstanceByMessage("MSG_ADMISSION");
-		taskService().complete(ensureSingleTaskPresent("TaskGatherData").getId());
-		HashMap<String, Object> variables = new HashMap<String, Object>();
-		variables.put("costTakenOver", costTakenOver);
-		if (stopAtReview) {
-			return;
+	private void runProcess(boolean costTakenOver, boolean stopAtReview, int processCount) {
+		for (int count = 0; count < processCount; count++) {
+			runtimeService().startProcessInstanceByMessage("MSG_ADMISSION");
+			taskService().complete(ensureSingleTaskPresent("TaskGatherData").getId());
+			HashMap<String, Object> variables = new HashMap<String, Object>();
+			variables.put("costTakenOver", costTakenOver);
+			if (!(stopAtReview)) {
+				taskService().complete(ensureSingleTaskPresent("TaskReviewData").getId(), variables);
+			}
 		}
-		taskService().complete(ensureSingleTaskPresent("TaskReviewData").getId(), variables);
 	}
 }
