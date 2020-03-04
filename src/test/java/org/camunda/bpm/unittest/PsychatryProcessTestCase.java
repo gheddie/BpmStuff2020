@@ -6,6 +6,7 @@ import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskSer
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.camunda.bpm.engine.runtime.ProcessInstance;
@@ -18,6 +19,12 @@ import org.junit.Test;
 
 public class PsychatryProcessTestCase extends BpmTestCase {
 
+	private enum EvaluationResult {
+		FURTHER_THERAPY,
+		CHANGE_STATION,
+		OK
+	}
+
 	private static final int RULE_BREAK_PROCESS_COUNT = 13	;
 
 	@Rule
@@ -28,8 +35,7 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 	// messages
 	private static final String MSG_ADMISSION = "MSG_ADMISSION";
 	private static final String MSG_RULE_BREAK = "MSG_RULE_BREAK";
-	private static final String MSG_CONDITION_CHANGE = "MSG_CONDITION_CHANGE";
-	private static final String MSG_EVALUATE_PATIENT = "MSG_EVALUATE_PATIENT";
+	private static final String MSG_SEE_THERAPIST = "MSG_SEE_THERAPIST";
 	
 	// tasks
 	private static final String TASK_CHOOSE_MEAL = "TaskChooseMeal";
@@ -37,6 +43,10 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 	private static final String TASK_REVIEW_DATA = "TaskReviewData";
 	private static final String TASK_RELEASE_PATIENT = "TaskReleasePatient";
 	private static final String TASK_EVALUATE_PATIENT = "TaskEvaluatePatient";
+	private static final String TASK_CHOOSE_STATION = "TaskChooseStation";
+	
+	// variables
+	private static final String VAR_TH_SESSION_OUTCOME = "sessionOutcome";
 
 	// process
 	private static final String PROCESS_IDENTIFER = "ADMISSION_PROCESS";
@@ -49,12 +59,27 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 		
 		taskService().complete(ensureSingleTaskPresent(TASK_CHOOSE_MEAL).getId());
 		
-		// fire evaluation
-		runtimeService().correlateMessage(MSG_EVALUATE_PATIENT);
+		// break rule in one of the processes --> release patient
+		List<String> keySet = new ArrayList<String>(processInstancesToBusinessKeys.keySet());
+		String businessKey = processInstancesToBusinessKeys.get(keySet.get(0));
+		runtimeService().correlateMessage(MSG_SEE_THERAPIST, businessKey);
 		
-		ensureSingleTaskPresent(TASK_EVALUATE_PATIENT);
+		finishEvaluation(EvaluationResult.CHANGE_STATION);
+		
+		// new station must be chosen
+		taskService().complete(ensureSingleTaskPresent(TASK_CHOOSE_STATION).getId());
+		
+		// meal must be rechosen
+		taskService().complete(ensureSingleTaskPresent(TASK_CHOOSE_MEAL).getId());
+		
+		// another session
+		runtimeService().correlateMessage(MSG_SEE_THERAPIST, businessKey);
+		
+		finishEvaluation(EvaluationResult.OK);
+		
+		taskService().complete(ensureSingleTaskPresent(TASK_RELEASE_PATIENT).getId());
 	}
-	
+
 	@Test
 	@Deployment(resources = { "psychatry/psychatryProcess.bpmn" })
 	public void testRuleBreak() {
@@ -110,5 +135,11 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 
 	private String generateBusinessKey() {
 		return PROCESS_IDENTIFER + "_" + random.nextInt(1000);
+	}
+	
+	private void finishEvaluation(EvaluationResult evaluationResult) {
+		Map<String, Object> var = new HashMap<String, Object>();
+		var.put(VAR_TH_SESSION_OUTCOME, evaluationResult.toString());
+		taskService().complete(ensureSingleTaskPresent(TASK_EVALUATE_PATIENT).getId(), var);
 	}
 }
