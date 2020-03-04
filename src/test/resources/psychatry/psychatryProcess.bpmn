@@ -2,7 +2,7 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1sfdrax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
   <bpmn:collaboration id="Collaboration_14zzahf">
     <bpmn:participant id="Participant_0qmgzvm" name="Clinic" processRef="clinicProcess" />
-    <bpmn:participant id="Participant_0cf3a38" name="Krankenkasse" processRef="Process_0fq17w4" />
+    <bpmn:participant id="Participant_0cf3a38" name="Krankenkasse" processRef="ProcessCarrier" />
     <bpmn:messageFlow id="MessageFlow_1hpkxv7" sourceRef="Task_1ophyjb" targetRef="StartEvent_159w2ji" />
     <bpmn:messageFlow id="MessageFlow_0zwwlqn" sourceRef="Task_0gn2byc" targetRef="IntermediateThrowEvent_0ttzfm9" />
   </bpmn:collaboration>
@@ -14,13 +14,13 @@
         <bpmn:flowNodeRef>IntermediateThrowEvent_0ttzfm9</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_1ophyjb</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_16zhtau</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>EndEvent_1h3w75a</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TaskReleasePatient</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_0czum4m</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>GwCatch</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_08k2dx9</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>IntermediateCatchEvent_0nt72oa</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>IntermediateThrowEvent_1a8y8m7</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_1h3w75a</bpmn:flowNodeRef>
         <bpmn:childLaneSet id="LaneSet_0ru7u3g" />
       </bpmn:lane>
       <bpmn:lane id="Lane_1aoo0di" name="Patient">
@@ -31,6 +31,7 @@
         <bpmn:flowNodeRef>SubProcess_0yyiiqz</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>BoundaryEvent_0dqt2sy</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>BoundaryEvent_1m0rxwn</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>SubProcessApp</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="StartEvent_0sgo1jw" name="MSG_ADMISSION">
@@ -77,9 +78,6 @@
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_0srrk76" sourceRef="TaskChooseStation" targetRef="TaskChooseMeal" />
     <bpmn:sequenceFlow id="SequenceFlow_1oksti2" sourceRef="GwCatch" targetRef="IntermediateThrowEvent_1a8y8m7" />
-    <bpmn:endEvent id="EndEvent_1h3w75a">
-      <bpmn:incoming>SequenceFlow_0smkggt</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:userTask id="TaskReleasePatient" name="Release patient">
       <bpmn:incoming>SequenceFlow_08skfei</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0virm5t</bpmn:incoming>
@@ -162,9 +160,28 @@
       <bpmn:outgoing>SequenceFlow_0dz9b8m</bpmn:outgoing>
       <bpmn:errorEventDefinition errorRef="Error_13ah4ef" />
     </bpmn:boundaryEvent>
+    <bpmn:endEvent id="EndEvent_1h3w75a" name="MSG_THERAPY_DONE">
+      <bpmn:incoming>SequenceFlow_0smkggt</bpmn:incoming>
+      <bpmn:messageEventDefinition messageRef="Message_1roq9tm" />
+    </bpmn:endEvent>
+    <bpmn:subProcess id="SubProcessApp" triggeredByEvent="true">
+      <bpmn:endEvent id="EndEvent_0ryf2jf">
+        <bpmn:incoming>SequenceFlow_185v36o</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:startEvent id="StartEvent_0894ue4" name="MSG_THERAPY_DONE">
+        <bpmn:outgoing>SequenceFlow_0dkr0nw</bpmn:outgoing>
+        <bpmn:messageEventDefinition messageRef="Message_1roq9tm" />
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="SequenceFlow_185v36o" sourceRef="TaskCallApp" targetRef="EndEvent_0ryf2jf" />
+      <bpmn:sequenceFlow id="SequenceFlow_0dkr0nw" sourceRef="StartEvent_0894ue4" targetRef="TaskCallApp" />
+      <bpmn:userTask id="TaskCallApp" name="Call APP">
+        <bpmn:incoming>SequenceFlow_0dkr0nw</bpmn:incoming>
+        <bpmn:outgoing>SequenceFlow_185v36o</bpmn:outgoing>
+      </bpmn:userTask>
+    </bpmn:subProcess>
   </bpmn:process>
   <bpmn:message id="Message_12rezt6" name="MSG_ADMISSION" />
-  <bpmn:process id="Process_0fq17w4" isExecutable="true">
+  <bpmn:process id="ProcessCarrier" isExecutable="true">
     <bpmn:startEvent id="StartEvent_159w2ji" name="MSG_TO_REQ">
       <bpmn:outgoing>SequenceFlow_01e1zh5</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_0y0ulu0" />
@@ -192,6 +209,7 @@
   <bpmn:message id="Message_05n2urh" name="MSG_SEE_THERAPIST" />
   <bpmn:error id="Error_13ah4ef" name="ERR_FURTHER_THERAPY" errorCode="ERR_FURTHER_THERAPY" />
   <bpmn:error id="Error_1sj8vo6" name="ERR_CHANGE_STATION" errorCode="ERR_CHANGE_STATION" />
+  <bpmn:message id="Message_1roq9tm" name="MSG_THERAPY_DONE" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_14zzahf">
       <bpmndi:BPMNShape id="Participant_0qmgzvm_di" bpmnElement="Participant_0qmgzvm">
@@ -273,9 +291,6 @@
         <di:waypoint x="666" y="1176" />
         <di:waypoint x="666" y="111" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="EndEvent_1h3w75a_di" bpmnElement="EndEvent_1h3w75a">
-        <dc:Bounds x="1536" y="75" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0smkggt_di" bpmnElement="SequenceFlow_0smkggt">
         <di:waypoint x="1488" y="93" />
         <di:waypoint x="1536" y="93" />
@@ -449,6 +464,35 @@
           <dc:Bounds x="951" y="636" width="83" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_07r52st_di" bpmnElement="EndEvent_1h3w75a">
+        <dc:Bounds x="1536" y="75" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1512" y="118" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SubProcess_0gtxsx6_di" bpmnElement="SubProcessApp" isExpanded="true">
+        <dc:Bounds x="285" y="738" width="353" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0ryf2jf_di" bpmnElement="EndEvent_0ryf2jf">
+        <dc:Bounds x="553" y="780" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1u3gwx7_di" bpmnElement="StartEvent_0894ue4">
+        <dc:Bounds x="317" y="780" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="293" y="823" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_162hhea_di" bpmnElement="TaskCallApp">
+        <dc:Bounds x="403" y="758" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_185v36o_di" bpmnElement="SequenceFlow_185v36o">
+        <di:waypoint x="503" y="798" />
+        <di:waypoint x="553" y="798" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0dkr0nw_di" bpmnElement="SequenceFlow_0dkr0nw">
+        <di:waypoint x="353" y="798" />
+        <di:waypoint x="403" y="798" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

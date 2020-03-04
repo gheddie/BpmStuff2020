@@ -36,6 +36,7 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 	private static final String MSG_ADMISSION = "MSG_ADMISSION";
 	private static final String MSG_RULE_BREAK = "MSG_RULE_BREAK";
 	private static final String MSG_SEE_THERAPIST = "MSG_SEE_THERAPIST";
+	private static final String MSG_THERAPY_DONE = "MSG_THERAPY_DONE";
 	
 	// tasks
 	private static final String TASK_CHOOSE_MEAL = "TaskChooseMeal";
@@ -44,6 +45,7 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 	private static final String TASK_RELEASE_PATIENT = "TaskReleasePatient";
 	private static final String TASK_EVALUATE_PATIENT = "TaskEvaluatePatient";
 	private static final String TASK_CHOOSE_STATION = "TaskChooseStation";
+	private static final String TASK_CALL_APP = "TaskCallApp";
 	
 	// variables
 	private static final String VAR_TH_SESSION_OUTCOME = "sessionOutcome";
@@ -78,6 +80,9 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 		finishEvaluation(EvaluationResult.OK);
 		
 		taskService().complete(ensureSingleTaskPresent(TASK_RELEASE_PATIENT).getId());
+		
+		// TODO why does the sub process not fire?!?
+		// ensureSingleTaskPresent(TASK_CALL_APP);
 	}
 
 	@Test
