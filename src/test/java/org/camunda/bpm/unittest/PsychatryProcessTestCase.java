@@ -3,8 +3,13 @@ package org.camunda.bpm.unittest;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.runtimeService;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
+import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
@@ -13,11 +18,17 @@ import org.junit.Test;
 
 public class PsychatryProcessTestCase extends BpmTestCase {
 
+	private static final int RULE_BREAK_PROCESS_COUNT = 13	;
+
 	@Rule
 	public ProcessEngineRule rule = new ProcessEngineRule();
+
+	private static final Random random = new Random();
 	
 	// messages
 	private static final String MSG_ADMISSION = "MSG_ADMISSION";
+	private static final String MSG_RULE_BREAK = "MSG_RULE_BREAK";
+	private static final String MSG_CONDITION_CHANGE = "MSG_CONDITION_CHANGE";
 	
 	// tasks
 	private static final String TASK_CHOOSE_MEAL = "TaskChooseMeal";
@@ -25,23 +36,52 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 	private static final String TASK_REVIEW_DATA = "TaskReviewData";
 	private static final String TASK_RELEASE_PATIENT = "TaskReleasePatient";
 
+	// process
+	private static final String PROCESS_IDENTIFER = "ADMISSION_PROCESS";
+	
+	@Test
+	@Deployment(resources = { "psychatry/psychatryProcess.bpmn" })
+	public void testRuleBreak() {
+		
+		HashMap<String, String> processInstancesToBusinessKeys = runProcesses(true, false, RULE_BREAK_PROCESS_COUNT);
+		
+		List<Task> tasksChooseMeal = ensureTaskCountPresent(TASK_CHOOSE_MEAL, RULE_BREAK_PROCESS_COUNT);
+		
+		// choose meals
+		for (int index = 0; index < RULE_BREAK_PROCESS_COUNT; index++) {
+			taskService().complete(tasksChooseMeal.get(index).getId());
+		}
+		
+		// break rule in one of the processes --> release patient
+		List<String> keySet = new ArrayList<String>(processInstancesToBusinessKeys.keySet());
+		String businessKey = processInstancesToBusinessKeys.get(keySet.get(0));
+		runtimeService().correlateMessage(MSG_RULE_BREAK, businessKey);
+		
+		ensureSingleTaskPresent(TASK_RELEASE_PATIENT);
+	}
+
 	@Test
 	@Deployment(resources = { "psychatry/psychatryProcess.bpmn" })
 	public void testMultipleAdmissions() {
 
-		runProcess(false, false, 3);
+		runProcesses(false, false, 3);
 
-		runProcess(true, false, 5);
-		runProcess(true, true, 2);
+		runProcesses(true, false, 5);
+		runProcesses(true, true, 2);
 
 		ensureTaskCountPresent(TASK_RELEASE_PATIENT, 3);
 		ensureTaskCountPresent(TASK_CHOOSE_MEAL, 5);
 		ensureTaskCountPresent(TASK_REVIEW_DATA, 2);
 	}
 
-	private void runProcess(boolean costTakenOver, boolean stopAtReview, int processCount) {
+	// key --> process instance id, value --> business key
+	private HashMap<String, String> runProcesses(boolean costTakenOver, boolean stopAtReview, int processCount) {
+		HashMap<String, String> processInstancesToBusinessKeys = new HashMap<String, String>();
+		String businessKey = null;
 		for (int count = 0; count < processCount; count++) {
-			runtimeService().startProcessInstanceByMessage(MSG_ADMISSION);
+			businessKey = generateBusinessKey();
+			ProcessInstance processInstance = runtimeService().startProcessInstanceByMessage(MSG_ADMISSION, businessKey);
+			processInstancesToBusinessKeys.put(processInstance.getProcessInstanceId(), businessKey);
 			taskService().complete(ensureSingleTaskPresent(TASK_GATHER_DATA).getId());
 			HashMap<String, Object> variables = new HashMap<String, Object>();
 			variables.put("costTakenOver", costTakenOver);
@@ -49,5 +89,10 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 				taskService().complete(ensureSingleTaskPresent(TASK_REVIEW_DATA).getId(), variables);
 			}
 		}
+		return processInstancesToBusinessKeys;
+	}
+
+	private String generateBusinessKey() {
+		return PROCESS_IDENTIFER + "_" + random.nextInt(1000);
 	}
 }
