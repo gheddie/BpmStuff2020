@@ -1,10 +1,9 @@
 package org.camunda.bpm.unittest.base;
 
+import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.managementService;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.runtimeService;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskService;
-import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.managementService;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 

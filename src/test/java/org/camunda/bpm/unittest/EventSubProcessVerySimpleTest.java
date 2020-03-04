@@ -2,6 +2,7 @@ package org.camunda.bpm.unittest;
 
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.runtimeService;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskService;
+import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 
@@ -25,6 +26,9 @@ public class EventSubProcessVerySimpleTest extends BpmTestCase {
 	// errors
 	private static final String ERR_NOT_ENOUGH_DATA = "ERR_NOT_ENOUGH_DATA";
 	
+	// messages
+	private static final String MSG_NOT_ENOUGH_DATA = "MSG_NOT_ENOUGH_DATA";
+	
 	// variables
 	private static final String VAR_ENOUGH_DATA = "enoughData";
 
@@ -38,6 +42,9 @@ public class EventSubProcessVerySimpleTest extends BpmTestCase {
 		
 		taskService().complete(ensureSingleTaskPresent(TASK_REVIEW).getId());
 		
-		ensureSingleTaskPresent(TASK_PROVIDE);
+		taskService().complete(ensureSingleTaskPresent(TASK_PROVIDE).getId());
+		
+		// all processes gone
+		assertEquals(0, runtimeService().createProcessInstanceQuery().list().size());
 	}
 }

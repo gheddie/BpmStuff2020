@@ -7,23 +7,20 @@
     <bpmn:sequenceFlow id="SequenceFlow_1bxixmk" sourceRef="StartEvent_1" targetRef="TaskDoIt" />
     <bpmn:sequenceFlow id="flowDoItStep1" sourceRef="TaskDoIt" targetRef="TaskStep1" />
     <bpmn:sequenceFlow id="flowStep1Step2" sourceRef="TaskStep1" targetRef="TaskStep2" />
-    <bpmn:sequenceFlow id="SequenceFlow_1thlt3q" sourceRef="TaskStep2" targetRef="IntermediateThrowEvent_0wnbvth" />
+    <bpmn:sequenceFlow id="SequenceFlow_1thlt3q" sourceRef="TaskStep2" targetRef="EndEvent_1jahvbn" />
     <bpmn:endEvent id="EndEvent_1jahvbn">
-      <bpmn:incoming>SequenceFlow_129jgky</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_129jgky" sourceRef="IntermediateThrowEvent_0wnbvth" targetRef="EndEvent_1jahvbn" />
-    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_0wnbvth">
       <bpmn:incoming>SequenceFlow_1thlt3q</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_129jgky</bpmn:outgoing>
-      <bpmn:timerEventDefinition>
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P5M</bpmn:timeDuration>
-      </bpmn:timerEventDefinition>
-    </bpmn:intermediateCatchEvent>
+    </bpmn:endEvent>
     <bpmn:userTask id="TaskDoIt" name="do it" camunda:asyncAfter="true">
       <bpmn:incoming>SequenceFlow_1bxixmk</bpmn:incoming>
       <bpmn:outgoing>flowDoItStep1</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="TaskStep1" name="step 1" camunda:class="org.camunda.bpm.unittest.delegate.async2.Step1Delegate">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property />
+        </camunda:properties>
+      </bpmn:extensionElements>
       <bpmn:incoming>flowDoItStep1</bpmn:incoming>
       <bpmn:outgoing>flowStep1Step2</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -59,17 +56,10 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1thlt3q_di" bpmnElement="SequenceFlow_1thlt3q">
         <di:waypoint x="775" y="226" />
-        <di:waypoint x="825" y="226" />
+        <di:waypoint x="911" y="226" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EndEvent_1jahvbn_di" bpmnElement="EndEvent_1jahvbn">
         <dc:Bounds x="911" y="208" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_129jgky_di" bpmnElement="SequenceFlow_129jgky">
-        <di:waypoint x="861" y="226" />
-        <di:waypoint x="911" y="226" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="IntermediateCatchEvent_1cbyokf_di" bpmnElement="IntermediateThrowEvent_0wnbvth">
-        <dc:Bounds x="825" y="208" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="UserTask_0vf1wdk_di" bpmnElement="TaskDoIt">
         <dc:Bounds x="375" y="186" width="100" height="80" />

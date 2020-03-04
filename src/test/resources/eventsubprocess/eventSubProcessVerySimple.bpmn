@@ -24,14 +24,14 @@
         <bpmn:incoming>SequenceFlow_0prctkk</bpmn:incoming>
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="SequenceFlow_0prctkk" sourceRef="TaskProvide" targetRef="EndEvent_1lmquut" />
-      <bpmn:startEvent id="StartEvent_08ssj0c">
-        <bpmn:outgoing>SequenceFlow_0fyalve</bpmn:outgoing>
-        <bpmn:errorEventDefinition errorRef="Error_1hefq2i" />
-      </bpmn:startEvent>
       <bpmn:userTask id="TaskProvide" name="Provide">
         <bpmn:incoming>SequenceFlow_0fyalve</bpmn:incoming>
         <bpmn:outgoing>SequenceFlow_0prctkk</bpmn:outgoing>
       </bpmn:userTask>
+      <bpmn:startEvent id="StartEvent_08ssj0c">
+        <bpmn:outgoing>SequenceFlow_0fyalve</bpmn:outgoing>
+        <bpmn:errorEventDefinition errorRef="Error_1hefq2i" />
+      </bpmn:startEvent>
     </bpmn:subProcess>
     <bpmn:userTask id="TaskReview" name="Review">
       <bpmn:incoming>SequenceFlow_01d4p62</bpmn:incoming>
@@ -43,6 +43,7 @@
     </bpmn:endEvent>
   </bpmn:process>
   <bpmn:error id="Error_1hefq2i" name="ERR_NOT_ENOUGH_DATA" errorCode="ERR_NOT_ENOUGH_DATA" />
+  <bpmn:message id="Message_00dzvgg" name="MSG_NOT_ENOUGH_DATA" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="eventSubProcessVerySimple">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
@@ -91,14 +92,14 @@
       <bpmndi:BPMNShape id="UserTask_1bo2sql_di" bpmnElement="TaskReview">
         <dc:Bounds x="481" y="160" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndEvent_153bw38_di" bpmnElement="EndEvent_0lddh9u">
-        <dc:Bounds x="731" y="292" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="StartEvent_03ppsbe_di" bpmnElement="StartEvent_08ssj0c">
-        <dc:Bounds x="460" y="451" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="UserTask_186vaxi_di" bpmnElement="TaskProvide">
         <dc:Bounds x="546" y="429" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1hnc2hw_di" bpmnElement="EndEvent_0lddh9u">
+        <dc:Bounds x="731" y="292" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1a82qot_di" bpmnElement="StartEvent_08ssj0c">
+        <dc:Bounds x="460" y="451" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
