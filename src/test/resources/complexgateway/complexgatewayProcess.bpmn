@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0gl8jc0" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
+  <bpmn:process id="complexgatewayProcess" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>flowBefore</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="flowBefore" sourceRef="StartEvent_1" targetRef="ComplexGateway1" />
+    <bpmn:endEvent id="EndEvent_1l3gbav">
+      <bpmn:incoming>flowAfter</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="flowAfter" sourceRef="ComplexGateway1" targetRef="EndEvent_1l3gbav" />
+    <bpmn:complexGateway id="ComplexGateway1">
+      <bpmn:incoming>flowBefore</bpmn:incoming>
+      <bpmn:outgoing>flowAfter</bpmn:outgoing>
+    </bpmn:complexGateway>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="complexgatewayProcess">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="293" y="143" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_183izku_di" bpmnElement="flowBefore">
+        <di:waypoint x="329" y="161" />
+        <di:waypoint x="394" y="161" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1l3gbav_di" bpmnElement="EndEvent_1l3gbav">
+        <dc:Bounds x="529" y="143" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_087ao67_di" bpmnElement="flowAfter">
+        <di:waypoint x="444" y="161" />
+        <di:waypoint x="529" y="161" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ComplexGateway_1yvikdc_di" bpmnElement="ComplexGateway1">
+        <dc:Bounds x="394" y="136" width="50" height="50" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

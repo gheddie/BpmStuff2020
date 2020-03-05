@@ -11,7 +11,7 @@
     <bpmn:endEvent id="EndEvent_1jahvbn">
       <bpmn:incoming>SequenceFlow_1thlt3q</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:userTask id="TaskDoIt" name="do it" camunda:asyncAfter="true">
+    <bpmn:userTask id="TaskDoIt" name="do it" camunda:asyncAfter="true" camunda:exclusive="false">
       <bpmn:incoming>SequenceFlow_1bxixmk</bpmn:incoming>
       <bpmn:outgoing>flowDoItStep1</bpmn:outgoing>
     </bpmn:userTask>
@@ -28,8 +28,11 @@
       <bpmn:incoming>flowStep1Step2</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1thlt3q</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="BoundaryEvent_0le81cz" attachedToRef="TaskStep2">
+      <bpmn:errorEventDefinition errorRef="Error_0nllooq" />
+    </bpmn:boundaryEvent>
     <bpmn:textAnnotation id="TextAnnotation_1dk8mvs">
-      <bpmn:text>throws exception</bpmn:text>
+      <bpmn:text>throws exception (caught or uncaught)</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_06yt5vi" sourceRef="TaskStep2" targetRef="TextAnnotation_1dk8mvs" />
     <bpmn:textAnnotation id="TextAnnotation_1oexz55">
@@ -37,6 +40,7 @@
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1usp42b" sourceRef="TaskDoIt" targetRef="TextAnnotation_1oexz55" />
   </bpmn:process>
+  <bpmn:error id="Error_0nllooq" name="ERR_CAUGHT" errorCode="ERR_CAUGHT" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="asyncTestProcess2">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
@@ -71,11 +75,11 @@
         <dc:Bounds x="675" y="186" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1dk8mvs_di" bpmnElement="TextAnnotation_1dk8mvs">
-        <dc:Bounds x="775" y="106" width="100" height="41" />
+        <dc:Bounds x="775" y="106" width="100" height="70" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_06yt5vi_di" bpmnElement="Association_06yt5vi">
-        <di:waypoint x="765" y="186" />
-        <di:waypoint x="805" y="147" />
+        <di:waypoint x="771" y="188" />
+        <di:waypoint x="785" y="176" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_1oexz55_di" bpmnElement="TextAnnotation_1oexz55">
         <dc:Bounds x="475" y="106" width="100" height="30" />
@@ -84,6 +88,9 @@
         <di:waypoint x="463" y="186" />
         <di:waypoint x="511" y="136" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BoundaryEvent_0vqh8zg_di" bpmnElement="BoundaryEvent_0le81cz">
+        <dc:Bounds x="728" y="248" width="36" height="36" />
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

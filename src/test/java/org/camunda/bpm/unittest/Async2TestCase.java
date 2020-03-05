@@ -5,10 +5,10 @@ import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.runtime
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskService;
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.camunda.bpm.engine.runtime.Job;
-import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
@@ -17,18 +17,28 @@ import org.junit.Test;
 
 public class Async2TestCase extends BpmTestCase {
 	
-	private static final String PROCESS_ASYNC_2 = "asyncTestProcess2";
-
-	private static final String TASK_DO_IT = "TaskDoIt";
-
 	@Rule
 	public ProcessEngineRule rule = new ProcessEngineRule();
+	
+	private static final String PROCESS_ASYNC_2 = "asyncTestProcess2";
+
+	// tasks
+	private static final String TASK_DO_IT = "TaskDoIt";
+
+	// errors
+	public static final String ERR_CAUGHT = "ERR_CAUGHT";
+	public static final String ERR_UNCAUGHT = "ERR_UNCAUGHT";
+	
+	// variabls
+	public static final String VAR_RAISE_ERROR = "raiseError";
 	
 	@Test
 	@Deployment(resources = { "async2/asyncTestProcess2.bpmn" })
 	public void testIt() {
 		
-		runtimeService().startProcessInstanceByKey(PROCESS_ASYNC_2);
+		HashMap<String, Object> variables = new HashMap<String, Object>();
+		variables.put(VAR_RAISE_ERROR, true);
+		runtimeService().startProcessInstanceByKey(PROCESS_ASYNC_2, variables);
 		
 		taskService().complete(ensureSingleTaskPresent(TASK_DO_IT).getId());
 		
@@ -45,8 +55,11 @@ public class Async2TestCase extends BpmTestCase {
 		List<Job> jobs = managementService().createJobQuery().list();
 		assertEquals(1, jobs.size());
 		
+		Job theJob = managementService().createJobQuery().list().get(0);
+		System.out.println(" ---> job retries is set to: " + theJob.getRetries());
+		
 		// execute job (try 1)?
-		managementService().executeJob(managementService().createJobQuery().list().get(0).getId());
+		managementService().executeJob(theJob.getId());
 		
 		assertEquals(0, managementService().createJobQuery().list().size());
 	}
