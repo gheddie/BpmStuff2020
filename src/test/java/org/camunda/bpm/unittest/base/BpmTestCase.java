@@ -5,8 +5,13 @@ import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.runtime
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskService;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Calendar;
 import java.util.List;
 
+import org.camunda.bpm.engine.impl.ProcessEngineImpl;
+import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.camunda.bpm.engine.impl.jobexecutor.JobExecutor;
+import org.camunda.bpm.engine.impl.util.ClockUtil;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 
@@ -42,7 +47,7 @@ public class BpmTestCase {
 	protected void ensureVariableSet(String variableName) {
 		assertEquals(1, runtimeService().createVariableInstanceQuery().variableName(variableName).list().size());
 	}
-
+	
 	protected void debugEngineState() {
 
 		System.out.println("---------------[ENGINE STATE]------------------");
@@ -60,5 +65,39 @@ public class BpmTestCase {
 		System.out.println("[jobs] ---> " + managementService().createJobQuery().list().size());
 
 		System.out.println("-----------------------------------------------");
+	}
+	
+	protected void shiftMinutes(int minutes) {
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.MINUTE, minutes);
+		ClockUtil.setCurrentTime(now.getTime());
+	}
+	
+	protected void sleep(long milliSeconds) {
+		try {
+			Thread.sleep(milliSeconds);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	protected void restartJobExecutor(JobExecutor jobExecutor) {
+
+		// shut down job executor...
+		if (jobExecutor.isActive()) {
+			jobExecutor.shutdown();
+			// wait until jobExecutor is inactive
+			while (jobExecutor.isActive()) {
+				sleep(1000);
+			}
+		}
+		jobExecutor.setWaitTimeInMillis(500);
+		// start up job executor...
+		jobExecutor.start();
+		// wait until jobExecutor is active
+		while (!jobExecutor.isActive()) {
+			sleep(1000);
+		}
+		ClockUtil.reset();
 	}
 }

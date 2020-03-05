@@ -1,13 +1,11 @@
 package org.camunda.bpm.unittest;
 
+import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.assertThat;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskQuery;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskService;
-
-import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.assertThat;
-
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -19,17 +17,24 @@ import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
-import org.junit.Ignore;
+import org.camunda.bpm.unittest.base.BpmTestCase;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class MultiInstanceProcessTestCase {
+public class MultiInstanceProcessTestCase extends BpmTestCase {
 
 	@Rule
 	public ProcessEngineRule processEngine = new ProcessEngineRule();
 
 	private static final String PROCESS_DEFINITION_KEY = "multiInstanceProcess";
-	
+
+	// tasks
+	private static final String TASK_DO_SOMETHING = "TaskDoSomething";
+
+	// end events
+	private static final String END_EVENT_TIMEOUT = "EndEventTimeout";
+	private static final String END_EVENT = "EndEvent";
+
 	/**
 	 * Just tests if the process definition is deployable.
 	 */
@@ -41,24 +46,27 @@ public class MultiInstanceProcessTestCase {
 
 	@Test
 	@Deployment(resources = "multiinstance/multiInstanceProcess.bpmn")
-	public void esWerdenMehrereUserTasksErzeugt() {
-		
-		processEngine.getRuntimeService().startProcessInstanceByKey(PROCESS_DEFINITION_KEY,
-				withParameters());
-		assertEquals(taskQuery().list().size(), 2);
+	public void testCreateMultipleUserTasks() {
+
+		// one user task 'Task1' is created for every user (with 'assignee' set)...
+		HashMap<String, Object> userList = createUserList(5);
+		processEngine.getRuntimeService().startProcessInstanceByKey(PROCESS_DEFINITION_KEY, userList);
+		List<Task> taskList = taskQuery().list();
+		assertEquals(5, taskList.size());
 	}
 
 	@Test
 	@Deployment(resources = "multiinstance/multiInstanceProcess.bpmn")
-	public void wennBeideUserEinAngebotAbgebenIstDerProzessTerminiert() {
-		
-		ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceByKey(PROCESS_DEFINITION_KEY,
-				withParameters());
+	public void testProcessTerminatedAllUserTasksFinished() {
+
+		ProcessInstance processInstance = processEngine.getRuntimeService()
+				.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, createUserList(2));
 		List<Task> tasks = taskQuery().list();
 		for (Task task : tasks) {
 			taskService().complete(task.getId());
 		}
-		assertThat(processInstance).hasPassed("EndEvent_1");
+		// all user tasks completed...process terminates 'normally'
+		assertThat(processInstance).hasPassed(END_EVENT);
 		assertThat(processInstance).isEnded();
 	}
 
@@ -66,80 +74,49 @@ public class MultiInstanceProcessTestCase {
 	@Deployment(resources = "multiinstance/multiInstanceProcess.bpmn")
 	public void testProcessTerminatedAfterTimeout() {
 
-		restartJobExecutor();
-		ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceByKey(PROCESS_DEFINITION_KEY,
-				withParameters());
-		Calendar jetzt = Calendar.getInstance();
-		jetzt.add(Calendar.MINUTE, 25);
-		ClockUtil.setCurrentTime(jetzt.getTime());
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		assertThat(processInstance).hasPassed("EndEvent_3");
+		restartJobExecutor(((ProcessEngineImpl) processEngine.getProcessEngine()).getProcessEngineConfiguration()
+				.getJobExecutor());
+		ProcessInstance processInstance = processEngine.getRuntimeService()
+				.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, createUserList(2));
+		// let 25 minutes pass (longer than the defined timeout)...
+		shiftMinutes(25);
+		sleep(1000);
+		// time out after 20 minutes...so 'InterruptingTimer' must have fired after 25 minutes!!
+		// process must be gone as'InterruptingTimer' is interrupting...
+		assertThat(processInstance).hasPassed(END_EVENT_TIMEOUT);
 		assertThat(processInstance).isEnded();
 
 	}
 
 	@Test
-	@Deployment(resources = "multi-instance-task.bpmn")
-	@Ignore("Dieser Test schlägt fehl, weil das Boundary Event nur einmal feuert, nicht pro User-Task Instanz")
-	public void proUserTaskWirdDasZwsichenEventAufgerufen() {
+	@Deployment(resources = "multiinstance/multiInstanceProcess.bpmn")
+	public void testInvokeIntermediateEventPerUserTask() {
 
-		restartJobExecutor();
-		ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceByKey(PROCESS_DEFINITION_KEY,
-				withParameters());
-		Calendar jetzt = Calendar.getInstance();
-		jetzt.add(Calendar.MINUTE, 6);
-		ClockUtil.setCurrentTime(jetzt.getTime());
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		assertThat(processInstance).hasPassed("ServiceTask_1");
+		restartJobExecutor(((ProcessEngineImpl) processEngine.getProcessEngine()).getProcessEngineConfiguration()
+				.getJobExecutor());
+		
+		ProcessInstance processInstance = processEngine.getRuntimeService()
+				.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, createUserList(2));
+		// wait 6 minutes...longer than non interrupting time out (wich is 5 minutes)...
+		shiftMinutes(6);
+		sleep(1000);
+		// process has passed 'TASK_DO_SOMETHING'...
+		assertThat(processInstance).hasPassed(TASK_DO_SOMETHING);
 		assertThat(processInstance).isNotEnded();
-		assertEquals(processEngine.getHistoryService().createHistoricActivityInstanceQuery().activityId("ServiceTask_1").list()
-				.size(), 2);
+		// 'TaskDoSomething' has only been called once (NOT for every created user)...
+		assertEquals(processEngine.getHistoryService().createHistoricActivityInstanceQuery()
+				.activityId(TASK_DO_SOMETHING).list().size(), 1);
 	}
-
-	private HashMap<String, Object> withParameters() {
-		HashMap<String, Object> hashMap = new HashMap<String, Object>();
-		hashMap.put("assigneeList", Arrays.asList("user1", "user2"));
-		return hashMap;
-	}
-
-	private void restartJobExecutor() {
-		
-		JobExecutor jobExecutor = ((ProcessEngineImpl) processEngine.getProcessEngine()).getProcessEngineConfiguration()
-				.getJobExecutor();
-		shutdownJobExecutor(jobExecutor);
-		jobExecutor.setWaitTimeInMillis(500);
-		jobExecutor.start();
-		// wait until jobExecutor is active
-		while (!jobExecutor.isActive()) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+	
+	// ---
+	
+	private HashMap<String, Object> createUserList(int count) {
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		List<String> userList = new ArrayList<String>();
+		for (int index = 0; index < count; index++) {
+			userList.add("user_" + index);
 		}
-		ClockUtil.reset();
-	}
-
-	private void shutdownJobExecutor(JobExecutor jobExecutor) {
-		
-		if (jobExecutor.isActive()) {
-			jobExecutor.shutdown();
-			// wait until jobExecutor is inactive
-			while (jobExecutor.isActive()) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+		result.put("assigneeList", userList);
+		return result;
 	}
 }
