@@ -1,11 +1,11 @@
 package org.camunda.bpm.unittest;
 
-// import static org.camunda.bpm.engine.test.assertions.ProcessEngineAssertions.assertThat;
-
-import static org.junit.Assert.assertEquals;
-
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskQuery;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskService;
+
+import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.assertThat;
+
+import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.camunda.bpm.engine.impl.ProcessEngineImpl;
 import org.camunda.bpm.engine.impl.jobexecutor.JobExecutor;
-import org.camunda.bpm.engine.impl.test.ProcessEngineAssert;
 import org.camunda.bpm.engine.impl.util.ClockUtil;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
@@ -59,8 +58,8 @@ public class MultiInstanceProcessTestCase {
 		for (Task task : tasks) {
 			taskService().complete(task.getId());
 		}
-		// assertThat(processInstance).hasPassed("EndEvent_1");
-		// assertThat(processInstance).isEnded();
+		assertThat(processInstance).hasPassed("EndEvent_1");
+		assertThat(processInstance).isEnded();
 	}
 
 	@Test
@@ -78,8 +77,8 @@ public class MultiInstanceProcessTestCase {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		// assertThat(processInstance).hasPassed("EndEvent_3");
-		// assertThat(processInstance).isEnded();
+		assertThat(processInstance).hasPassed("EndEvent_3");
+		assertThat(processInstance).isEnded();
 
 	}
 
@@ -99,12 +98,10 @@ public class MultiInstanceProcessTestCase {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		/*
 		assertThat(processInstance).hasPassed("ServiceTask_1");
 		assertThat(processInstance).isNotEnded();
 		assertEquals(processEngine.getHistoryService().createHistoricActivityInstanceQuery().activityId("ServiceTask_1").list()
 				.size(), 2);
-				*/
 	}
 
 	private HashMap<String, Object> withParameters() {
