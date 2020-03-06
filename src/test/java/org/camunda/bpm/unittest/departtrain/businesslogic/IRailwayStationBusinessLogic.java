@@ -1,6 +1,8 @@
 package org.camunda.bpm.unittest.departtrain.businesslogic;
 
-public interface RailwayStationBusinessLogicAccessor {
+public interface IRailwayStationBusinessLogic {
 
 	boolean waggonsReadyToGo(TrainConfig trainConfig);
+	
+	boolean waggonsAvaiableForShuntingOrder();
 }

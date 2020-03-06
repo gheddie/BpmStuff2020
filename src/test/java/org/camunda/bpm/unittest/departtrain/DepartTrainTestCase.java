@@ -11,6 +11,9 @@ import java.util.List;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
+import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessConfig;
+import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessConfigException;
+import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessLogic;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -30,20 +33,46 @@ public class DepartTrainTestCase extends BpmTestCase {
 	// errors
 	// ...
 
+	// variables
+	public static final String VAR_ALL_WAGGONS_AVAIABLE = "allWaggonsAvailable";
+	public static final String VAR_TRAIN_CONFIG = "trainConfig";
+
 	// links
 	private static final String LNK_SUG_REP = "LNK_SUG_REP";
 	private static final String LNK_CANC_DO = "LNK_CANC_DO";
 	private static final String LNK_REPAIR_WGS = "LNK_REPAIR_WGS";
 
-	// variables
-	private static final String VAR_TRAIN_CONFIG = "trainConfig";
+	// signals
+	private static final String SIG_DEP_STAT_CHANGED = "SIG_DEP_STAT_CHANGED";
+	private static final String SIG_DEP_ORD_CANC = "SIG_DEP_ORD_CANC";
 
 	// messages
 	private static final String MSG_DEPARTMENT_ORDER_CREATED = "MSG_DEPARTMENT_ORDER_CREATED";
 
+	/**
+	 * awaits a {@link RailwayStationBusinessConfigException} on creating an invalid
+	 * {@link RailwayStationBusinessConfig}.
+	 */
+	@Test(expected = RailwayStationBusinessConfigException.class)
+	public void testInvalidRailwayStationBusinessLogic() {
+		new RailwayStationBusinessConfig().withTracks("Track1", "Track2").withWaggons("Track3", "W1", "W2");
+	}
+
+	/**
+	 * Depart order A gets created, B detects '${allWaggonsAvailable == false}'m,
+	 * then waits for signal 'SIG_DEP_ORD_CANC' in order to then check waggons
+	 * itself an continue.
+	 */
 	@Test
 	@Deployment(resources = { "departtrain/departTrainProcess.bpmn" })
-	public void testAllWaggonsOk() {
+	public void testCancelDepartOrderAndAwaitSignal() {
+
+		RailwayStationBusinessLogic businessLogic = RailwayStationBusinessLogic.getInstance();
+		businessLogic.init(new RailwayStationBusinessConfig().withTracks("Track1", "Track2")
+				.withWaggons("Track1", "W1", "W2", "W3").withWaggons("Track2", "W4", "W5", "W6"));
+		businessLogic.print();
+
+		cancelDepartOrder();
 
 		HashMap<String, Object> waggonList = createWaggonList(7);
 		runtimeService().startProcessInstanceByMessage(MSG_DEPARTMENT_ORDER_CREATED, waggonList);
@@ -59,15 +88,20 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 	}
 
+	private void cancelDepartOrder() {
+
+		// TODO Auto-generated method stub
+	}
+
 	// ---
 
 	private HashMap<String, Object> createWaggonList(int count) {
 		HashMap<String, Object> result = new HashMap<String, Object>();
-		List<String> userList = new ArrayList<String>();
+		List<String> waggonNumberList = new ArrayList<String>();
 		for (int index = 0; index < count; index++) {
-			userList.add("waggon_" + index);
+			waggonNumberList.add("WG_" + index);
 		}
-		result.put("waggonList", userList);
+		result.put("waggonList", waggonNumberList);
 		return result;
 	}
 }
