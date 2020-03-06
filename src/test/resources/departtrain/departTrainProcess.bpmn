@@ -31,7 +31,7 @@
       </bpmn:lane>
       <bpmn:lane id="Lane_09cjpur" name="Service Team">
         <bpmn:flowNodeRef>Task_0ritbuk</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_0pjyke2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TaskCheckWaggon</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_12j5u16</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>BoundaryEvent_06vame7</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>BoundaryEvent_0gpmm5p</bpmn:flowNodeRef>
@@ -46,7 +46,7 @@
       <bpmn:outgoing>SequenceFlow_16rnd31</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_0mau1bs" />
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_16rnd31" sourceRef="StartEvent_1fcm7t8" targetRef="Task_0pjyke2" />
+    <bpmn:sequenceFlow id="SequenceFlow_16rnd31" sourceRef="StartEvent_1fcm7t8" targetRef="TaskCheckWaggon" />
     <bpmn:sequenceFlow id="SequenceFlow_12pk6op" sourceRef="ExclusiveGateway_1hvtc13" targetRef="EndEventNominal" />
     <bpmn:exclusiveGateway id="ExclusiveGateway_04p863m">
       <bpmn:incoming>SequenceFlow_1d1nml0</bpmn:incoming>
@@ -119,17 +119,17 @@
     <bpmn:sequenceFlow id="SequenceFlow_0wk515m" name="yes" sourceRef="ExGwExitTrackEmpty" targetRef="ExclusiveGateway_09jv2dz" />
     <bpmn:sequenceFlow id="SequenceFlow_1gxbvk0" sourceRef="Task_0cpcu0g" targetRef="Task_0cpcu0g" />
     <bpmn:sequenceFlow id="SequenceFlow_0gesvrp" sourceRef="Task_0cpcu0g" targetRef="ExGwExitTrackEmpty" />
-    <bpmn:userTask id="Task_0pjyke2" name="Check waggons">
+    <bpmn:userTask id="TaskCheckWaggon" name="Check waggon">
       <bpmn:incoming>SequenceFlow_16rnd31</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1l76o7r</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics camunda:collection="waggonList" camunda:elementVariable="waggon" />
     </bpmn:userTask>
-    <bpmn:boundaryEvent id="BoundaryEvent_0gpmm5p" attachedToRef="Task_0pjyke2">
+    <bpmn:boundaryEvent id="BoundaryEvent_0gpmm5p" attachedToRef="TaskCheckWaggon">
       <bpmn:outgoing>SequenceFlow_1i4t88m</bpmn:outgoing>
       <bpmn:errorEventDefinition errorRef="Error_0ed10e5" />
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1i4t88m" sourceRef="BoundaryEvent_0gpmm5p" targetRef="Task_0ritbuk" />
-    <bpmn:sequenceFlow id="SequenceFlow_1l76o7r" name="all waggons ok" sourceRef="Task_0pjyke2" targetRef="ExclusiveGateway_0dj5062" />
+    <bpmn:sequenceFlow id="SequenceFlow_1l76o7r" name="all waggons ok" sourceRef="TaskCheckWaggon" targetRef="ExclusiveGateway_0dj5062" />
     <bpmn:boundaryEvent id="BoundaryEvent_06vame7" attachedToRef="Task_0ritbuk">
       <bpmn:outgoing>SequenceFlow_06beqkk</bpmn:outgoing>
       <bpmn:errorEventDefinition />
@@ -213,7 +213,7 @@
       <bpmn:outgoing>SequenceFlow_1ylbmaq</bpmn:outgoing>
       <bpmn:linkEventDefinition name="LNK_REPAIR_WGS" />
     </bpmn:intermediateCatchEvent>
-    <bpmn:association id="Association_1rveb1t" sourceRef="Task_0pjyke2" targetRef="TextAnnotation_0c9936l" />
+    <bpmn:association id="Association_1rveb1t" sourceRef="TaskCheckWaggon" targetRef="TextAnnotation_0c9936l" />
     <bpmn:textAnnotation id="TextAnnotation_0ajijz4">
       <bpmn:text>All shunting waggons alone and in correct order on the desired exit track</bpmn:text>
     </bpmn:textAnnotation>
@@ -334,7 +334,7 @@
       <bpmndi:BPMNShape id="UserTask_1np66m2_di" bpmnElement="Task_06t4krp">
         <dc:Bounds x="1041" y="92" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="UserTask_0iurggr_di" bpmnElement="Task_0pjyke2">
+      <bpmndi:BPMNShape id="UserTask_0iurggr_di" bpmnElement="TaskCheckWaggon">
         <dc:Bounds x="281" y="-52" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_04p863m_di" bpmnElement="ExclusiveGateway_04p863m" isMarkerVisible="true">

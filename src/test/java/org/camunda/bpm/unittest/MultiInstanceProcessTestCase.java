@@ -49,8 +49,8 @@ public class MultiInstanceProcessTestCase extends BpmTestCase {
 	public void testCreateMultipleUserTasks() {
 
 		// one user task 'Task1' is created for every user (with 'assignee' set)...
-		HashMap<String, Object> userList = createUserList(5);
-		processEngine.getRuntimeService().startProcessInstanceByKey(PROCESS_DEFINITION_KEY, userList);
+		HashMap<String, Object> variables = createVariables(5);
+		processEngine.getRuntimeService().startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables);
 		List<Task> taskList = taskQuery().list();
 		assertEquals(5, taskList.size());
 	}
@@ -60,7 +60,7 @@ public class MultiInstanceProcessTestCase extends BpmTestCase {
 	public void testProcessTerminatedAllUserTasksFinished() {
 
 		ProcessInstance processInstance = processEngine.getRuntimeService()
-				.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, createUserList(2));
+				.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, createVariables(2));
 		List<Task> tasks = taskQuery().list();
 		for (Task task : tasks) {
 			taskService().complete(task.getId());
@@ -77,7 +77,7 @@ public class MultiInstanceProcessTestCase extends BpmTestCase {
 		restartJobExecutor(((ProcessEngineImpl) processEngine.getProcessEngine()).getProcessEngineConfiguration()
 				.getJobExecutor());
 		ProcessInstance processInstance = processEngine.getRuntimeService()
-				.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, createUserList(2));
+				.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, createVariables(2));
 		// let 25 minutes pass (longer than the defined timeout)...
 		shiftMinutes(25);
 		sleep(1000);
@@ -96,7 +96,7 @@ public class MultiInstanceProcessTestCase extends BpmTestCase {
 				.getJobExecutor());
 		
 		ProcessInstance processInstance = processEngine.getRuntimeService()
-				.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, createUserList(2));
+				.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, createVariables(2));
 		// wait 6 minutes...longer than non interrupting time out (wich is 5 minutes)...
 		shiftMinutes(6);
 		sleep(1000);
@@ -110,7 +110,7 @@ public class MultiInstanceProcessTestCase extends BpmTestCase {
 	
 	// ---
 	
-	private HashMap<String, Object> createUserList(int count) {
+	private HashMap<String, Object> createVariables(int count) {
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		List<String> userList = new ArrayList<String>();
 		for (int index = 0; index < count; index++) {
