@@ -11,8 +11,8 @@
         <bpmn:flowNodeRef>TaskEmptyExitTrack</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="laneDisponent" name="Disponent">
-        <bpmn:flowNodeRef>ExclusiveGateway_04p863m</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>ExclusiveGateway_0dj5062</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExGwJoin3</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExGwJoin2</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>EndEventNominal</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TaskCheckShuntingOrder</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TaskAdviseTrainDeparture</bpmn:flowNodeRef>
@@ -53,21 +53,21 @@
     </bpmn:laneSet>
     <bpmn:sequenceFlow id="SequenceFlow_16rnd31" sourceRef="StartEvent_1fcm7t8" targetRef="TaskCheckWaggonsAvailable" />
     <bpmn:sequenceFlow id="SequenceFlow_12pk6op" sourceRef="ExclusiveGateway_1hvtc13" targetRef="EndEventNominal" />
-    <bpmn:exclusiveGateway id="ExclusiveGateway_04p863m">
+    <bpmn:exclusiveGateway id="ExGwJoin3">
       <bpmn:incoming>SequenceFlow_1d1nml0</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0ji6wjx</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1ozq9p0</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_0dj5062">
+    <bpmn:exclusiveGateway id="ExGwJoin2">
       <bpmn:incoming>SequenceFlow_0ib7hyh</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_1l76o7r</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0ji6wjx</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_06beqkk" sourceRef="BoundaryEvent_06vame7" targetRef="ExGwSomeWaggonsRepairable" />
-    <bpmn:sequenceFlow id="SequenceFlow_0ib7hyh" sourceRef="Task_0ritbuk" targetRef="ExclusiveGateway_0dj5062" />
-    <bpmn:sequenceFlow id="SequenceFlow_1d1nml0" sourceRef="TaskEmptyExitTrack" targetRef="ExclusiveGateway_04p863m" />
-    <bpmn:sequenceFlow id="SequenceFlow_1ozq9p0" sourceRef="ExclusiveGateway_04p863m" targetRef="Task_0cpcu0g" />
-    <bpmn:sequenceFlow id="SequenceFlow_0ji6wjx" sourceRef="ExclusiveGateway_0dj5062" targetRef="ExclusiveGateway_04p863m" />
+    <bpmn:sequenceFlow id="SequenceFlow_0ib7hyh" sourceRef="Task_0ritbuk" targetRef="ExGwJoin2" />
+    <bpmn:sequenceFlow id="SequenceFlow_1d1nml0" sourceRef="TaskEmptyExitTrack" targetRef="ExGwJoin3" />
+    <bpmn:sequenceFlow id="SequenceFlow_1ozq9p0" sourceRef="ExGwJoin3" targetRef="Task_0cpcu0g" />
+    <bpmn:sequenceFlow id="SequenceFlow_0ji6wjx" sourceRef="ExGwJoin2" targetRef="ExGwJoin3" />
     <bpmn:endEvent id="EndEventNominal">
       <bpmn:incoming>SequenceFlow_12pk6op</bpmn:incoming>
     </bpmn:endEvent>
@@ -116,7 +116,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_1gxbvk0" sourceRef="Task_0cpcu0g" targetRef="Task_0cpcu0g" />
     <bpmn:sequenceFlow id="SequenceFlow_0gesvrp" sourceRef="Task_0cpcu0g" targetRef="ExGwExitTrackEmpty" />
     <bpmn:sequenceFlow id="SequenceFlow_1i4t88m" sourceRef="BoundaryEvent_0gpmm5p" targetRef="Task_0ritbuk" />
-    <bpmn:sequenceFlow id="SequenceFlow_1l76o7r" name="all waggons ok" sourceRef="TaskCheckWaggon" targetRef="ExclusiveGateway_0dj5062" />
+    <bpmn:sequenceFlow id="SequenceFlow_1l76o7r" name="all waggons ok" sourceRef="TaskCheckWaggon" targetRef="ExGwJoin2" />
     <bpmn:userTask id="Task_0b2a95p" name="Cancel department order">
       <bpmn:incoming>SequenceFlow_0ezb1oa</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1ly739h</bpmn:outgoing>
@@ -406,7 +406,7 @@
       <bpmndi:BPMNShape id="UserTask_0iurggr_di" bpmnElement="TaskCheckWaggon">
         <dc:Bounds x="281" y="-71" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="ExclusiveGateway_04p863m_di" bpmnElement="ExclusiveGateway_04p863m" isMarkerVisible="true">
+      <bpmndi:BPMNShape id="ExclusiveGateway_04p863m_di" bpmnElement="ExGwJoin3" isMarkerVisible="true">
         <dc:Bounds x="677" y="234" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1gxbvk0_di" bpmnElement="SequenceFlow_1gxbvk0">
@@ -463,7 +463,7 @@
           <dc:Bounds x="1600" y="153" width="13" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="ExclusiveGateway_0dj5062_di" bpmnElement="ExclusiveGateway_0dj5062" isMarkerVisible="true">
+      <bpmndi:BPMNShape id="ExclusiveGateway_0dj5062_di" bpmnElement="ExGwJoin2" isMarkerVisible="true">
         <dc:Bounds x="606" y="234" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0ji6wjx_di" bpmnElement="SequenceFlow_0ji6wjx">

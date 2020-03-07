@@ -39,6 +39,8 @@ public class DepartTrainTestCase extends BpmTestCase {
 	// exclusice gateways
 	private static final String EXGW_ALL_WAGGONS_AVAILABLE = "ExGwAllWaggonsAvailable";
 	private static final String EXGW_JOIN_1 = "ExGwJoin1";
+	private static final String EXGW_JOIN_2 = "ExGwJoin2";
+	private static final String EXGW_JOIN_3 = "ExGwJoin3";
 
 	// signals
 	private static final String SIG_CATCH_DEP_ORD_CANC = "SigCatchDepOrdCanc";
