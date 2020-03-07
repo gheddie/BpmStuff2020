@@ -44,10 +44,6 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 		return true;
 	}
 
-	public void init(RailwayStationBusinessConfig railwayStationBusinessConfig) {
-		this.tracksAndWaggons = railwayStationBusinessConfig.getTracksAndWaggons();
-	}
-
 	public void print() {
 		System.out.println("---------------------------------------------");
 		if (departmentOrders != null) {
@@ -74,5 +70,17 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 			instance = new RailwayStationBusinessLogic();
 		}
 		return instance;
+	}
+
+	public RailwayStationBusinessLogic withTracks(String... trackNumbers) {
+		for (String track : trackNumbers) {
+			tracksAndWaggons.putTrack(track);
+		}
+		return this;
+	}
+	
+	public RailwayStationBusinessLogic withWaggons(String trackNumber, String... waggonNumbers) {
+		tracksAndWaggons.putWaggons(trackNumber, waggonNumbers);
+		return this;
 	}
 }

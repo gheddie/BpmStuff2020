@@ -5,7 +5,6 @@ import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskSer
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,9 +12,8 @@ import java.util.Map;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
-import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessConfig;
-import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessConfigException;
 import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessLogic;
+import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessLogicException;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -56,12 +54,12 @@ public class DepartTrainTestCase extends BpmTestCase {
 	public static final String BPM_ERROR_NO_WAGGONS_PLANNED = "BPM_ERROR_NO_WAGGONS_PLANNED";
 
 	/**
-	 * awaits a {@link RailwayStationBusinessConfigException} on creating an invalid
+	 * awaits a {@link RailwayStationBusinessLogicException} on creating an invalid
 	 * {@link RailwayStationBusinessConfig}.
 	 */
-	@Test(expected = RailwayStationBusinessConfigException.class)
+	@Test(expected = RailwayStationBusinessLogicException.class)
 	public void testInvalidRailwayStationBusinessLogic() {
-		new RailwayStationBusinessConfig().withTracks("Track1", "Track2").withWaggons("Track3", "W1", "W2");
+		RailwayStationBusinessLogic.getInstance().withTracks("Track1", "Track2").withWaggons("Track3", "W1", "W2");
 	}
 
 	/**
@@ -74,16 +72,15 @@ public class DepartTrainTestCase extends BpmTestCase {
 	public void testCancelDepartOrderAndAwaitSignal() {
 
 		RailwayStationBusinessLogic businessLogic = RailwayStationBusinessLogic.getInstance();
-		businessLogic.init(new RailwayStationBusinessConfig().withTracks("Track1", "Track2")
-				.withWaggons("Track1", "W1", "W2", "W3").withWaggons("Track2", "W4", "W5", "W6"));
+		businessLogic.withTracks("Track1", "Track2").withWaggons("Track1", "W1", "W2", "W3").withWaggons("Track2", "W4",
+				"W5", "W6");
 		businessLogic.print();
-
 		cancelDepartOrder();
-
 		List<String> waggonList = createWaggonList(7);
 		Map<String, Object> variables = new HashMap<String, Object>();
 		variables.put(VAR_PLANNED_WAGGON_LIST, waggonList);
-		runtimeService().startProcessInstanceByMessage(MSG_DEPARTMENT_ORDER_CREATED, RailwayStationBusinessLogic.getInstance().generateBusinessKey(), variables);
+		runtimeService().startProcessInstanceByMessage(MSG_DEPARTMENT_ORDER_CREATED,
+				businessLogic.generateBusinessKey(), variables);
 		// we have 7 waggons to check...
 		assertEquals(7, taskService().createTaskQuery().taskDefinitionKey(TASK_CHECK_WAGGON).list().size());
 		// assertThat(processInstance).hasPassed(TASK_CHECK_SHUNTING_ORDER,

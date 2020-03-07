@@ -63,7 +63,7 @@ public class TracksAndWaggons {
 	public void putWaggons(String trackNumber, String[] waggonNumbers) {
 		Track track = findTrack(trackNumber);
 		if (track == null) {
-			throw new RailwayStationBusinessConfigException("unable to find track with track number: " + trackNumber);
+			throw new RailwayStationBusinessLogicException("unable to find track with track number: " + trackNumber);
 		}
 		List<Waggon> waggons = new ArrayList<Waggon>();
 		for (String waggonNumber : waggonNumbers) {
