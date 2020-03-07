@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
@@ -84,18 +85,26 @@ public class DepartTrainTestCase extends BpmTestCase {
 		businessLogic.print();
 
 		// process A
-		ProcessInstance processInstanceA = startProcess("W4", "W5");
+		ProcessInstance processInstanceOrderCreated = startProcess("W4", "W5");
 
 		// A runs up to checking 2 waggons...
-		assertEquals(2, taskService().createTaskQuery().taskDefinitionKey(TASK_CHECK_WAGGON).processInstanceBusinessKey(processInstanceA.getBusinessKey())
-				.list().size());
-		assertThat(processInstanceA).hasPassed(EXGW_ALL_WAGGONS_AVAILABLE, EXGW_JOIN_1).isWaitingAt(TASK_CHECK_WAGGON);
+		List<Task> waggonCheckTasks = taskService().createTaskQuery().taskDefinitionKey(TASK_CHECK_WAGGON).processInstanceBusinessKey(processInstanceOrderCreated.getBusinessKey())
+				.list();
+		assertEquals(2, waggonCheckTasks.size());
+		assertThat(processInstanceOrderCreated).hasPassed(EXGW_ALL_WAGGONS_AVAILABLE, EXGW_JOIN_1).isWaitingAt(TASK_CHECK_WAGGON);
 
 		// process B
-		ProcessInstance processInstanceB = startProcess("W4", "W5", "W6");
+		ProcessInstance processInstanceWaiting = startProcess("W4", "W5", "W6");
 
 		// B waits at signal 'SIG_CATCH_DEP_ORD_CANC'...
-		assertThat(processInstanceB).hasPassed(EXGW_ALL_WAGGONS_AVAILABLE).hasNotPassed(EXGW_JOIN_1).isWaitingAt(SIG_CATCH_DEP_ORD_CANC);
+		assertThat(processInstanceWaiting).hasPassed(EXGW_ALL_WAGGONS_AVAILABLE).hasNotPassed(EXGW_JOIN_1).isWaitingAt(SIG_CATCH_DEP_ORD_CANC);
+		
+		// complete waggon checks for A --> process runs through to 'TaskAdviseTrainDeparture'...
+		for (Task waggonCheckTask : waggonCheckTasks) {
+			taskService().complete(waggonCheckTask.getId());
+		}
+		
+		assertThat(processInstanceOrderCreated).isWaitingAt("TaskAdviseTrainDeparture");
 	}
 
 	private ProcessInstance startProcess(String... waggonList) {

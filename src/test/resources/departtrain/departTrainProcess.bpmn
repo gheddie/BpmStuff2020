@@ -8,14 +8,14 @@
       <bpmn:lane id="laneShunter" name="Shunter">
         <bpmn:flowNodeRef>Task_03b9lqn</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExGwJoin1</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_06t4krp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TaskEmptyExitTrack</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="laneDisponent" name="Disponent">
         <bpmn:flowNodeRef>ExclusiveGateway_04p863m</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_0dj5062</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>EndEventNominal</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TaskCheckShuntingOrder</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_047w5a0</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TaskAdviseTrainDeparture</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_09jv2dz</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_0cpcu0g</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_0b2a95p</bpmn:flowNodeRef>
@@ -65,14 +65,14 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_06beqkk" sourceRef="BoundaryEvent_06vame7" targetRef="ExGwSomeWaggonsRepairable" />
     <bpmn:sequenceFlow id="SequenceFlow_0ib7hyh" sourceRef="Task_0ritbuk" targetRef="ExclusiveGateway_0dj5062" />
-    <bpmn:sequenceFlow id="SequenceFlow_1d1nml0" sourceRef="Task_06t4krp" targetRef="ExclusiveGateway_04p863m" />
+    <bpmn:sequenceFlow id="SequenceFlow_1d1nml0" sourceRef="TaskEmptyExitTrack" targetRef="ExclusiveGateway_04p863m" />
     <bpmn:sequenceFlow id="SequenceFlow_1ozq9p0" sourceRef="ExclusiveGateway_04p863m" targetRef="Task_0cpcu0g" />
     <bpmn:sequenceFlow id="SequenceFlow_0ji6wjx" sourceRef="ExclusiveGateway_0dj5062" targetRef="ExclusiveGateway_04p863m" />
     <bpmn:endEvent id="EndEventNominal">
       <bpmn:incoming>SequenceFlow_12pk6op</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_0ph2ox1" sourceRef="Task_047w5a0" targetRef="ExclusiveGateway_1hvtc13" />
-    <bpmn:serviceTask id="TaskCheckShuntingOrder" name="check departing order" camunda:class="org.camunda.bpm.unittest.departtrain.delegate.CheckDepartingOrderDelegate">
+    <bpmn:sequenceFlow id="SequenceFlow_0ph2ox1" sourceRef="TaskAdviseTrainDeparture" targetRef="ExclusiveGateway_1hvtc13" />
+    <bpmn:serviceTask id="TaskCheckShuntingOrder" name="check departing order" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.CheckDepartingOrderDelegate">
       <bpmn:incoming>SequenceFlow_0rnrejc</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1rofs0l</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -81,7 +81,7 @@
       <bpmn:outgoing>SequenceFlow_0ltuqs1</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_1raefq1</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Task_047w5a0" name="advise train departure">
+    <bpmn:userTask id="TaskAdviseTrainDeparture" name="advise train departure">
       <bpmn:incoming>SequenceFlow_0ltuqs1</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0ph2ox1</bpmn:outgoing>
     </bpmn:userTask>
@@ -91,7 +91,7 @@
       <bpmn:incoming>SequenceFlow_1eigwcz</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0rnrejc</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Task_0cpcu0g" name="Check exit track" camunda:class="org.camunda.bpm.unittest.departtrain.delegate.CheckExitTrackDelegate">
+    <bpmn:serviceTask id="Task_0cpcu0g" name="Check exit track" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.CheckExitTrackDelegate">
       <bpmn:incoming>SequenceFlow_1gxbvk0</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_1ozq9p0</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0gesvrp</bpmn:outgoing>
@@ -106,12 +106,12 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${waggonsReadyToGo == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_0mnsx66" sourceRef="Task_03b9lqn" targetRef="ExclusiveGateway_09jv2dz" />
-    <bpmn:sequenceFlow id="SequenceFlow_048h28d" name="no" sourceRef="ExGwExitTrackEmpty" targetRef="Task_06t4krp">
+    <bpmn:sequenceFlow id="SequenceFlow_048h28d" name="no" sourceRef="ExGwExitTrackEmpty" targetRef="TaskEmptyExitTrack">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${exitTrackEmpty == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_0rnrejc" sourceRef="ExclusiveGateway_09jv2dz" targetRef="TaskCheckShuntingOrder" />
     <bpmn:sequenceFlow id="SequenceFlow_1rofs0l" sourceRef="TaskCheckShuntingOrder" targetRef="ExGwWaggonsReadyToGo" />
-    <bpmn:sequenceFlow id="SequenceFlow_0ltuqs1" name="yes" sourceRef="ExGwWaggonsReadyToGo" targetRef="Task_047w5a0" />
+    <bpmn:sequenceFlow id="SequenceFlow_0ltuqs1" name="yes" sourceRef="ExGwWaggonsReadyToGo" targetRef="TaskAdviseTrainDeparture" />
     <bpmn:sequenceFlow id="SequenceFlow_0wk515m" name="yes" sourceRef="ExGwExitTrackEmpty" targetRef="ExclusiveGateway_09jv2dz" />
     <bpmn:sequenceFlow id="SequenceFlow_1gxbvk0" sourceRef="Task_0cpcu0g" targetRef="Task_0cpcu0g" />
     <bpmn:sequenceFlow id="SequenceFlow_0gesvrp" sourceRef="Task_0cpcu0g" targetRef="ExGwExitTrackEmpty" />
@@ -267,7 +267,7 @@
       <bpmn:incoming>SequenceFlow_1aiqy3t</bpmn:incoming>
       <bpmn:linkEventDefinition name="LNK:CANC_DO" />
     </bpmn:intermediateThrowEvent>
-    <bpmn:userTask id="Task_06t4krp" name="Empty exit track">
+    <bpmn:userTask id="TaskEmptyExitTrack" name="Empty exit track">
       <bpmn:incoming>SequenceFlow_048h28d</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1d1nml0</bpmn:outgoing>
     </bpmn:userTask>
@@ -345,7 +345,7 @@
           <dc:Bounds x="1650" y="241" width="17" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_1pgpbzq_di" bpmnElement="Task_047w5a0">
+      <bpmndi:BPMNShape id="UserTask_1pgpbzq_di" bpmnElement="TaskAdviseTrainDeparture">
         <dc:Bounds x="1699" y="219" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="UserTask_1a5h90d_di" bpmnElement="Task_03b9lqn">
@@ -400,7 +400,7 @@
           <dc:Bounds x="1100" y="197" width="13" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_1np66m2_di" bpmnElement="Task_06t4krp">
+      <bpmndi:BPMNShape id="UserTask_1np66m2_di" bpmnElement="TaskEmptyExitTrack">
         <dc:Bounds x="1041" y="87" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="UserTask_0iurggr_di" bpmnElement="TaskCheckWaggon">
