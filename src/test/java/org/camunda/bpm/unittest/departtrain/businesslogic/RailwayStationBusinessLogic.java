@@ -15,7 +15,7 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 	private TracksAndWaggons tracksAndWaggons = new TracksAndWaggons();
 
 	// key --> business key (also from referring business process)
-	private HashMap<String, DepartmentOrder> departmentOrders;
+	private HashMap<String, DepartmentOrder> departmentOrders = new HashMap<String, DepartmentOrder>();
 
 	private static final Random random = new Random();
 
@@ -27,19 +27,29 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 	public boolean waggonsReadyToGo(TrainConfig trainConfig) {
 		return false;
 	}
-
+	
 	@Override
-	public boolean waggonsAvailableForShuntingOrder(List<String> waggons) {
-
+	public boolean waggonsAvailableForShuntingOrder(String businessKey, List<String> waggons) {
+		
+		// TODO
+		if ((departmentOrders != null) && (departmentOrders.size() > 0)) {
+			return false;
+		}
+		
 		// all waggons must be existent!!
 		for (String string : waggons) {
 
 		}
 
 		// none of the waggons must be planned in active departure order!!
+		/*
 		if (departmentOrders == null || departmentOrders.size() == 0) {
 			return true;
 		}
+		*/
+		
+		// now, create a department order of state 'ACTIVE'...
+		departmentOrders.put(businessKey, new DepartmentOrder());
 
 		return true;
 	}
