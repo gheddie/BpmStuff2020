@@ -5,8 +5,10 @@ import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskSer
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
@@ -36,6 +38,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 	// variables
 	public static final String VAR_ALL_WAGGONS_AVAIABLE = "allWaggonsAvailable";
 	public static final String VAR_TRAIN_CONFIG = "trainConfig";
+	public static final String VAR_PLANNED_WAGGON_LIST = "plannedWaggonList";
 
 	// links
 	private static final String LNK_SUG_REP = "LNK_SUG_REP";
@@ -48,6 +51,9 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 	// messages
 	private static final String MSG_DEPARTMENT_ORDER_CREATED = "MSG_DEPARTMENT_ORDER_CREATED";
+
+	// bpm errors
+	public static final String BPM_ERROR_NO_WAGGONS_PLANNED = "BPM_ERROR_NO_WAGGONS_PLANNED";
 
 	/**
 	 * awaits a {@link RailwayStationBusinessConfigException} on creating an invalid
@@ -74,8 +80,10 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 		cancelDepartOrder();
 
-		HashMap<String, Object> waggonList = createWaggonList(7);
-		runtimeService().startProcessInstanceByMessage(MSG_DEPARTMENT_ORDER_CREATED, waggonList);
+		List<String> waggonList = createWaggonList(7);
+		Map<String, Object> variables = new HashMap<String, Object>();
+		variables.put(VAR_PLANNED_WAGGON_LIST, waggonList);
+		runtimeService().startProcessInstanceByMessage(MSG_DEPARTMENT_ORDER_CREATED, RailwayStationBusinessLogic.getInstance().generateBusinessKey(), variables);
 		// we have 7 waggons to check...
 		assertEquals(7, taskService().createTaskQuery().taskDefinitionKey(TASK_CHECK_WAGGON).list().size());
 		// assertThat(processInstance).hasPassed(TASK_CHECK_SHUNTING_ORDER,
@@ -95,13 +103,11 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 	// ---
 
-	private HashMap<String, Object> createWaggonList(int count) {
-		HashMap<String, Object> result = new HashMap<String, Object>();
-		List<String> waggonNumberList = new ArrayList<String>();
+	private List<String> createWaggonList(int count) {
+		List<String> result = new ArrayList<String>();
 		for (int index = 0; index < count; index++) {
-			waggonNumberList.add("WG_" + index);
+			result.add("WG_" + index);
 		}
-		result.put("waggonList", waggonNumberList);
-		return result;
+		return (List<String>) result;
 	}
 }

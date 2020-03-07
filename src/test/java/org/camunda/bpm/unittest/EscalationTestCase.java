@@ -4,9 +4,7 @@ import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.runtime
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskService;
 
 import java.util.HashMap;
-import java.util.List;
 
-import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;

@@ -188,20 +188,19 @@
       <bpmn:incoming>SequenceFlow_16rnd31</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_01ppyeh</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="SequenceFlow_0w5ge4v" name="yes" sourceRef="ExGwAllWaggonsAvailable" targetRef="ExclusiveGateway_1pzg2uy" />
     <bpmn:sequenceFlow id="SequenceFlow_1s0an6w" name="no" sourceRef="ExGwAllWaggonsAvailable" targetRef="IntermediateThrowEvent_127qoj2">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${allWaggonsAvailable == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_002q2c2" sourceRef="ExclusiveGateway_1pzg2uy" targetRef="TaskCheckWaggon" />
     <bpmn:exclusiveGateway id="ExclusiveGateway_1pzg2uy">
-      <bpmn:incoming>SequenceFlow_0w5ge4v</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_1k0vy6y</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_14pgb41</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_002q2c2</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:exclusiveGateway id="ExGwAllWaggonsAvailable" name="all waggons availabla">
+    <bpmn:exclusiveGateway id="ExGwAllWaggonsAvailable" name="all waggons available?" default="SequenceFlow_14pgb41">
       <bpmn:incoming>SequenceFlow_01ppyeh</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0w5ge4v</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_1s0an6w</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_14pgb41</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_1k0vy6y" sourceRef="IntermediateThrowEvent_127qoj2" targetRef="ExclusiveGateway_1pzg2uy" />
     <bpmn:exclusiveGateway id="ExclusiveGateway_1hvtc13">
@@ -223,7 +222,7 @@
     <bpmn:userTask id="TaskCheckWaggon" name="Check waggon">
       <bpmn:incoming>SequenceFlow_002q2c2</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1l76o7r</bpmn:outgoing>
-      <bpmn:multiInstanceLoopCharacteristics camunda:collection="waggonList" camunda:elementVariable="waggon" />
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="plannedWaggonList" camunda:elementVariable="plannedWaggon" />
     </bpmn:userTask>
     <bpmn:boundaryEvent id="BoundaryEvent_0gpmm5p" attachedToRef="TaskCheckWaggon">
       <bpmn:outgoing>SequenceFlow_1i4t88m</bpmn:outgoing>
@@ -272,6 +271,7 @@
       <bpmn:incoming>SequenceFlow_048h28d</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1d1nml0</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_14pgb41" sourceRef="ExGwAllWaggonsAvailable" targetRef="ExclusiveGateway_1pzg2uy" />
     <bpmn:association id="Association_1rveb1t" sourceRef="TaskCheckWaggon" targetRef="TextAnnotation_0c9936l" />
     <bpmn:textAnnotation id="TextAnnotation_0ajijz4">
       <bpmn:text>All shunting waggons alone and in correct order on the desired exit track</bpmn:text>
@@ -654,16 +654,9 @@
       <bpmndi:BPMNShape id="ExclusiveGateway_0gn673n_di" bpmnElement="ExGwAllWaggonsAvailable" isMarkerVisible="true">
         <dc:Bounds x="306" y="214" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="222" y="229" width="59" height="27" />
+          <dc:Bounds x="236" y="225" width="59" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_0w5ge4v_di" bpmnElement="SequenceFlow_0w5ge4v">
-        <di:waypoint x="331" y="214" />
-        <di:waypoint x="331" y="142" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="338" y="173" width="17" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1s0an6w_di" bpmnElement="SequenceFlow_1s0an6w">
         <di:waypoint x="331" y="239" />
         <di:waypoint x="452" y="239" />
@@ -742,6 +735,10 @@
           <dc:Bounds x="441" y="34" width="79" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_14pgb41_di" bpmnElement="SequenceFlow_14pgb41">
+        <di:waypoint x="331" y="214" />
+        <di:waypoint x="331" y="142" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

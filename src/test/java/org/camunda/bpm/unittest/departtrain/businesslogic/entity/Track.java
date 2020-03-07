@@ -3,9 +3,7 @@ package org.camunda.bpm.unittest.departtrain.businesslogic.entity;
 import lombok.Data;
 
 @Data
-public class Waggon {
+public class Track {
 
-	private String waggonNumber;
-	
-	private WaggonErrorCode waggonErrorCode;
+	private String trackNumber;
 }
