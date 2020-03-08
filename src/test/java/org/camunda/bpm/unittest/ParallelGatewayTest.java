@@ -29,8 +29,8 @@ public class ParallelGatewayTest extends BpmTestCase {
 
 		runtimeService().startProcessInstanceByKey(PROCESS);
 		
-		Task taskA = ensureSingleTaskPresent(TASK_A);
-		Task taskB = ensureSingleTaskPresent(TASK_B);
+		Task taskA = ensureSingleTaskPresent(TASK_A, false);
+		Task taskB = ensureSingleTaskPresent(TASK_B, false);
 		
 		taskService().complete(taskA.getId());
 		
@@ -43,7 +43,7 @@ public class ParallelGatewayTest extends BpmTestCase {
 		assertEquals(1, runtimeService().createProcessInstanceQuery().list().size());
 		
 		// but now
-		taskService().complete(ensureSingleTaskPresent(TASK_C).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_C, false).getId());
 		
 		// process gone
 		assertEquals(0, runtimeService().createProcessInstanceQuery().list().size());

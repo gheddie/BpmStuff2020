@@ -58,9 +58,9 @@ public class EventSubProcessTest extends BpmTestCase {
 		variables.put(VAR_ERROR_RAISER, false);
 		runtimeService().startProcessInstanceByKey(PROCESS_EVENT_MAIN, variables);
 		
-		taskService().complete(ensureSingleTaskPresent(TASK_START).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_START, false).getId());
 		
-		ensureSingleTaskPresent(TASK_NORMAL_HANDLING);
+		ensureSingleTaskPresent(TASK_NORMAL_HANDLING, false);
 	}
 	
 	// TODO
@@ -73,12 +73,12 @@ public class EventSubProcessTest extends BpmTestCase {
 		runtimeService().startProcessInstanceByKey(PROCESS_EVENT_MAIN, variables);
 		
 		// finish check --> it fails
-		taskService().complete(ensureSingleTaskPresent(TASK_START).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_START, false).getId());
 		
 		List<ProcessInstance> processList = runtimeService().createProcessInstanceQuery().list();
 		
 		// we have task 'FixIt'
-		ensureSingleTaskPresent(TASK_FIX_IT);
+		ensureSingleTaskPresent(TASK_FIX_IT, false);
 	}
 	
 	@Test

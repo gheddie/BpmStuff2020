@@ -42,8 +42,8 @@ public class EventSubProcessRemakeTest extends BpmTestCase {
 		
 		Map<String, Object> variables = new HashMap<String, Object>();
 		variables.put(VAR_ENOUGH_DATA, false);
-		taskService().complete(ensureSingleTaskPresent(TASK_REVIEW).getId(), variables);
+		taskService().complete(ensureSingleTaskPresent(TASK_REVIEW, false).getId(), variables);
 		
-		ensureSingleTaskPresent(TASK_PROVIDE);
+		ensureSingleTaskPresent(TASK_PROVIDE, false);
 	}
 }

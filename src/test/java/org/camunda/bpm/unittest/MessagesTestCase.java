@@ -45,7 +45,7 @@ public class MessagesTestCase extends BpmTestCase {
 		
 		// post message 'MSG_ONE' --> leads to task definition key 'TaskOne'
 		runtimeService().correlateMessage(MSG_ONE);
-		ensureSingleTaskPresent(TASK_ONE);
+		ensureSingleTaskPresent(TASK_ONE, false);
 	}
 	
 	@Test
@@ -56,7 +56,7 @@ public class MessagesTestCase extends BpmTestCase {
 		
 		// post message 'MSG_ONE' --> leads to task definition key 'TaskOne'
 		runtimeService().correlateMessage(MSG_TWO);
-		ensureSingleTaskPresent(TASK_TWO);
+		ensureSingleTaskPresent(TASK_TWO, false);
 	}
 	
 	@Test
@@ -71,6 +71,6 @@ public class MessagesTestCase extends BpmTestCase {
 
 		// fire timer 'TimerOne' --> leads to task definition key 'TaskThree'
 		managementService().executeJob(jobs.get(0).getId());
-		ensureSingleTaskPresent(TASK_THREE);
+		ensureSingleTaskPresent(TASK_THREE, false);
 	}
 }

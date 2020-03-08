@@ -59,7 +59,7 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 		
 		HashMap<String, String> processInstancesToBusinessKeys = runProcesses(true, false, 1);
 		
-		taskService().complete(ensureSingleTaskPresent(TASK_CHOOSE_MEAL).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_CHOOSE_MEAL, false).getId());
 		
 		// break rule in one of the processes --> release patient
 		List<String> keySet = new ArrayList<String>(processInstancesToBusinessKeys.keySet());
@@ -69,20 +69,20 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 		finishEvaluation(EvaluationResult.CHANGE_STATION);
 		
 		// new station must be chosen
-		taskService().complete(ensureSingleTaskPresent(TASK_CHOOSE_STATION).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_CHOOSE_STATION, false).getId());
 		
 		// meal must be rechosen
-		taskService().complete(ensureSingleTaskPresent(TASK_CHOOSE_MEAL).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_CHOOSE_MEAL, false).getId());
 		
 		// another session
 		runtimeService().correlateMessage(MSG_SEE_THERAPIST, businessKey);
 		
 		finishEvaluation(EvaluationResult.OK);
 		
-		taskService().complete(ensureSingleTaskPresent(TASK_RELEASE_PATIENT).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_RELEASE_PATIENT, false).getId());
 		
 		// TODO sub process fires with error end event, but not with message end event?!?
-		ensureSingleTaskPresent(TASK_CALL_APP);
+		ensureSingleTaskPresent(TASK_CALL_APP, false);
 	}
 
 	@Test
@@ -103,7 +103,7 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 		String businessKey = processInstancesToBusinessKeys.get(keySet.get(0));
 		runtimeService().correlateMessage(MSG_RULE_BREAK, businessKey);
 		
-		ensureSingleTaskPresent(TASK_RELEASE_PATIENT);
+		ensureSingleTaskPresent(TASK_RELEASE_PATIENT, false);
 	}
 
 	@Test
@@ -128,11 +128,11 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 			businessKey = generateBusinessKey();
 			ProcessInstance processInstance = runtimeService().startProcessInstanceByMessage(MSG_ADMISSION, businessKey);
 			processInstancesToBusinessKeys.put(processInstance.getProcessInstanceId(), businessKey);
-			taskService().complete(ensureSingleTaskPresent(TASK_GATHER_DATA).getId());
+			taskService().complete(ensureSingleTaskPresent(TASK_GATHER_DATA, false).getId());
 			HashMap<String, Object> variables = new HashMap<String, Object>();
 			variables.put("costTakenOver", costTakenOver);
 			if (!(stopAtReview)) {
-				taskService().complete(ensureSingleTaskPresent(TASK_REVIEW_DATA).getId(), variables);
+				taskService().complete(ensureSingleTaskPresent(TASK_REVIEW_DATA, false).getId(), variables);
 			}
 		}
 		return processInstancesToBusinessKeys;
@@ -145,6 +145,6 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 	private void finishEvaluation(EvaluationResult evaluationResult) {
 		Map<String, Object> var = new HashMap<String, Object>();
 		var.put(VAR_TH_SESSION_OUTCOME, evaluationResult.toString());
-		taskService().complete(ensureSingleTaskPresent(TASK_EVALUATE_PATIENT).getId(), var);
+		taskService().complete(ensureSingleTaskPresent(TASK_EVALUATE_PATIENT, false).getId(), var);
 	}
 }

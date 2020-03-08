@@ -28,7 +28,7 @@ public class ReviewTestCase extends BpmTestCase {
 		variables.put(AutomaticReviewDelegate.VAR_AMOUNT, 2000);
 		// Given we create a new process instance
 		runtimeService().startProcessInstanceByKey(PROCESS_REVIEW, variables);
-		ensureSingleTaskPresent(AutomaticReviewDelegate.TASK_PASSED_REV);
+		ensureSingleTaskPresent(AutomaticReviewDelegate.TASK_PASSED_REV, false);
 	}
 	
 	@Test
@@ -38,7 +38,7 @@ public class ReviewTestCase extends BpmTestCase {
 		variables.put(AutomaticReviewDelegate.VAR_AMOUNT, 3000);
 		// Given we create a new process instance
 		runtimeService().startProcessInstanceByKey(PROCESS_REVIEW, variables);
-		ensureSingleTaskPresent(AutomaticReviewDelegate.TASK_STD_REV);
+		ensureSingleTaskPresent(AutomaticReviewDelegate.TASK_STD_REV, false);
 	}
 	
 	@Test
@@ -48,7 +48,7 @@ public class ReviewTestCase extends BpmTestCase {
 		variables.put(AutomaticReviewDelegate.VAR_AMOUNT, 7000);
 		// Given we create a new process instance
 		runtimeService().startProcessInstanceByKey(PROCESS_REVIEW, variables);
-		ensureSingleTaskPresent(AutomaticReviewDelegate.TASK_MAN_REV);
+		ensureSingleTaskPresent(AutomaticReviewDelegate.TASK_MAN_REV, false);
 	}
 	
 	@Test
@@ -58,6 +58,6 @@ public class ReviewTestCase extends BpmTestCase {
 		variables.put(AutomaticReviewDelegate.VAR_AMOUNT, 12000);
 		// Given we create a new process instance
 		runtimeService().startProcessInstanceByKey(PROCESS_REVIEW, variables);
-		ensureSingleTaskPresent(AutomaticReviewDelegate.TASK_MAN_EXT_REV);
+		ensureSingleTaskPresent(AutomaticReviewDelegate.TASK_MAN_EXT_REV, false);
 	}
 }

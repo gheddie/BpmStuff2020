@@ -44,7 +44,7 @@ public class InterruptingVsNotInterruptingTestCase extends BpmTestCase {
 		variables.put(VAR_INTERRUPTING, true);
 		runtimeService().startProcessInstanceByKey(PROCESS, variables);
 		
-		ensureSingleTaskPresent(TASK_B);
+		ensureSingleTaskPresent(TASK_B, false);
 		
 		// we have a (timer) job...
 		List<Job> jobs = managementService().createJobQuery().list();
@@ -56,7 +56,7 @@ public class InterruptingVsNotInterruptingTestCase extends BpmTestCase {
 		// we have 'TaskF', but 'TaskB' and 'TaskE' are gone...
 		ensureTaskNotPresent(TASK_E);
 		ensureTaskNotPresent(TASK_B);
-		taskService().complete(ensureSingleTaskPresent(TASK_F).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_F, false).getId());
 		
 		// execution is gone
 		assertEquals(0, runtimeService().createProcessInstanceQuery().list().size());
@@ -70,7 +70,7 @@ public class InterruptingVsNotInterruptingTestCase extends BpmTestCase {
 		variables.put(VAR_INTERRUPTING, false);
 		runtimeService().startProcessInstanceByKey(PROCESS, variables);
 		
-		 ensureSingleTaskPresent(TASK_A);
+		 ensureSingleTaskPresent(TASK_A, false);
 		
 		// we have a (timer) job...
 		List<Job> jobs = managementService().createJobQuery().list();
@@ -80,15 +80,15 @@ public class InterruptingVsNotInterruptingTestCase extends BpmTestCase {
 		managementService().executeJob(jobs.get(0).getId());
 		
 		// we still have 'TaskA' and also 'TaskC' and NOT 'TaskD'...
-		Task taskA = ensureSingleTaskPresent(TASK_A);
-		ensureSingleTaskPresent(TASK_C);
+		Task taskA = ensureSingleTaskPresent(TASK_A, false);
+		ensureSingleTaskPresent(TASK_C, false);
 		ensureTaskNotPresent(TASK_D);
 		
 		// execute 'A'
 		taskService().complete(taskA.getId());
 		
-		taskService().complete(ensureSingleTaskPresent(TASK_C).getId());
-		taskService().complete(ensureSingleTaskPresent(TASK_D).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_C, false).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_D, false).getId());
 		
 		// execution is gone
 		assertEquals(0, runtimeService().createProcessInstanceQuery().list().size());

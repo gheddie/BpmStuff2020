@@ -43,7 +43,7 @@ public class SignalsTestCase extends BpmTestCase {
 		// 3+1 processes are there...
 		assertEquals(4, runtimeService().createProcessInstanceQuery().list().size());
 		
-		Task taskMainProcess = ensureSingleTaskPresent("TaskA");
+		Task taskMainProcess = ensureSingleTaskPresent("TaskA", false);
 		
 		// execute user task A in main --> signal fires from delegate code
 		// TODO: do it from bpm element 'throw signal intermediate event' ?!?

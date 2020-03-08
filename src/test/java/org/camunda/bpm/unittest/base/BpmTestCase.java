@@ -15,11 +15,11 @@ import org.camunda.bpm.engine.task.Task;
 
 public class BpmTestCase {
 
-	protected Task ensureSingleTaskPresent(String taskName) {
-		return ensureSingleTaskPresent(taskName, null);
+	protected Task ensureSingleTaskPresent(String taskName, boolean executeTask) {
+		return ensureSingleTaskPresent(taskName, null, executeTask);
 	}
 
-	protected Task ensureSingleTaskPresent(String taskName, String businessKey) {
+	protected Task ensureSingleTaskPresent(String taskName, String businessKey, boolean executeTask) {
 		List<Task> taskList = null;
 		if (businessKey != null) {
 			// regard business key in addition...
@@ -29,7 +29,11 @@ public class BpmTestCase {
 			taskList = taskService().createTaskQuery().taskDefinitionKey(taskName).list();
 		}
 		assertEquals(1, taskList.size());
-		return taskList.get(0);
+		Task task = taskList.get(0);
+		if (executeTask) {
+			taskService().complete(task.getId());
+		}
+		return task;
 	}
 
 	protected List<Task> ensureTaskCountPresent(String taskName, int taskCount) {

@@ -48,15 +48,15 @@ public class DepartTrainTestCase extends BpmTestCase {
 		listTaskA.add("W1");
 		listTaskA.add("W2");
 		ProcessInstance instanceA = startProcess(listTaskA);
-		
+
 		List<String> listTaskB = new ArrayList<String>();
 		listTaskB.add("W1");
 		listTaskB.add("W2");
 		ProcessInstance instanceB = startProcess(listTaskB);
-		
+
 		// process B
 		assertThat(instanceB).isWaitingAt("SignalCatchRoCanc");
-		
+
 		// process A
 		assertThat(instanceA).isWaitingAt("TaskCheckWaggons");
 		List<Task> waggonChecks = processEngine.getTaskService().createTaskQuery().taskDefinitionKey("TaskCheckWaggons").list();
@@ -72,22 +72,23 @@ public class DepartTrainTestCase extends BpmTestCase {
 		// finish roll out
 		Map<String, Object> rolloutVariables = new HashMap<String, Object>();
 		rolloutVariables.put("rolloutConfirmed", false);
-		ensureSingleTaskPresent("TaskConfirmRollout", instanceA.getBusinessKey());
-		
-		// rollout of A was declined, so A must be gone und b mjust be in charge to check waggons...
+		processEngine.getTaskService().complete(ensureSingleTaskPresent("TaskConfirmRollout", instanceA.getBusinessKey(), false).getId(), rolloutVariables);
+		assertThat(instanceA).isEnded();
+
+		// rollout of A was declined, so A must be gone und b mjust be in charge to
+		// check waggons...
 		// assertThat(instanceA).isEnded();
 		// assertThat(instanceA).isWaitingAt("SignalThrowRoCanc");
-		
+
 		/*
-		processEngine.getTaskService().complete(processEngine.getTaskService().createTaskQuery().taskDefinitionKey("TaskConfirmRollout").list().get(0).getId(),
-				rolloutVariables);
-		// process is gone...
-		assertThat(instanceA).isEnded();
-		*/
+		 * processEngine.getTaskService().complete(processEngine.getTaskService().
+		 * createTaskQuery().taskDefinitionKey("TaskConfirmRollout").list().get(0).getId
+		 * (), rolloutVariables); // process is gone... assertThat(instanceA).isEnded();
+		 */
 	}
 
 	private ProcessInstance startProcess(List<String> waggons) {
-		
+
 		Map<String, Object> variables = new HashMap<String, Object>();
 		variables.put("plannedWaggons", waggons);
 		ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByMessage("MSG_DEPARTURE_PLANNED",
