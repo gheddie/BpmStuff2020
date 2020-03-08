@@ -43,7 +43,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 	@Test
 	@Deployment(resources = { "departtrain/departTrainProcess.bpmn" })
-	public void testSimpleDeparture() {
+	public void testConcurrentDeparture() {
 
 		RailwayStationBusinessLogic.getInstance().withTracks("Track1", "Track2", "TrackExit").withWaggons("Track1", "W1", "W2");
 		
@@ -76,8 +76,10 @@ public class DepartTrainTestCase extends BpmTestCase {
 		}
 		assertThat(instanceA).isWaitingAt("TaskChooseExitTrack");
 		// finish track choosing
+		Map<String, Object> exitTrackVariables = new HashMap<String, Object>();
+		exitTrackVariables.put("exitTrack", "T1");
 		processEngine.getTaskService()
-				.complete(processEngine.getTaskService().createTaskQuery().taskDefinitionKey("TaskChooseExitTrack").list().get(0).getId());
+				.complete(processEngine.getTaskService().createTaskQuery().taskDefinitionKey("TaskChooseExitTrack").list().get(0).getId(), exitTrackVariables);
 		
 		// shunt A...
 		processShunting(instanceA);
@@ -96,7 +98,8 @@ public class DepartTrainTestCase extends BpmTestCase {
 		}
 
 		// B waiting for exit track
-		ensureSingleTaskPresent("TaskChooseExitTrack", true);
+		Task chooseExitTrackB = ensureSingleTaskPresent("TaskChooseExitTrack", false);
+		processEngine.getTaskService().complete(chooseExitTrackB.getId(), exitTrackVariables);
 		
 		processShunting(instanceB);
 
