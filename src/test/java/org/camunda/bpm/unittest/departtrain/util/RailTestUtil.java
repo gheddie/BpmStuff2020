@@ -1,4 +1,4 @@
-package org.camunda.bpm.unittest.delegate.departtrain.util;
+package org.camunda.bpm.unittest.departtrain.util;
 
 import java.util.HashMap;
 import java.util.List;

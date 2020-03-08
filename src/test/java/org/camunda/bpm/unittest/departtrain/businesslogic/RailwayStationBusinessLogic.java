@@ -104,6 +104,11 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 	public void setDefectCode(String waggonNumber, WaggonErrorCode waggonErrorCode) {
 		stationData.setDefectCode(waggonNumber, waggonErrorCode);
 	}
+	
+	@Override
+	public boolean isWaggonCritical(String waggonNumber) {
+		return stationData.isWaggonCritical(waggonNumber);
+	}
 
 	// ---
 
@@ -124,5 +129,10 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 	public RailwayStationBusinessLogic withWaggons(String trackNumber, String... waggonNumbers) {
 		stationData.addWaggons(trackNumber, waggonNumbers);
 		return this;
+	}
+
+	public void reset() {
+		departmentOrders = new HashMap<String, DepartmentOrder>();
+		stationData.reset();
 	}
 }

@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.camunda.bpm.unittest.delegate.departtrain.util.RailTestUtil;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Track;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Waggon;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.WaggonErrorCode;
 import org.camunda.bpm.unittest.departtrain.businesslogic.exception.RailwayStationBusinessLogicException;
+import org.camunda.bpm.unittest.departtrain.util.RailTestUtil;
 
 import lombok.Data;
 
@@ -82,5 +82,17 @@ public class StationData {
 	public Track findTrack(String trackNumber) {
 		HashMap<String, Track> hashedTracks = RailTestUtil.hashTracks(tracks);
 		return hashedTracks.get(trackNumber);
+	}
+
+	public boolean isWaggonCritical(String waggonNumber) {
+		WaggonErrorCode waggonErrorCode = findWaggon(waggonNumber).getWaggonErrorCode();
+		if (waggonErrorCode == null) {
+			return false;
+		}
+		return waggonErrorCode.isCritical();
+	}
+
+	public void reset() {
+		tracks = new ArrayList<Track>();
 	}
 }
