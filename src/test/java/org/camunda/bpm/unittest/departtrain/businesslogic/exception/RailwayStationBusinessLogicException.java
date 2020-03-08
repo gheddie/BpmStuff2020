@@ -1,4 +1,4 @@
-package org.camunda.bpm.unittest.departtrain.businesslogic;
+package org.camunda.bpm.unittest.departtrain.businesslogic.exception;
 
 public class RailwayStationBusinessLogicException extends RuntimeException {
 

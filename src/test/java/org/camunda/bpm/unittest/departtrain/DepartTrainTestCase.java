@@ -15,8 +15,8 @@ import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
 import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessLogic;
-import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessLogicException;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.WaggonErrorCode;
+import org.camunda.bpm.unittest.departtrain.businesslogic.exception.RailwayStationBusinessLogicException;
 import org.junit.Rule;
 import org.junit.Test;
 
