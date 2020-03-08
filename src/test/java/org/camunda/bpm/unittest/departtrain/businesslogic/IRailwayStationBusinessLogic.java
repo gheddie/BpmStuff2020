@@ -7,4 +7,10 @@ public interface IRailwayStationBusinessLogic {
 	boolean waggonsAvailableForDepartureTrain(List<String> waggons, String businessKey);
 	
 	void cancelDepartureOrder(String businessKey);
+	
+	void removeWaggons(List<String> waggonNumbers);
+	
+	int countWaggons();
+	
+	void print();
 }

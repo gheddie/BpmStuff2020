@@ -2,9 +2,11 @@ package org.camunda.bpm.unittest.departtrain.businesslogic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.camunda.bpm.unittest.delegate.departtrain.util.RailTestUtil;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Track;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Waggon;
 
@@ -76,5 +78,28 @@ public class TracksAndWaggons {
 		Waggon waggon = new Waggon();
 		waggon.setWaggonNumber(waggonNumber);
 		return waggon;
+	}
+
+	public HashMap<String, Waggon> getAllWaggons() {
+		HashMap<String, Waggon> result = new HashMap<String, Waggon>();
+		for (Track track : data.keySet()) {
+			for (Waggon waggon : data.get(track)) {
+				result.put(waggon.getWaggonNumber(), waggon);				
+			}
+		}
+		return result;
+	}
+
+	public void removeWaggon(String waggonNumber) {
+		for (Track track : data.keySet()) {
+			if (data.get(track) != null) {
+				HashMap<String, Waggon> trackWaggons = RailTestUtil.hashWaggons(data.get(track));
+				if (trackWaggons.get(waggonNumber) != null) {
+					// waggon is on that track
+					trackWaggons.remove(waggonNumber);
+					data.put(track, new ArrayList<Waggon>(trackWaggons.values()));
+				}
+			}
+		}
 	}
 }

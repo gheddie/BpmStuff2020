@@ -44,6 +44,12 @@ public class DepartTrainTestCase extends BpmTestCase {
 	@Deployment(resources = { "departtrain/departTrainProcess.bpmn" })
 	public void testSimpleDeparture() {
 
+		RailwayStationBusinessLogic.getInstance().withTracks("Track1", "Track2", "TrackExit").withWaggons("Track1", "W1", "W2");
+		
+		RailwayStationBusinessLogic.getInstance().print();
+		
+		assertEquals(2, RailwayStationBusinessLogic.getInstance().countWaggons());
+
 		List<String> listTaskA = new ArrayList<String>();
 		listTaskA.add("W1");
 		listTaskA.add("W2");
@@ -81,23 +87,27 @@ public class DepartTrainTestCase extends BpmTestCase {
 				.processInstanceBusinessKey(instanceB.getBusinessKey()).list()) {
 			processEngine.getTaskService().complete(taskB.getId());
 		}
-		
+
 		// B waiting for exit track
 		ensureSingleTaskPresent("TaskChooseExitTrack", true);
-		
+
 		// B waiting for exit track
 		assertThat(instanceB).isWaitingAt("TaskConfirmRollout");
-		
+
 		processRollout(instanceB, true);
-		
+
 		// B is gone...
 		assertThat(instanceB).isEnded();
+		
+		// waggons must have left the station...
+		assertEquals(0, RailwayStationBusinessLogic.getInstance().countWaggons());
 	}
 
 	private void processRollout(ProcessInstance processInstance, boolean doRollOut) {
 		Map<String, Object> rolloutVariables = new HashMap<String, Object>();
 		rolloutVariables.put("rolloutConfirmed", doRollOut);
-		processEngine.getTaskService().complete(ensureSingleTaskPresent("TaskConfirmRollout", processInstance.getBusinessKey(), false).getId(), rolloutVariables);
+		processEngine.getTaskService().complete(ensureSingleTaskPresent("TaskConfirmRollout", processInstance.getBusinessKey(), false).getId(),
+				rolloutVariables);
 	}
 
 	private ProcessInstance startProcess(List<String> waggons) {

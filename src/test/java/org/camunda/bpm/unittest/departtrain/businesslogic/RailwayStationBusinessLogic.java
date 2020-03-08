@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.DepartmentOrder;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.DepartmentOrderState;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Track;
+import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Waggon;
 import org.camunda.bpm.unittest.departtrain.businesslogic.util.BusinessLogicUtil;
 
 public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic {
@@ -26,17 +28,25 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 	}
 
 	@Override
-	public boolean waggonsAvailableForDepartureTrain(List<String> waggons, String businessKey) {
+	public boolean waggonsAvailableForDepartureTrain(List<String> waggonNumbers, String businessKey) {
 		
-		// TODO
+		// no active order --> OK
 		List<DepartmentOrder> activeDepartureOrders = findActiveDepartureOrders();
 		if ((activeDepartureOrders != null) && (activeDepartureOrders.size() > 0)) {
 			return false;
 		}
 		
+		// all waggons must be present in station
+		HashMap<String, Waggon> allWaggons = tracksAndWaggons.getAllWaggons();
+		for (String waggonNumber : waggonNumbers) {
+			if (allWaggons.get(waggonNumber) == null) {
+				return false;
+			}
+		}
+		
 		// none of the waggons must be planned in active departure order!!
 		for (DepartmentOrder activeDepartureOrder : activeDepartureOrders) {
-			if (activeDepartureOrder.containsAnyWaggon(waggons)) {
+			if (activeDepartureOrder.containsAnyWaggon(waggonNumbers)) {
 				return false;		
 			}
 		}
@@ -79,6 +89,17 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 	@Override
 	public void cancelDepartureOrder(String businessKey) {
 		departmentOrders.get(businessKey).setDepartmentOrderState(DepartmentOrderState.CANCELLED);
+	}
+	
+	public int countWaggons() {
+		return tracksAndWaggons.getAllWaggons().values().size();
+	}
+	
+	@Override
+	public void removeWaggons(List<String> waggonNumbers) {
+		for (String waggonNumber : waggonNumbers) {
+			tracksAndWaggons.removeWaggon(waggonNumber);
+		}
 	}
 
 	// ---

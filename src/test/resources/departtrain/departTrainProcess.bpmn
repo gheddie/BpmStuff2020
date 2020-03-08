@@ -23,6 +23,7 @@
         <bpmn:flowNodeRef>ExclusiveGateway_0f0uu4b</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>SignalThrowRoCanc</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TaskCancelDepartOrder</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TaskRemoveWaggons</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:sequenceFlow id="SequenceFlow_1bgttwb" sourceRef="StartEvent_1" targetRef="ExclusiveGateway_1lms502" />
@@ -68,7 +69,7 @@
       <bpmn:outgoing>SequenceFlow_04qyvr6</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_134eiha</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_04qyvr6" sourceRef="ExGwRollout" targetRef="ExclusiveGateway_0f0uu4b" />
+    <bpmn:sequenceFlow id="SequenceFlow_04qyvr6" sourceRef="ExGwRollout" targetRef="TaskRemoveWaggons" />
     <bpmn:sequenceFlow id="SequenceFlow_0twpvbi" sourceRef="TaskCheckWaggons" targetRef="TaskChooseExitTrack" />
     <bpmn:sequenceFlow id="SequenceFlow_0iv6lm4" sourceRef="TaskChooseExitTrack" targetRef="Task_101jarr" />
     <bpmn:sequenceFlow id="SequenceFlow_13gkobw" sourceRef="Task_101jarr" targetRef="TaskConfirmRollout" />
@@ -95,8 +96,8 @@
       <bpmn:incoming>SequenceFlow_1gppc5j</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:exclusiveGateway id="ExclusiveGateway_0f0uu4b">
-      <bpmn:incoming>SequenceFlow_04qyvr6</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0550o6l</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0rbvy8h</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1gppc5j</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:intermediateThrowEvent id="SignalThrowRoCanc" name="SIG_RO_CANC">
@@ -110,6 +111,11 @@
     <bpmn:serviceTask id="TaskCancelDepartOrder" name="Cancel depart order" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.CancelDepartOrderDelgate">
       <bpmn:incoming>SequenceFlow_134eiha</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1vu95o9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0rbvy8h" sourceRef="TaskRemoveWaggons" targetRef="ExclusiveGateway_0f0uu4b" />
+    <bpmn:serviceTask id="TaskRemoveWaggons" name="Remove waggons" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.RemoveWaggonsDelegate">
+      <bpmn:incoming>SequenceFlow_04qyvr6</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0rbvy8h</bpmn:outgoing>
     </bpmn:serviceTask>
   </bpmn:process>
   <bpmn:message id="Message_00coaok" name="MSG_DEPARTURE_PLANNED" />
@@ -206,7 +212,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_04qyvr6_di" bpmnElement="SequenceFlow_04qyvr6">
         <di:waypoint x="945" y="235" />
-        <di:waypoint x="1172" y="235" />
+        <di:waypoint x="1004" y="235" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_0f0uu4b_di" bpmnElement="ExclusiveGateway_0f0uu4b" isMarkerVisible="true">
         <dc:Bounds x="1172" y="210" width="50" height="50" />
@@ -247,6 +253,13 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_107bkfo_di" bpmnElement="TaskCancelDepartOrder">
         <dc:Bounds x="1004" y="305" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0rbvy8h_di" bpmnElement="SequenceFlow_0rbvy8h">
+        <di:waypoint x="1104" y="235" />
+        <di:waypoint x="1172" y="235" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0w745d5_di" bpmnElement="TaskRemoveWaggons">
+        <dc:Bounds x="1004" y="195" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
