@@ -59,10 +59,10 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 		// process A
 		assertThat(instanceA).isWaitingAt("TaskCheckWaggons");
-		List<Task> waggonChecks = processEngine.getTaskService().createTaskQuery().taskDefinitionKey("TaskCheckWaggons").list();
-		assertEquals(2, waggonChecks.size());
+		List<Task> waggonChecksA = processEngine.getTaskService().createTaskQuery().taskDefinitionKey("TaskCheckWaggons").list();
+		assertEquals(2, waggonChecksA.size());
 		// check all waggons
-		for (Task task : waggonChecks) {
+		for (Task task : waggonChecksA) {
 			processEngine.getTaskService().complete(task.getId());
 		}
 		assertThat(instanceA).isWaitingAt("TaskChooseExitTrack");
@@ -70,21 +70,34 @@ public class DepartTrainTestCase extends BpmTestCase {
 		processEngine.getTaskService()
 				.complete(processEngine.getTaskService().createTaskQuery().taskDefinitionKey("TaskChooseExitTrack").list().get(0).getId());
 		// finish roll out
-		Map<String, Object> rolloutVariables = new HashMap<String, Object>();
-		rolloutVariables.put("rolloutConfirmed", false);
-		processEngine.getTaskService().complete(ensureSingleTaskPresent("TaskConfirmRollout", instanceA.getBusinessKey(), false).getId(), rolloutVariables);
+		processRollout(instanceA, false);
 		assertThat(instanceA).isEnded();
 
-		// rollout of A was declined, so A must be gone und b mjust be in charge to
-		// check waggons...
-		// assertThat(instanceA).isEnded();
-		// assertThat(instanceA).isWaitingAt("SignalThrowRoCanc");
+		// B caught signal and must now check its own waggons...
+		assertThat(instanceB).isWaitingAt("TaskCheckWaggons");
 
-		/*
-		 * processEngine.getTaskService().complete(processEngine.getTaskService().
-		 * createTaskQuery().taskDefinitionKey("TaskConfirmRollout").list().get(0).getId
-		 * (), rolloutVariables); // process is gone... assertThat(instanceA).isEnded();
-		 */
+		// complete checks for B...
+		for (Task taskB : processEngine.getTaskService().createTaskQuery().taskDefinitionKey("TaskCheckWaggons")
+				.processInstanceBusinessKey(instanceB.getBusinessKey()).list()) {
+			processEngine.getTaskService().complete(taskB.getId());
+		}
+		
+		// B waiting for exit track
+		ensureSingleTaskPresent("TaskChooseExitTrack", true);
+		
+		// B waiting for exit track
+		assertThat(instanceB).isWaitingAt("TaskConfirmRollout");
+		
+		processRollout(instanceB, true);
+		
+		// B is gone...
+		assertThat(instanceB).isEnded();
+	}
+
+	private void processRollout(ProcessInstance processInstance, boolean doRollOut) {
+		Map<String, Object> rolloutVariables = new HashMap<String, Object>();
+		rolloutVariables.put("rolloutConfirmed", doRollOut);
+		processEngine.getTaskService().complete(ensureSingleTaskPresent("TaskConfirmRollout", processInstance.getBusinessKey(), false).getId(), rolloutVariables);
 	}
 
 	private ProcessInstance startProcess(List<String> waggons) {

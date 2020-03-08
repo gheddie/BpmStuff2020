@@ -1,10 +1,12 @@
 package org.camunda.bpm.unittest.departtrain.businesslogic;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.DepartmentOrder;
+import org.camunda.bpm.unittest.departtrain.businesslogic.entity.DepartmentOrderState;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Track;
 import org.camunda.bpm.unittest.departtrain.businesslogic.util.BusinessLogicUtil;
 
@@ -24,34 +26,35 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 	}
 
 	@Override
-	public boolean waggonsReadyToGo(TrainConfig trainConfig) {
-		return false;
-	}
-	
-	@Override
-	public boolean waggonsAvailableForDepartureTrain(String businessKey, List<String> waggons) {
+	public boolean waggonsAvailableForDepartureTrain(List<String> waggons, String businessKey) {
 		
 		// TODO
-		if ((departmentOrders != null) && (departmentOrders.size() > 0)) {
+		List<DepartmentOrder> activeDepartureOrders = findActiveDepartureOrders();
+		if ((activeDepartureOrders != null) && (activeDepartureOrders.size() > 0)) {
 			return false;
 		}
 		
-		// all waggons must be existent!!
-		for (String string : waggons) {
-
-		}
-
 		// none of the waggons must be planned in active departure order!!
-		/*
-		if (departmentOrders == null || departmentOrders.size() == 0) {
-			return true;
+		for (DepartmentOrder activeDepartureOrder : activeDepartureOrders) {
+			if (activeDepartureOrder.containsAnyWaggon(waggons)) {
+				return false;		
+			}
 		}
-		*/
 		
 		// now, create a department order of state 'ACTIVE'...
 		departmentOrders.put(businessKey, new DepartmentOrder());
 
 		return true;
+	}
+
+	private List<DepartmentOrder> findActiveDepartureOrders() {
+		List<DepartmentOrder> activeOrders = new ArrayList<DepartmentOrder>();
+		for (DepartmentOrder departmentOrder : departmentOrders.values()) {
+			if (departmentOrder.getDepartmentOrderState().equals(DepartmentOrderState.ACTIVE)) {
+				activeOrders.add(departmentOrder);
+			}
+		}
+		return activeOrders;
 	}
 
 	public void print() {
@@ -71,6 +74,11 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 
 	public String generateBusinessKey() {
 		return String.valueOf(System.currentTimeMillis()) + "_" + String.valueOf(random.nextInt(1000));
+	}
+	
+	@Override
+	public void cancelDepartureOrder(String businessKey) {
+		departmentOrders.get(businessKey).setDepartmentOrderState(DepartmentOrderState.CANCELLED);
 	}
 
 	// ---

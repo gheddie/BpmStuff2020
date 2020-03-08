@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface IRailwayStationBusinessLogic {
 
-	boolean waggonsReadyToGo(TrainConfig trainConfig);
+	boolean waggonsAvailableForDepartureTrain(List<String> waggons, String businessKey);
 	
-	boolean waggonsAvailableForDepartureTrain(String businessKey, List<String> waggons);
+	void cancelDepartureOrder(String businessKey);
 }
