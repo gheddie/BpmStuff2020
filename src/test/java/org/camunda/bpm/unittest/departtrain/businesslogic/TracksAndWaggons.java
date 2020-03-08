@@ -9,6 +9,7 @@ import java.util.Set;
 import org.camunda.bpm.unittest.delegate.departtrain.util.RailTestUtil;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Track;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Waggon;
+import org.camunda.bpm.unittest.departtrain.businesslogic.entity.WaggonErrorCode;
 
 import lombok.Data;
 
@@ -31,16 +32,6 @@ public class TracksAndWaggons {
 		data.put(track, new ArrayList<Waggon>());
 	}
 
-	public Track getTrack(Track track) {
-		if (!(data.keySet().contains(track))) {
-			return null;	
-		}
-		for (Track t : data.keySet()) {
-			
-		}
-		return null;
-	}
-	
 	private Track findTrack(String trackNumber) {
 		for (Track track : data.keySet()) {
 			if (track.getTrackNumber().equals(trackNumber)) {
@@ -50,10 +41,15 @@ public class TracksAndWaggons {
 		return null;
 	}
 
-	public List<String> getWaggonNumbers(String trackNumber) {
+	public List<String> getWaggonNumbers(String trackNumber, boolean showWaggonDefects) {
 		List<String> result = new ArrayList<String>();
 		for (Waggon waggon : data.get(findTrack(trackNumber))) {
-			result.add(waggon.getWaggonNumber());
+			if (showWaggonDefects) {
+				result.add(waggon.getWaggonNumber() + (waggon.isDefect() ? "->X::" + waggon.getWaggonErrorCode() : "->OK"));
+			} else {
+				result.add(waggon.getWaggonNumber());
+			}
+
 		}
 		return result;
 	}
@@ -84,7 +80,7 @@ public class TracksAndWaggons {
 		HashMap<String, Waggon> result = new HashMap<String, Waggon>();
 		for (Track track : data.keySet()) {
 			for (Waggon waggon : data.get(track)) {
-				result.put(waggon.getWaggonNumber(), waggon);				
+				result.put(waggon.getWaggonNumber(), waggon);
 			}
 		}
 		return result;
@@ -101,5 +97,23 @@ public class TracksAndWaggons {
 				}
 			}
 		}
+	}
+
+	public void setDefectCode(String waggonNumber, WaggonErrorCode waggonErrorCode) {
+		findWaggon(waggonNumber).setWaggonErrorCode(waggonErrorCode);
+	}
+
+	private Waggon findWaggon(String waggonNumber) {
+		Waggon waggon = null;
+		for (Track track : data.keySet()) {
+			if (data.get(track) != null) {
+				HashMap<String, Waggon> trackWaggons = RailTestUtil.hashWaggons(data.get(track));
+				waggon = trackWaggons.get(waggonNumber);
+				if (waggon != null) {
+					return waggon;
+				}
+			}
+		}
+		return null;
 	}
 }

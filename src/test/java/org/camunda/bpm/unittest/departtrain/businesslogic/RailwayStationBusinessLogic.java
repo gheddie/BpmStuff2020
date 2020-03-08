@@ -10,6 +10,7 @@ import org.camunda.bpm.unittest.departtrain.businesslogic.entity.DepartmentOrder
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.DepartmentOrderState;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Track;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Waggon;
+import org.camunda.bpm.unittest.departtrain.businesslogic.entity.WaggonErrorCode;
 import org.camunda.bpm.unittest.departtrain.businesslogic.util.BusinessLogicUtil;
 
 public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic {
@@ -67,7 +68,7 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 		return activeOrders;
 	}
 
-	public void print() {
+	public void print(boolean showWaggonDefects) {
 		System.out.println("---------------------------------------------");
 		if (departmentOrders != null) {
 			System.out.println(departmentOrders.size() + " department orders.");
@@ -77,7 +78,7 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 		System.out.println("---tracks an waggons:");
 		for (Track track : tracksAndWaggons.getTracks()) {
 			System.out.println("track[" + track.getTrackNumber() + "] ---> "
-					+ BusinessLogicUtil.formatStringList(tracksAndWaggons.getWaggonNumbers(track.getTrackNumber())));
+					+ BusinessLogicUtil.formatStringList(tracksAndWaggons.getWaggonNumbers(track.getTrackNumber(), showWaggonDefects)));
 		}
 		System.out.println("---------------------------------------------");
 	}
@@ -100,6 +101,11 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 		for (String waggonNumber : waggonNumbers) {
 			tracksAndWaggons.removeWaggon(waggonNumber);
 		}
+	}
+	
+	@Override
+	public void setDefectCode(String waggonNumber, WaggonErrorCode waggonErrorCode) {
+		tracksAndWaggons.setDefectCode(waggonNumber, waggonErrorCode);
 	}
 
 	// ---

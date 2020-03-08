@@ -15,6 +15,7 @@ import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
 import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessLogic;
 import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessLogicException;
+import org.camunda.bpm.unittest.departtrain.businesslogic.entity.WaggonErrorCode;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -46,7 +47,9 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 		RailwayStationBusinessLogic.getInstance().withTracks("Track1", "Track2", "TrackExit").withWaggons("Track1", "W1", "W2");
 		
-		RailwayStationBusinessLogic.getInstance().print();
+		RailwayStationBusinessLogic.getInstance().setDefectCode("W1", WaggonErrorCode.C1);
+		
+		RailwayStationBusinessLogic.getInstance().print(true);
 		
 		assertEquals(2, RailwayStationBusinessLogic.getInstance().countWaggons());
 

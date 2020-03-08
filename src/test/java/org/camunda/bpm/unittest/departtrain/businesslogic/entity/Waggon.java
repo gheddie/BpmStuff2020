@@ -8,4 +8,8 @@ public class Waggon {
 	private String waggonNumber;
 	
 	private WaggonErrorCode waggonErrorCode;
+
+	public boolean isDefect() {
+		return (waggonErrorCode != null && waggonErrorCode.isCritical());
+	}
 }
