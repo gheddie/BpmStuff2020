@@ -16,7 +16,6 @@ public class AllRepairsDoneDelegate implements JavaDelegate {
 		}
 		List<String> repairedWaggons = (List<String>) execution.getVariable(DepartTrainTestCase.VAR_REPAIRED_WAGGONS);
 		repairedWaggons.add((String) execution.getVariable(DepartTrainTestCase.VAR_SINGLE_REPAIRED_WAGGON));
-		execution.setVariable(DepartTrainTestCase.VAR_REPAIRED_WAGGONS, repairedWaggons);
 		execution.setVariable(DepartTrainTestCase.VAR_ALL_REPAIRS_DONE, repairedWaggons.size() == 3);
 	}
 }
