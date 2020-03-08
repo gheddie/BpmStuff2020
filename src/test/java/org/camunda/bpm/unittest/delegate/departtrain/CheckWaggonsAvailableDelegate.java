@@ -16,7 +16,7 @@ public class CheckWaggonsAvailableDelegate implements JavaDelegate {
 		if (plannedWaggonList == null || plannedWaggonList.size() == 0) {
 			throw new BpmnError(DepartTrainTestCase.BPM_ERROR_NO_WAGGONS_PLANNED);
 		}
-		boolean waggonsAvailable = RailwayStationBusinessLogic.getInstance().waggonsAvailableForShuntingOrder(execution.getBusinessKey(), plannedWaggonList);
+		boolean waggonsAvailable = RailwayStationBusinessLogic.getInstance().waggonsAvailableForDepartureTrain(execution.getBusinessKey(), plannedWaggonList);
 		execution.setVariable(DepartTrainTestCase.VAR_ALL_WAGGONS_AVAIABLE, waggonsAvailable);
 	}
 }

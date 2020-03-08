@@ -77,7 +77,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 	 * 
 	 * A ---> [W4][W5] --> TrackExit1 B ---> [W4][W5][W6] --> TrackExit2
 	 */
-	@Test
+	// @Test
 	@Deployment(resources = { "departtrain/departTrainProcess.bpmn" })
 	public void testCancelDepartOrderAndAwaitSignal() {
 

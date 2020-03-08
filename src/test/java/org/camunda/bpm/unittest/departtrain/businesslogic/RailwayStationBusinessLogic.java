@@ -29,7 +29,7 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 	}
 	
 	@Override
-	public boolean waggonsAvailableForShuntingOrder(String businessKey, List<String> waggons) {
+	public boolean waggonsAvailableForDepartureTrain(String businessKey, List<String> waggons) {
 		
 		// TODO
 		if ((departmentOrders != null) && (departmentOrders.size() > 0)) {

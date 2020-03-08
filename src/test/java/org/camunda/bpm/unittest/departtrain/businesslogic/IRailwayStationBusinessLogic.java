@@ -6,5 +6,5 @@ public interface IRailwayStationBusinessLogic {
 
 	boolean waggonsReadyToGo(TrainConfig trainConfig);
 	
-	boolean waggonsAvailableForShuntingOrder(String businessKey, List<String> waggons);
+	boolean waggonsAvailableForDepartureTrain(String businessKey, List<String> waggons);
 }

@@ -8,8 +8,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Calendar;
 import java.util.List;
 
-import org.camunda.bpm.engine.impl.ProcessEngineImpl;
-import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.engine.impl.jobexecutor.JobExecutor;
 import org.camunda.bpm.engine.impl.util.ClockUtil;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
@@ -18,11 +16,22 @@ import org.camunda.bpm.engine.task.Task;
 public class BpmTestCase {
 
 	protected Task ensureSingleTaskPresent(String taskName) {
-		List<Task> taskList = taskService().createTaskQuery().taskDefinitionKey(taskName).list();
+		return ensureSingleTaskPresent(taskName, null);
+	}
+
+	protected Task ensureSingleTaskPresent(String taskName, String businessKey) {
+		List<Task> taskList = null;
+		if (businessKey != null) {
+			// regard business key in addition...
+			taskList = taskService().createTaskQuery().taskDefinitionKey(taskName).processInstanceBusinessKey(businessKey).list();
+		} else {
+			// do not regard business key...
+			taskList = taskService().createTaskQuery().taskDefinitionKey(taskName).list();
+		}
 		assertEquals(1, taskList.size());
 		return taskList.get(0);
 	}
-	
+
 	protected List<Task> ensureTaskCountPresent(String taskName, int taskCount) {
 		List<Task> taskList = taskService().createTaskQuery().taskDefinitionKey(taskName).list();
 		assertEquals(taskCount, taskList.size());
@@ -34,8 +43,7 @@ public class BpmTestCase {
 	}
 
 	protected void ensureProcessesRunning(String processDefinitionKey, int count) {
-		List<ProcessInstance> processInstancesList = runtimeService().createProcessInstanceQuery()
-				.processDefinitionKey(processDefinitionKey).list();
+		List<ProcessInstance> processInstancesList = runtimeService().createProcessInstanceQuery().processDefinitionKey(processDefinitionKey).list();
 		assertEquals(count, processInstancesList.size());
 	}
 
@@ -47,7 +55,7 @@ public class BpmTestCase {
 	protected void ensureVariableSet(String variableName) {
 		assertEquals(1, runtimeService().createVariableInstanceQuery().variableName(variableName).list().size());
 	}
-	
+
 	protected void debugEngineState() {
 
 		System.out.println("---------------[ENGINE STATE]------------------");
@@ -66,13 +74,13 @@ public class BpmTestCase {
 
 		System.out.println("-----------------------------------------------");
 	}
-	
+
 	protected void shiftMinutes(int minutes) {
 		Calendar now = Calendar.getInstance();
 		now.add(Calendar.MINUTE, minutes);
 		ClockUtil.setCurrentTime(now.getTime());
 	}
-	
+
 	protected void sleep(long milliSeconds) {
 		try {
 			Thread.sleep(milliSeconds);
