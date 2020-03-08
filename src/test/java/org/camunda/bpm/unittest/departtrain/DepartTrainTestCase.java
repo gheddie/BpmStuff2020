@@ -36,6 +36,8 @@ public class DepartTrainTestCase extends BpmTestCase {
 	// variables
 	public static final String VAR_PLANNED_WAGGONS = "plannedWaggons";
 	public static final String VAR_ALL_REPAIRS_DONE = "allRepairsDone";
+	public static final String VAR_REPAIRED_WAGGONS = "repairedWaggons";
+	public static final String VAR_SINGLE_REPAIRED_WAGGON = "singleRepairedWaggon";
 	
 	// messages
 	public static final String MSG_WAG_REP = "MSG_WAG_REP";
@@ -100,7 +102,11 @@ public class DepartTrainTestCase extends BpmTestCase {
 		completeWaggonChecks(instanceA);
 		
 		// receive waggon repaired message (A)
-		processEngine.getRuntimeService().correlateMessage("MSG_WG_REPAIRED", instanceA.getBusinessKey());
+		Map<String, Object> variablesRepairedWaggonsA = new HashMap<String, Object>();
+		variablesRepairedWaggonsA.put(VAR_SINGLE_REPAIRED_WAGGON, "ABC123");
+		processEngine.getRuntimeService().correlateMessage("MSG_WG_REPAIRED", instanceA.getBusinessKey(), variablesRepairedWaggonsA);
+		processEngine.getRuntimeService().correlateMessage("MSG_WG_REPAIRED", instanceA.getBusinessKey(), variablesRepairedWaggonsA);
+		processEngine.getRuntimeService().correlateMessage("MSG_WG_REPAIRED", instanceA.getBusinessKey(), variablesRepairedWaggonsA);
 		
 		assertThat(instanceA).isWaitingAt(TASK_CHOOSE_EXIT_TRACK);
 		
@@ -120,7 +126,11 @@ public class DepartTrainTestCase extends BpmTestCase {
 		// complete checks for B...
 		completeWaggonChecks(instanceB);
 		
-		// receive waggon repaired message (A)
+		// receive waggon repaired message (B)
+		Map<String, Object> variablesRepairedWaggonsB = new HashMap<String, Object>();
+		variablesRepairedWaggonsB.put(VAR_SINGLE_REPAIRED_WAGGON, "ABC123");
+		processEngine.getRuntimeService().correlateMessage("MSG_WG_REPAIRED", instanceB.getBusinessKey(), variablesRepairedWaggonsB);
+		processEngine.getRuntimeService().correlateMessage("MSG_WG_REPAIRED", instanceB.getBusinessKey());
 		processEngine.getRuntimeService().correlateMessage("MSG_WG_REPAIRED", instanceB.getBusinessKey());
 
 		// B waiting for exit track
