@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.util.Arrays;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
@@ -24,7 +25,13 @@ public class DepartTrainTestCase extends BpmTestCase {
 	@Rule
 	public ProcessEngineRule processEngine = new ProcessEngineRule();
 
-	private static final String PROCESS_DEPART_TRAIN = "departTrainProcess";
+	// tasks
+	private static final String TASK_CHOOSE_EXIT_TRACK = "TaskChooseExitTrack";
+	private static final String TASK_CHECK_WAGGONS = "TaskCheckWaggons";
+	private static final String TASK_CONFIRM_ROLLOUT = "TaskConfirmRollout";
+	
+	// signals
+	private static final String SIGNAL_CATCH_RO_CANC = "SignalCatchRoCanc";
 
 	/**
 	 * awaits a {@link RailwayStationBusinessLogicException} on creating an invalid
@@ -45,74 +52,79 @@ public class DepartTrainTestCase extends BpmTestCase {
 	@Deployment(resources = { "departtrain/departTrainProcess.bpmn" })
 	public void testConcurrentDeparture() {
 
-		RailwayStationBusinessLogic.getInstance().withTracks("Track1", "Track2", "TrackExit").withWaggons("Track1", "W1", "W2");
-		
-		RailwayStationBusinessLogic.getInstance().setDefectCode("W1", WaggonErrorCode.C1);
-		
-		RailwayStationBusinessLogic.getInstance().print(true);
-		
-		assertEquals(2, RailwayStationBusinessLogic.getInstance().countWaggons());
+		// prepare test data
+		prepareTestData();
 
-		List<String> listTaskA = new ArrayList<String>();
-		listTaskA.add("W1");
-		listTaskA.add("W2");
-		ProcessInstance instanceA = startProcess(listTaskA);
+		// start process A
+		ProcessInstance instanceA = startProcess("W1", "W2");
 
-		List<String> listTaskB = new ArrayList<String>();
-		listTaskB.add("W1");
-		listTaskB.add("W2");
-		ProcessInstance instanceB = startProcess(listTaskB);
+		// start process B
+		ProcessInstance instanceB = startProcess("W1", "W2");
 
 		// process B
-		assertThat(instanceB).isWaitingAt("SignalCatchRoCanc");
+		assertThat(instanceB).isWaitingAt(SIGNAL_CATCH_RO_CANC);
 
 		// process A
-		assertThat(instanceA).isWaitingAt("TaskCheckWaggons");
-		List<Task> waggonChecksA = processEngine.getTaskService().createTaskQuery().taskDefinitionKey("TaskCheckWaggons").list();
-		assertEquals(2, waggonChecksA.size());
-		// check all waggons
-		for (Task task : waggonChecksA) {
-			processEngine.getTaskService().complete(task.getId());
-		}
-		assertThat(instanceA).isWaitingAt("TaskChooseExitTrack");
-		// finish track choosing
-		Map<String, Object> exitTrackVariables = new HashMap<String, Object>();
-		exitTrackVariables.put("exitTrack", "T1");
-		processEngine.getTaskService()
-				.complete(processEngine.getTaskService().createTaskQuery().taskDefinitionKey("TaskChooseExitTrack").list().get(0).getId(), exitTrackVariables);
+		assertThat(instanceA).isWaitingAt(TASK_CHECK_WAGGONS);
 		
+		completeWaggonChecks(instanceA);
+		
+		assertThat(instanceA).isWaitingAt(TASK_CHOOSE_EXIT_TRACK);
+		
+		// finish track choosing for A
+		processExitTrackChoosing(instanceA);
+
 		// shunt A...
 		processShunting(instanceA);
-		
+
 		// finish roll out
 		processRollout(instanceA, false);
 		assertThat(instanceA).isEnded();
 
 		// B caught signal and must now check its own waggons...
-		assertThat(instanceB).isWaitingAt("TaskCheckWaggons");
+		assertThat(instanceB).isWaitingAt(TASK_CHECK_WAGGONS);
 
 		// complete checks for B...
-		for (Task taskB : processEngine.getTaskService().createTaskQuery().taskDefinitionKey("TaskCheckWaggons")
-				.processInstanceBusinessKey(instanceB.getBusinessKey()).list()) {
-			processEngine.getTaskService().complete(taskB.getId());
-		}
+		completeWaggonChecks(instanceB);
 
 		// B waiting for exit track
-		Task chooseExitTrackB = ensureSingleTaskPresent("TaskChooseExitTrack", false);
-		processEngine.getTaskService().complete(chooseExitTrackB.getId(), exitTrackVariables);
-		
+		processExitTrackChoosing(instanceB);
+
 		processShunting(instanceB);
 
 		// B waiting for exit track
-		assertThat(instanceB).isWaitingAt("TaskConfirmRollout");
+		assertThat(instanceB).isWaitingAt(TASK_CONFIRM_ROLLOUT);
 
 		processRollout(instanceB, true);
 
 		// B is gone...
 		assertThat(instanceB).isEnded();
-		
+
 		// waggons must have left the station...
 		assertEquals(0, RailwayStationBusinessLogic.getInstance().countWaggons());
+	}
+
+	private void prepareTestData() {
+		RailwayStationBusinessLogic.getInstance().withTracks("Track1", "Track2", "TrackExit").withWaggons("Track1", "W1", "W2");
+		RailwayStationBusinessLogic.getInstance().setDefectCode("W1", WaggonErrorCode.C1);
+		RailwayStationBusinessLogic.getInstance().print(true);
+		assertEquals(2, RailwayStationBusinessLogic.getInstance().countWaggons());
+	}
+
+	private void completeWaggonChecks(ProcessInstance processInstance) {
+		
+		for (Task waggonCheckTask : processEngine.getTaskService().createTaskQuery().taskDefinitionKey(TASK_CHECK_WAGGONS)
+				.processInstanceBusinessKey(processInstance.getBusinessKey()).list()) {
+			processEngine.getTaskService().complete(waggonCheckTask.getId());
+		}
+	}
+
+	private Map<String, Object> processExitTrackChoosing(ProcessInstance processInstance) {
+		Map<String, Object> exitTrackVariables = new HashMap<String, Object>();
+		exitTrackVariables.put("exitTrack", "T1");
+		processEngine.getTaskService().complete(processEngine.getTaskService().createTaskQuery().processInstanceBusinessKey(processInstance.getBusinessKey())
+				.taskDefinitionKey(TASK_CHOOSE_EXIT_TRACK).list().get(0).getId(), exitTrackVariables);
+		return exitTrackVariables;
 	}
 
 	private void processShunting(ProcessInstance instanceA) {
@@ -122,14 +134,14 @@ public class DepartTrainTestCase extends BpmTestCase {
 	private void processRollout(ProcessInstance processInstance, boolean doRollOut) {
 		Map<String, Object> rolloutVariables = new HashMap<String, Object>();
 		rolloutVariables.put("rolloutConfirmed", doRollOut);
-		processEngine.getTaskService().complete(ensureSingleTaskPresent("TaskConfirmRollout", processInstance.getBusinessKey(), false).getId(),
+		processEngine.getTaskService().complete(ensureSingleTaskPresent(TASK_CONFIRM_ROLLOUT, processInstance.getBusinessKey(), false).getId(),
 				rolloutVariables);
 	}
 
-	private ProcessInstance startProcess(List<String> waggons) {
+	private ProcessInstance startProcess(String... waggonNumbers) {
 
 		Map<String, Object> variables = new HashMap<String, Object>();
-		variables.put("plannedWaggons", waggons);
+		variables.put("plannedWaggons", Arrays.asList(waggonNumbers));
 		ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByMessage("MSG_DEPARTURE_PLANNED",
 				RailwayStationBusinessLogic.getInstance().generateBusinessKey(), variables);
 		return instance;
