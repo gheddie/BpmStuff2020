@@ -15,7 +15,7 @@ public class CheckWaggonsAvailableDelegate implements JavaDelegate {
 	public void execute(DelegateExecution execution) {
 		List<String> plannedWaggons = null;
 		try {
-			plannedWaggons = (List<String>) execution.getVariable(DepartTrainTestCase.PLANNED_WAGGONS);
+			plannedWaggons = (List<String>) execution.getVariable(DepartTrainTestCase.VAR_PLANNED_WAGGONS);
 			RailwayStationBusinessLogic.getInstance().createDepartureOrder(plannedWaggons, execution.getBusinessKey());
 		} catch (RailWayException e) {
 			throw new BpmnError("ERR_CREATE_DO");

@@ -12,7 +12,7 @@ public class ProcessCriticalErrorsDelegate implements JavaDelegate {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
-		List<String> plannedWaggons = (List<String>) execution.getVariable(DepartTrainTestCase.PLANNED_WAGGONS);
+		List<String> plannedWaggons = (List<String>) execution.getVariable(DepartTrainTestCase.VAR_PLANNED_WAGGONS);
 		for (String plannedWaggon : plannedWaggons) {
 			if (RailwayStationBusinessLogic.getInstance().isWaggonCritical(plannedWaggon)) {
 				execution.getProcessEngine().getRuntimeService().startProcessInstanceByMessage(DepartTrainTestCase.MSG_WAG_REP);

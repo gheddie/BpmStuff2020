@@ -34,7 +34,8 @@ public class DepartTrainTestCase extends BpmTestCase {
 	private static final String SIGNAL_CATCH_RO_CANC = "SignalCatchRoCanc";
 	
 	// variables
-	public static final String PLANNED_WAGGONS = "plannedWaggons";
+	public static final String VAR_PLANNED_WAGGONS = "plannedWaggons";
+	public static final String VAR_ALL_REPAIRS_DONE = "allRepairsDone";
 	
 	// messages
 	public static final String MSG_WAG_REP = "MSG_WAG_REP";
@@ -169,7 +170,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 	private ProcessInstance startProcess(String... waggonNumbers) {
 
 		Map<String, Object> variables = new HashMap<String, Object>();
-		variables.put(PLANNED_WAGGONS, Arrays.asList(waggonNumbers));
+		variables.put(VAR_PLANNED_WAGGONS, Arrays.asList(waggonNumbers));
 		ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByMessage("MSG_DEPARTURE_PLANNED",
 				RailwayStationBusinessLogic.getInstance().generateBusinessKey(), variables);
 		return instance;

@@ -11,6 +11,6 @@ public class RemoveWaggonsDelegate implements JavaDelegate {
 
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
-		RailwayStationBusinessLogic.getInstance().removeWaggons((List<String>) execution.getVariable(DepartTrainTestCase.PLANNED_WAGGONS));
+		RailwayStationBusinessLogic.getInstance().removeWaggons((List<String>) execution.getVariable(DepartTrainTestCase.VAR_PLANNED_WAGGONS));
 	}
 }
