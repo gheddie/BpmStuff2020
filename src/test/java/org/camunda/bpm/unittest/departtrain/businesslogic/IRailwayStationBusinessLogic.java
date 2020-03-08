@@ -3,10 +3,11 @@ package org.camunda.bpm.unittest.departtrain.businesslogic;
 import java.util.List;
 
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.WaggonErrorCode;
+import org.camunda.bpm.unittest.departtrain.businesslogic.exception.RailWayException;
 
 public interface IRailwayStationBusinessLogic {
 
-	boolean waggonsAvailableForDepartureTrain(List<String> waggons, String businessKey);
+	void createDepartureOrder(List<String> waggons, String businessKey) throws RailWayException;
 	
 	void cancelDepartureOrder(String businessKey);
 	

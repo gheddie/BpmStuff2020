@@ -3,10 +3,11 @@ package org.camunda.bpm.unittest.delegate.departtrain;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 
-public class CheckWaggonPositionsDelegate implements JavaDelegate {
+public class OrderShuntingDelegate implements JavaDelegate {
 
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
-		execution.setVariable("positionsOk", false);
+		// start shunting process
+		execution.getProcessEngine().getRuntimeService().startProcessInstanceByMessage("MSG_SH_ORD");
 	}
 }

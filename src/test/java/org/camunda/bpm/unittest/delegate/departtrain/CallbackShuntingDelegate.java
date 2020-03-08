@@ -1,12 +1,14 @@
 package org.camunda.bpm.unittest.delegate.departtrain;
 
+import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.runtimeService;
+
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 
-public class CheckWaggonPositionsDelegate implements JavaDelegate {
+public class CallbackShuntingDelegate implements JavaDelegate {
 
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
-		execution.setVariable("positionsOk", false);
+		runtimeService().correlateMessage("MSG_SH_DONE");
 	}
 }

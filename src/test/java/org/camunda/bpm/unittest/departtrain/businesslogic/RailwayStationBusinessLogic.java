@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.DepartmentOrder;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.DepartmentOrderState;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Track;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Waggon;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.WaggonErrorCode;
+import org.camunda.bpm.unittest.departtrain.businesslogic.exception.RailWayException;
 import org.camunda.bpm.unittest.departtrain.businesslogic.util.BusinessLogicUtil;
 
 public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic {
@@ -29,33 +29,31 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 	}
 
 	@Override
-	public boolean waggonsAvailableForDepartureTrain(List<String> waggonNumbers, String businessKey) {
+	public void createDepartureOrder(List<String> waggonNumbers, String businessKey) throws RailWayException {
 		
 		// no active order --> OK
 		List<DepartmentOrder> activeDepartureOrders = findActiveDepartureOrders();
 		if ((activeDepartureOrders != null) && (activeDepartureOrders.size() > 0)) {
-			return false;
+			throw new RailWayException();
 		}
 		
 		// all waggons must be present in station
 		HashMap<String, Waggon> allWaggons = tracksAndWaggons.getAllWaggons();
 		for (String waggonNumber : waggonNumbers) {
 			if (allWaggons.get(waggonNumber) == null) {
-				return false;
+				throw new RailWayException();
 			}
 		}
 		
 		// none of the waggons must be planned in active departure order!!
 		for (DepartmentOrder activeDepartureOrder : activeDepartureOrders) {
 			if (activeDepartureOrder.containsAnyWaggon(waggonNumbers)) {
-				return false;		
+				throw new RailWayException();		
 			}
 		}
 		
 		// now, create a department order of state 'ACTIVE'...
 		departmentOrders.put(businessKey, new DepartmentOrder());
-
-		return true;
 	}
 
 	private List<DepartmentOrder> findActiveDepartureOrders() {
@@ -71,7 +69,10 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 	public void print(boolean showWaggonDefects) {
 		System.out.println("---------------------------------------------");
 		if (departmentOrders != null) {
-			System.out.println(departmentOrders.size() + " department orders.");
+			System.out.println(departmentOrders.size() + " department orders:");
+			for (DepartmentOrder departmentOrder : departmentOrders.values()) {
+				System.out.println(departmentOrder + " (" + departmentOrder.getDepartmentOrderState() + ")");
+			}
 		} else {
 			System.out.println("NO department orders.");
 		}

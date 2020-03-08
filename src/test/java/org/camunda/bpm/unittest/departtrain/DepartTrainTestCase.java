@@ -78,6 +78,10 @@ public class DepartTrainTestCase extends BpmTestCase {
 		// finish track choosing
 		processEngine.getTaskService()
 				.complete(processEngine.getTaskService().createTaskQuery().taskDefinitionKey("TaskChooseExitTrack").list().get(0).getId());
+		
+		// shunt A...
+		processShunting(instanceA);
+		
 		// finish roll out
 		processRollout(instanceA, false);
 		assertThat(instanceA).isEnded();
@@ -93,6 +97,8 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 		// B waiting for exit track
 		ensureSingleTaskPresent("TaskChooseExitTrack", true);
+		
+		processShunting(instanceB);
 
 		// B waiting for exit track
 		assertThat(instanceB).isWaitingAt("TaskConfirmRollout");
@@ -104,6 +110,10 @@ public class DepartTrainTestCase extends BpmTestCase {
 		
 		// waggons must have left the station...
 		assertEquals(0, RailwayStationBusinessLogic.getInstance().countWaggons());
+	}
+
+	private void processShunting(ProcessInstance instanceA) {
+		ensureSingleTaskPresent("TaskShuntWaggons", true);
 	}
 
 	private void processRollout(ProcessInstance processInstance, boolean doRollOut) {
