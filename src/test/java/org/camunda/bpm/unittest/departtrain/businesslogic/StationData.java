@@ -4,16 +4,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.camunda.bpm.unittest.departtrain.businesslogic.entity.DepartmentOrder;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Track;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Waggon;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.WaggonErrorCode;
 import org.camunda.bpm.unittest.departtrain.businesslogic.exception.RailwayStationBusinessLogicException;
+import org.camunda.bpm.unittest.departtrain.businesslogic.util.BusinessLogicUtil;
 import org.camunda.bpm.unittest.departtrain.util.RailTestUtil;
 
 import lombok.Data;
 
 @Data
 public class StationData {
+	
+	// key --> business key (also from referring business process)
+	private HashMap<String, DepartmentOrder> departmentOrders = new HashMap<String, DepartmentOrder>();
 
 	private List<Track> tracks = new ArrayList<Track>();
 
@@ -94,5 +99,28 @@ public class StationData {
 
 	public void reset() {
 		tracks = new ArrayList<Track>();
+		departmentOrders = new HashMap<String, DepartmentOrder>();
+	}
+	
+	public void print(boolean showWaggonDefects) {
+		System.out.println("---------------------------------------------");
+		if (departmentOrders != null) {
+			System.out.println(departmentOrders.size() + " department orders:");
+			for (DepartmentOrder departmentOrder : departmentOrders.values()) {
+				System.out.println(departmentOrder + " (" + departmentOrder.getDepartmentOrderState() + ")");
+			}
+		} else {
+			System.out.println("NO department orders.");
+		}
+		System.out.println("---tracks an waggons:");
+		for (Track track : tracks) {
+			System.out.println("track[" + track.getTrackNumber() + "] ---> "
+					+ BusinessLogicUtil.formatStringList(track.getWaggonNumbers(showWaggonDefects)));
+		}
+		System.out.println("---------------------------------------------");
+	}
+
+	public void createDepartmentOrder(String businessKey) {
+		departmentOrders.put(businessKey, new DepartmentOrder());
 	}
 }

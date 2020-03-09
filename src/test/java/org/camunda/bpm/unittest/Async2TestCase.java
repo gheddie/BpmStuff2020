@@ -32,7 +32,7 @@ public class Async2TestCase extends BpmTestCase {
 	// variabls
 	public static final String VAR_RAISE_ERROR = "raiseError";
 	
-	@Test
+	// @Test
 	@Deployment(resources = { "async2/asyncTestProcess2.bpmn" })
 	public void testIt() {
 		

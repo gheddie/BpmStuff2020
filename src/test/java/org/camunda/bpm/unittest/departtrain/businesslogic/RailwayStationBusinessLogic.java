@@ -18,9 +18,6 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 
 	private StationData stationData = new StationData();
 
-	// key --> business key (also from referring business process)
-	private HashMap<String, DepartmentOrder> departmentOrders = new HashMap<String, DepartmentOrder>();
-
 	private static final Random random = new Random();
 
 	private RailwayStationBusinessLogic() {
@@ -49,35 +46,17 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 		}
 		
 		// now, create a department order of state 'ACTIVE'...
-		departmentOrders.put(businessKey, new DepartmentOrder());
+		stationData.createDepartmentOrder(businessKey);
 	}
 
 	private List<DepartmentOrder> findActiveDepartureOrders() {
 		List<DepartmentOrder> activeOrders = new ArrayList<DepartmentOrder>();
-		for (DepartmentOrder departmentOrder : departmentOrders.values()) {
+		for (DepartmentOrder departmentOrder : stationData.getDepartmentOrders().values()) {
 			if (departmentOrder.getDepartmentOrderState().equals(DepartmentOrderState.ACTIVE)) {
 				activeOrders.add(departmentOrder);
 			}
 		}
 		return activeOrders;
-	}
-
-	public void print(boolean showWaggonDefects) {
-		System.out.println("---------------------------------------------");
-		if (departmentOrders != null) {
-			System.out.println(departmentOrders.size() + " department orders:");
-			for (DepartmentOrder departmentOrder : departmentOrders.values()) {
-				System.out.println(departmentOrder + " (" + departmentOrder.getDepartmentOrderState() + ")");
-			}
-		} else {
-			System.out.println("NO department orders.");
-		}
-		System.out.println("---tracks an waggons:");
-		for (Track track : stationData.getTracks()) {
-			System.out.println("track[" + track.getTrackNumber() + "] ---> "
-					+ BusinessLogicUtil.formatStringList(track.getWaggonNumbers(showWaggonDefects)));
-		}
-		System.out.println("---------------------------------------------");
 	}
 
 	public String generateBusinessKey() {
@@ -86,7 +65,7 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 	
 	@Override
 	public void cancelDepartureOrder(String businessKey) {
-		departmentOrders.get(businessKey).setDepartmentOrderState(DepartmentOrderState.CANCELLED);
+		stationData.getDepartmentOrders().get(businessKey).setDepartmentOrderState(DepartmentOrderState.CANCELLED);
 	}
 	
 	public int countWaggons() {
@@ -132,7 +111,10 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 	}
 
 	public void reset() {
-		departmentOrders = new HashMap<String, DepartmentOrder>();
 		stationData.reset();
+	}
+
+	public void print(boolean showWaggonDefects) {
+		stationData.print(showWaggonDefects);
 	}
 }

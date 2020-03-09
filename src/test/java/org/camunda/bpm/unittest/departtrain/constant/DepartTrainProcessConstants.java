@@ -1,6 +1,6 @@
 package org.camunda.bpm.unittest.departtrain.constant;
 
-public class ProcessConstants {
+public class DepartTrainProcessConstants {
 
 	// ##############################################################################
 	// ####################################### tasks

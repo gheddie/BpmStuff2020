@@ -15,8 +15,6 @@ public interface IRailwayStationBusinessLogic {
 	
 	int countWaggons();
 	
-	void print(boolean showWaggonDefects);
-	
 	void setDefectCode(String waggonNumber, WaggonErrorCode waggonErrorCode);
 	
 	boolean isWaggonCritical(String waggonNumber);
