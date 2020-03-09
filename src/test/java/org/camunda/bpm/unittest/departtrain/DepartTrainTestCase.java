@@ -28,38 +28,38 @@ public class DepartTrainTestCase extends BpmTestCase {
 	// ####################################### tasks
 	// ##############################################################################
 	
-	private static final String TASK_CHOOSE_EXIT_TRACK = "TaskChooseExitTrack";
-	private static final String TASK_CHECK_WAGGONS = "TaskCheckWaggons";
-	private static final String TASK_CONFIRM_ROLLOUT = "TaskConfirmRollout";
-	private static final String TASK_PROCESS_REPAIR = "TaskProcessRepair";
-	private static final String TASK_ASSUME_REPAIR_TIME = "TaskAssumeRepairTime";
+	private static final String TASK_CHOOSE_EXIT_TRACK = "TASK_CHOOSE_EXIT_TRACK";
+	private static final String TASK_CHECK_WAGGONS = "TASK_CHECK_WAGGONS";
+	private static final String TASK_CONFIRM_ROLLOUT = "TASK_CONFIRM_ROLLOUT";
+	private static final String TASK_PROCESS_REPAIR = "TASK_PROCESS_REPAIR";
+	private static final String TASK_ASSUME_REPAIR_TIME = "TASK_ASSUME_REPAIR_TIME";
 
 	// signals
-	private static final String SIGNAL_CATCH_RO_CANC = "SignalCatchRoCanc";
+	private static final String SIG_RO_CANC = "SIG_RO_CANC";
 
 	// ##############################################################################
 	// ####################################### variables
 	// ##############################################################################
 	
 	// Gesamtliste, die in den Prozess eingegeben wird
-	public static final String VAR_PLANNED_WAGGONS = "plannedWaggons";
+	public static final String VAR_PLANNED_WAGGONS = "VAR_PLANNED_WAGGONS";
 	
 	// Entscheidet, ob zu 'TaskChooseExitTrack' übergegangen wird ---> 'TaskAllRepairsDone'
-	public static final String VAR_ALL_REPAIRS_DONE = "allRepairsDone";
+	public static final String VAR_ALL_REPAIRS_DONE = "VAR_ALL_REPAIRS_DONE";
 	
 	// Hier werden in 'TaskAllRepairsDone' alle zurückgemeldeten Reparaturen gespeichert
 	// Es wird zu 'TaskChooseExitTrack' weitergegeben, wenn gilt: ('VAR_REPAIRED_WAGGONS' == 'VAR_WAGGONS_TO_REPAIR')
-	public static final String VAR_REPAIRED_WAGGONS = "repairedWaggons";
+	public static final String VAR_REPAIRED_WAGGONS = "VAR_REPAIRED_WAGGONS";
 	
 	// Hier wird sich ab 'TaskProcessCriticalErrors' gemerkt, welche Wagen als repariert zurückzumelden sind
-	public static final String VAR_WAGGONS_TO_REPAIR = "waggonsToRepair";
+	public static final String VAR_WAGGONS_TO_REPAIR = "VAR_WAGGONS_TO_REPAIR";
 	
 	// Wird durch den Reparatur-Prozess geschleift und auuch von diesem zurückgegeben
-	public static final String VAR_SINGLE_WAGGON_TO_REPAIR = "singleWaggonToRepair";
+	public static final String VAR_SINGLE_WAGGON_TO_REPAIR = "VAR_SINGLE_WAGGON_TO_REPAIR";
 	
 	// business key of the 'master' process --> passed to repair 
 	// process to able to call back to master
-	public static final String VAR_DEP_PROC_BK = "depProcBk";
+	public static final String VAR_DEP_PROC_BK = "VAR_DEP_PROC_BK";
 
 	// ##############################################################################
 	// ####################################### meesages
@@ -119,7 +119,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		ProcessInstance instanceB = startProcess("W1", "W2");
 
 		// process B
-		assertThat(instanceB).isWaitingAt(SIGNAL_CATCH_RO_CANC);
+		assertThat(instanceB).isWaitingAt(SIG_RO_CANC);
 
 		// process A
 		assertThat(instanceA).isWaitingAt(TASK_CHECK_WAGGONS);
