@@ -2,15 +2,11 @@ package org.camunda.bpm.unittest;
 
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.runtimeService;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskService;
-import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.managementService;
-import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 import java.util.List;
 
-import org.camunda.bpm.engine.runtime.Job;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
-import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;

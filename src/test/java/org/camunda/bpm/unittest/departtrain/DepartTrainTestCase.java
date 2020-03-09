@@ -39,6 +39,9 @@ public class DepartTrainTestCase extends BpmTestCase {
 	public static final String VAR_ALL_REPAIRS_DONE = "allRepairsDone";
 	public static final String VAR_REPAIRED_WAGGONS = "repairedWaggons";
 	public static final String VAR_SINGLE_REPAIRED_WAGGON = "singleRepairedWaggon";
+	
+	// business key of the 'master' process --> passed to repair 
+	// process to able to call back to master
 	public static final String VAR_DEP_PROC_BK = "depProcBk";
 
 	// messages
@@ -106,9 +109,6 @@ public class DepartTrainTestCase extends BpmTestCase {
 		// receive waggon repaired message (A)
 		Map<String, Object> variablesRepairedWaggonsA = new HashMap<String, Object>();
 		variablesRepairedWaggonsA.put(VAR_SINGLE_REPAIRED_WAGGON, "ABC123");
-		// processEngine.getRuntimeService().correlateMessage("MSG_WG_REPAIRED",
-		// instanceA.getBusinessKey(), variablesRepairedWaggonsA);
-		// callback repair 'W1' ot main process --> finish 'TaskProcessRepair'
 		// process repair assume for instance A
 		List<Task> assumeListA = processEngine.getTaskService().createTaskQuery().taskDefinitionKey(TASK_ASSUME_REPAIR_TIME).list();
 		assertEquals(1, assumeListA.size());
@@ -139,9 +139,6 @@ public class DepartTrainTestCase extends BpmTestCase {
 		// receive waggon repaired message (B)
 		Map<String, Object> variablesRepairedWaggonsB = new HashMap<String, Object>();
 		variablesRepairedWaggonsB.put(VAR_SINGLE_REPAIRED_WAGGON, "ABC123");
-		//processEngine.getRuntimeService().correlateMessage("MSG_WG_REPAIRED",
-		// instanceB.getBusinessKey(), variablesRepairedWaggonsB);
-		// callback repair 'W1' ot main process --> finish 'TaskProcessRepair'
 		// process assume for instance B
 		List<Task> assumeListB = processEngine.getTaskService().createTaskQuery().taskDefinitionKey(TASK_ASSUME_REPAIR_TIME).list();
 		assertEquals(1, assumeListB.size());

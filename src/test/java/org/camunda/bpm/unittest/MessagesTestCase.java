@@ -1,9 +1,9 @@
 package org.camunda.bpm.unittest;
 
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.jobQuery;
+import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.managementService;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.runtimeService;
 import static org.junit.Assert.assertEquals;
-import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.managementService;
 
 import java.util.List;
 
@@ -11,7 +11,6 @@ import org.camunda.bpm.engine.runtime.Job;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
-import org.camunda.bpm.unittest.util.DataGrid;
 import org.junit.Rule;
 import org.junit.Test;
 
