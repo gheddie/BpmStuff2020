@@ -26,4 +26,8 @@ public class RailTestUtil {
 		}
 		return hashedTracks;
 	}
+
+	public static boolean areListsEqual(List<String> list1, List<String> list2) {
+		return false;
+	}
 }

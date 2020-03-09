@@ -6,6 +6,7 @@ import java.util.List;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.unittest.departtrain.constant.DepartTrainProcessConstants;
+import org.camunda.bpm.unittest.departtrain.util.RailTestUtil;
 
 public class AllRepairsDoneDelegate implements JavaDelegate {
 
@@ -16,6 +17,10 @@ public class AllRepairsDoneDelegate implements JavaDelegate {
 		}
 		List<String> repairedWaggons = (List<String>) execution.getVariable(DepartTrainProcessConstants.VAR_REPAIRED_WAGGONS);
 		repairedWaggons.add((String) execution.getVariable(DepartTrainProcessConstants.VAR_SINGLE_WAGGON_TO_REPAIR));
+		
+		// all waggons repaired?
+		RailTestUtil.areListsEqual(repairedWaggons, (List<String>) execution.getVariable(DepartTrainProcessConstants.VAR_WAGGONS_TO_REPAIR));
+		
 		execution.setVariable(DepartTrainProcessConstants.VAR_ALL_REPAIRS_DONE, repairedWaggons.size() == 1);
 	}
 }

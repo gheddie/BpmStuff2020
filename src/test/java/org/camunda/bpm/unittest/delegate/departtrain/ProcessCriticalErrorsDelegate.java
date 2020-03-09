@@ -21,7 +21,8 @@ public class ProcessCriticalErrorsDelegate implements JavaDelegate {
 				// pass master process business key to call back...
 				execution.getProcessEngine().getRuntimeService()
 						.startProcessInstanceByMessage(DepartTrainProcessConstants.MSG_INVOKE_WAG_REP, HashBuilder.create()
-								.withValue(DepartTrainProcessConstants.VAR_DEP_PROC_BK, execution.getBusinessKey()).build());
+								.withValue(DepartTrainProcessConstants.VAR_DEP_PROC_BK, execution.getBusinessKey())
+								.withValue(DepartTrainProcessConstants.VAR_SINGLE_WAGGON_TO_REPAIR, plannedWaggon).build());
 				// store waggons to repair in 'VAR_WAGGONS_TO_REPAIR'
 				waggonsToRepair.add(plannedWaggon);
 			}

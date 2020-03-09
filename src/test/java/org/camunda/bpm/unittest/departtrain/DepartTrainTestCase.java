@@ -101,9 +101,16 @@ public class DepartTrainTestCase extends BpmTestCase {
 			processEngine.getTaskService().complete(assumeTask.getId());
 		}
 		
-		// 3 tasks 'TASK_ASSUME_REPAIR_TIME'
-		assertEquals(3, processEngine.getTaskService().createTaskQuery()
-				.taskDefinitionKey(DepartTrainProcessConstants.TASK_PROCESS_REPAIR).list().size());
+		// 3 tasks 'TASK_PROCESS_REPAIR'
+		List<Task> repairTasks = processEngine.getTaskService().createTaskQuery()
+				.taskDefinitionKey(DepartTrainProcessConstants.TASK_PROCESS_REPAIR).list();
+		assertEquals(3, repairTasks.size());
+		
+		// repair a waggon...
+		processEngine.getTaskService().complete(repairTasks.get(0).getId());
+		
+		// choose exit track after first repair...
+		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
 	}
 
 	@Test
@@ -130,11 +137,6 @@ public class DepartTrainTestCase extends BpmTestCase {
 		// process A
 		assertThat(instanceA).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_WG_REPAIRED);
 
-		completeWaggonChecks(instanceA);
-
-		// receive waggon repaired message (A)
-		Map<String, Object> variablesRepairedWaggonsA = new HashMap<String, Object>();
-		variablesRepairedWaggonsA.put(DepartTrainProcessConstants.VAR_SINGLE_WAGGON_TO_REPAIR, "ABC123");
 		// process repair assume for instance A
 		List<Task> assumeListA = processEngine.getTaskService().createTaskQuery()
 				.taskDefinitionKey(DepartTrainProcessConstants.TASK_ASSUME_REPAIR_TIME).list();
@@ -161,12 +163,6 @@ public class DepartTrainTestCase extends BpmTestCase {
 		// B caught signal and must now check its own waggons...
 		// assertThat(instanceB).isWaitingAt(DepartTrainProcessConstants.TASK_CHECK_WAGGONS);
 
-		// complete checks for B...
-		completeWaggonChecks(instanceB);
-
-		// receive waggon repaired message (B)
-		Map<String, Object> variablesRepairedWaggonsB = new HashMap<String, Object>();
-		variablesRepairedWaggonsB.put(DepartTrainProcessConstants.VAR_SINGLE_WAGGON_TO_REPAIR, "ABC123");
 		// process assume for instance B
 		List<Task> assumeListB = processEngine.getTaskService().createTaskQuery()
 				.taskDefinitionKey(DepartTrainProcessConstants.TASK_ASSUME_REPAIR_TIME).list();
@@ -193,15 +189,6 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 		// waggons must have left the station...
 		assertEquals(0, RailwayStationBusinessLogic.getInstance().countWaggons());
-	}
-
-	private void completeWaggonChecks(ProcessInstance processInstance) {
-
-		for (Task waggonCheckTask : processEngine.getTaskService().createTaskQuery()
-				.taskDefinitionKey(DepartTrainProcessConstants.TASK_CHECK_WAGGONS)
-				.processInstanceBusinessKey(processInstance.getBusinessKey()).list()) {
-			processEngine.getTaskService().complete(waggonCheckTask.getId());
-		}
 	}
 
 	private Map<String, Object> processExitTrackChoosing(ProcessInstance processInstance) {
