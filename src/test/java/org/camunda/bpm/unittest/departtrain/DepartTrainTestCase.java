@@ -96,30 +96,34 @@ public class DepartTrainTestCase extends BpmTestCase {
 		List<Task> assumeTasks = processEngine.getTaskService().createTaskQuery()
 				.taskDefinitionKey(DepartTrainProcessConstants.TASK_ASSUME_REPAIR_TIME).list();
 		assertEquals(3, assumeTasks.size());
-		
-		//  process them
+
+		// process them
 		for (Task assumeTask : assumeTasks) {
 			processEngine.getTaskService().complete(assumeTask.getId());
 		}
-		
+
 		// 3 tasks 'TASK_PROCESS_REPAIR'
 		List<Task> repairTasks = processEngine.getTaskService().createTaskQuery()
 				.taskDefinitionKey(DepartTrainProcessConstants.TASK_PROCESS_REPAIR).list();
 		assertEquals(3, repairTasks.size());
-		
-		List<EventSubscription> list = processEngine.getRuntimeService().createEventSubscriptionQuery().list();
-		
+
 		// repair waggon 1 of 3 --> not done (back to message catch)
+		assertEquals(1, processEngine.getRuntimeService().createEventSubscriptionQuery()
+				.eventName(DepartTrainProcessConstants.MSG_WG_REPAIRED).list().size());
 		processEngine.getTaskService().complete(repairTasks.get(0).getId());
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_WG_REPAIRED);
-		
+
 		// repair waggon 2 of 3 --> not done (back to message catch)
+		assertEquals(1, processEngine.getRuntimeService().createEventSubscriptionQuery()
+				.eventName(DepartTrainProcessConstants.MSG_WG_REPAIRED).list().size());
 		processEngine.getTaskService().complete(repairTasks.get(1).getId());
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_WG_REPAIRED);
-		
+
 		// repair waggon 3 of 3 --> done!!!
+		assertEquals(1, processEngine.getRuntimeService().createEventSubscriptionQuery()
+				.eventName(DepartTrainProcessConstants.MSG_WG_REPAIRED).list().size());
 		processEngine.getTaskService().complete(repairTasks.get(2).getId());
-		
+
 		// choose exit track after all repairs...
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
 	}

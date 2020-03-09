@@ -22,7 +22,7 @@
         <bpmn:flowNodeRef>SignalThrowRoCanc</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>IntermediateThrowEvent_11pdw8a</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TaskOrderShunting</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>ExclusiveGateway_10q31nk</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExGwPositionsCorrect</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TaskCheckWaggonPositions</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>BoundaryEvent_1p8wdzo</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TASK_CHOOSE_EXIT_TRACK</bpmn:flowNodeRef>
@@ -92,9 +92,9 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${rolloutConfirmed == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_04qyvr6" sourceRef="ExGwRollout" targetRef="TaskRemoveWaggons" />
-    <bpmn:sequenceFlow id="SequenceFlow_0qc5j30" name="yes" sourceRef="ExclusiveGateway_10q31nk" targetRef="ExclusiveGateway_1bdmnut" />
+    <bpmn:sequenceFlow id="SequenceFlow_0qc5j30" name="yes" sourceRef="ExGwPositionsCorrect" targetRef="ExclusiveGateway_1bdmnut" />
     <bpmn:sequenceFlow id="SequenceFlow_1y63fyx" sourceRef="TaskCreateDepartingOrder" targetRef="TaskProcessCriticalErrors" />
-    <bpmn:sequenceFlow id="SequenceFlow_13gkobw" sourceRef="TaskCheckWaggonPositions" targetRef="ExclusiveGateway_10q31nk" />
+    <bpmn:sequenceFlow id="SequenceFlow_13gkobw" sourceRef="TaskCheckWaggonPositions" targetRef="ExGwPositionsCorrect" />
     <bpmn:sequenceFlow id="SequenceFlow_0iv6lm4" sourceRef="TASK_CHOOSE_EXIT_TRACK" targetRef="TaskCheckWaggonPositions" />
     <bpmn:sequenceFlow id="SequenceFlow_1wur16x" sourceRef="BoundaryEvent_1p8wdzo" targetRef="TASK_CHOOSE_EXIT_TRACK" />
     <bpmn:sequenceFlow id="SequenceFlow_198wx9r" sourceRef="CATCH_MSG_WG_REPAIRED" targetRef="TaskAllRepairsDone" />
@@ -111,12 +111,12 @@
       <bpmn:incoming>SequenceFlow_1x3nblr</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0xyk95k</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_10q31nk" name="positions correct?" default="SequenceFlow_0qc5j30">
+    <bpmn:exclusiveGateway id="ExGwPositionsCorrect" name="positions correct?" default="SequenceFlow_0qc5j30">
       <bpmn:incoming>SequenceFlow_13gkobw</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0qc5j30</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_1x3nblr</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_1x3nblr" name="no" sourceRef="ExclusiveGateway_10q31nk" targetRef="TaskOrderShunting">
+    <bpmn:sequenceFlow id="SequenceFlow_1x3nblr" name="no" sourceRef="ExGwPositionsCorrect" targetRef="TaskOrderShunting">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${positionsOk == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="TaskCheckWaggonPositions" name="Check waggon positions" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.CheckWaggonPositionsDelegate">
@@ -372,7 +372,7 @@
         <di:waypoint x="412" y="438" />
         <di:waypoint x="352" y="438" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="ExclusiveGateway_10q31nk_di" bpmnElement="ExclusiveGateway_10q31nk" isMarkerVisible="true">
+      <bpmndi:BPMNShape id="ExclusiveGateway_10q31nk_di" bpmnElement="ExGwPositionsCorrect" isMarkerVisible="true">
         <dc:Bounds x="883" y="275" width="50" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="864" y="336" width="87" height="14" />
