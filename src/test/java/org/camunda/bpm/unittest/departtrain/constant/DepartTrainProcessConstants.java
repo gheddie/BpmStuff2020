@@ -22,6 +22,10 @@ public class DepartTrainProcessConstants {
 	// ####################################### variables
 	// ##############################################################################
 	
+	public static final String VAR_POSITIONS_OK = "positionsOk";
+	
+	public static final String VAR_EXIT_TRACK = "exitTrack";
+	
 	// Gesamtliste, die in den Prozess eingegeben wird
 	public static final String VAR_PLANNED_WAGGONS = "VAR_PLANNED_WAGGONS";
 	
@@ -49,6 +53,12 @@ public class DepartTrainProcessConstants {
 	public static final String MSG_INVOKE_WAG_REP = "MSG_INVOKE_WAG_REP";
 	public static final String MSG_DEPARTURE_PLANNED = "MSG_DEPARTURE_PLANNED";
 	public static final String MSG_WG_REPAIRED = "MSG_WG_REPAIRED";
+	
+	// ##############################################################################
+	// ####################################### errors
+	// ##############################################################################
+	
+	public static final String ERR_NO_EXIT_TR = "ERR_NO_EXIT_TR";
 	
 	// ##############################################################################
 	// ####################################### message catchers

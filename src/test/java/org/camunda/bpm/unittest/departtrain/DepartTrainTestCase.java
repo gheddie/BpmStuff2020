@@ -129,7 +129,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		
 		executeSingleTask(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK, processInstance.getBusinessKey());
 		
-		ensureSingleTaskPresent(DepartTrainProcessConstants.TASK_CONFIRM_ROLLOUT, processInstance.getBusinessKey(), false);
+		// ensureSingleTaskPresent(DepartTrainProcessConstants.TASK_CONFIRM_ROLLOUT, processInstance.getBusinessKey(), false);
 	}
 
 	@Test
