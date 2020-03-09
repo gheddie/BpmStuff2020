@@ -19,7 +19,7 @@ public class CreateDepartingOrderDelegate implements JavaDelegate {
 			plannedWaggons = (List<String>) execution.getVariable(DepartTrainProcessConstants.VAR_PLANNED_WAGGONS);
 			RailwayStationBusinessLogic.getInstance().createDepartureOrder(plannedWaggons, execution.getBusinessKey());
 		} catch (RailWayException e) {
-			throw new BpmnError("ERR_CREATE_DO");
+			throw new BpmnError(DepartTrainProcessConstants.ERR_CREATE_DO);
 		}
 	}
 }

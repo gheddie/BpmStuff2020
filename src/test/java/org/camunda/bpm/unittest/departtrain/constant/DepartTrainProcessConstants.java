@@ -11,6 +11,7 @@ public class DepartTrainProcessConstants {
 	public static final String TASK_CONFIRM_ROLLOUT = "TASK_CONFIRM_ROLLOUT";
 	public static final String TASK_PROCESS_REPAIR = "TASK_PROCESS_REPAIR";
 	public static final String TASK_ASSUME_REPAIR_TIME = "TASK_ASSUME_REPAIR_TIME";
+	public static final String TASK_SHUNT_WAGGONS = "TASK_SHUNT_WAGGONS";
 
 	// ##############################################################################
 	// ####################################### signals
@@ -22,9 +23,11 @@ public class DepartTrainProcessConstants {
 	// ####################################### variables
 	// ##############################################################################
 	
-	public static final String VAR_POSITIONS_OK = "positionsOk";
+	public static final String VAR_ROLLOUT_CONFIRMED = "VAR_ROLLOUT_CONFIRMED";
 	
-	public static final String VAR_EXIT_TRACK = "exitTrack";
+	public static final String VAR_POSITIONS_OK = "VAR_POSITIONS_OK";
+	
+	public static final String VAR_EXIT_TRACK = "VAR_EXIT_TRACK";
 	
 	// Gesamtliste, die in den Prozess eingegeben wird
 	public static final String VAR_PLANNED_WAGGONS = "VAR_PLANNED_WAGGONS";
@@ -53,12 +56,14 @@ public class DepartTrainProcessConstants {
 	public static final String MSG_INVOKE_WAG_REP = "MSG_INVOKE_WAG_REP";
 	public static final String MSG_DEPARTURE_PLANNED = "MSG_DEPARTURE_PLANNED";
 	public static final String MSG_WG_REPAIRED = "MSG_WG_REPAIRED";
+	public static final String MSG_SH_ORD = "MSG_SH_ORD";
 	
 	// ##############################################################################
 	// ####################################### errors
 	// ##############################################################################
 	
 	public static final String ERR_NO_EXIT_TR = "ERR_NO_EXIT_TR";
+	public static final String ERR_CREATE_DO = "ERR_CREATE_DO";
 	
 	// ##############################################################################
 	// ####################################### message catchers

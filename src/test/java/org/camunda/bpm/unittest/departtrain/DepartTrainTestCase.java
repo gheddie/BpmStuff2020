@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.util.Arrays;
-import org.camunda.bpm.engine.runtime.EventSubscription;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
@@ -212,7 +211,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 	private Map<String, Object> processExitTrackChoosing(ProcessInstance processInstance) {
 		Map<String, Object> exitTrackVariables = new HashMap<String, Object>();
-		exitTrackVariables.put("exitTrack", "T1");
+		exitTrackVariables.put(DepartTrainProcessConstants.VAR_EXIT_TRACK, "T1");
 		processEngine.getTaskService().complete(
 				processEngine.getTaskService().createTaskQuery().processInstanceBusinessKey(processInstance.getBusinessKey())
 						.taskDefinitionKey(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK).list().get(0).getId(),
@@ -221,12 +220,12 @@ public class DepartTrainTestCase extends BpmTestCase {
 	}
 
 	private void processShunting(ProcessInstance instanceA) {
-		ensureSingleTaskPresent("TaskShuntWaggons", true);
+		ensureSingleTaskPresent(DepartTrainProcessConstants.TASK_SHUNT_WAGGONS, true);
 	}
 
 	private void processRollout(ProcessInstance processInstance, boolean doRollOut) {
 		Map<String, Object> rolloutVariables = new HashMap<String, Object>();
-		rolloutVariables.put("rolloutConfirmed", doRollOut);
+		rolloutVariables.put(DepartTrainProcessConstants.VAR_ROLLOUT_CONFIRMED, doRollOut);
 		processEngine.getTaskService().complete(
 				ensureSingleTaskPresent(DepartTrainProcessConstants.TASK_CONFIRM_ROLLOUT, processInstance.getBusinessKey(), false)
 						.getId(),

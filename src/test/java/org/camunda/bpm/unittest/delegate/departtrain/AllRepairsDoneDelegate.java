@@ -18,14 +18,9 @@ public class AllRepairsDoneDelegate implements JavaDelegate {
 		}
 		List<String> repairedWaggons = (List<String>) execution.getVariable(DepartTrainProcessConstants.VAR_REPAIRED_WAGGONS);
 		repairedWaggons.add((String) execution.getVariable(DepartTrainProcessConstants.VAR_SINGLE_WAGGON_TO_REPAIR));
-
 		// all waggons repaired?
 		boolean allRepaired = RailTestUtil.areListsEqual(repairedWaggons,
 				(List<String>) execution.getVariable(DepartTrainProcessConstants.VAR_WAGGONS_TO_REPAIR));
-		
-		System.out.println(" ### all repaired : " + allRepaired);
-		
 		execution.setVariable(DepartTrainProcessConstants.VAR_ALL_REPAIRS_DONE, allRepaired);
-		// execution.setVariable(DepartTrainProcessConstants.VAR_ALL_REPAIRS_DONE, repairedWaggons.size() == 3);
 	}
 }

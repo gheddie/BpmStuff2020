@@ -5,7 +5,7 @@
     <bpmn:participant id="Participant_00fpcik" name="Shunter" processRef="shuntingProcess" />
     <bpmn:participant id="Participant_0z4n82j" name="Repair facility" processRef="PROCESS_REPAIR_FACILITY" />
     <bpmn:messageFlow id="MessageFlow_1mf5jru" sourceRef="TaskOrderShunting" targetRef="IntermediateThrowEvent_041qgz3" />
-    <bpmn:messageFlow id="MessageFlow_1i1pw2i" sourceRef="TaskShuntWaggons" targetRef="IntermediateThrowEvent_11pdw8a" />
+    <bpmn:messageFlow id="MessageFlow_1i1pw2i" sourceRef="TASK_SHUNT_WAGGONS" targetRef="IntermediateThrowEvent_11pdw8a" />
     <bpmn:messageFlow id="MessageFlow_19y0vqj" sourceRef="TASK_PROCESS_REPAIR" targetRef="CATCH_MSG_WG_REPAIRED" />
     <bpmn:messageFlow id="MessageFlow_0zrk4uy" sourceRef="TaskProcessCriticalErrors" targetRef="StartEvent_14lghgj" />
   </bpmn:collaboration>
@@ -89,7 +89,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_0550o6l" sourceRef="SignalThrowRoCanc" targetRef="ExclusiveGateway_0f0uu4b" />
     <bpmn:sequenceFlow id="SequenceFlow_1gppc5j" sourceRef="ExclusiveGateway_0f0uu4b" targetRef="EndEvent_12r73qe" />
     <bpmn:sequenceFlow id="SequenceFlow_134eiha" sourceRef="ExGwRollout" targetRef="TaskCancelDepartOrder">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${rolloutConfirmed == false}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${VAR_ROLLOUT_CONFIRMED == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_04qyvr6" sourceRef="ExGwRollout" targetRef="TaskRemoveWaggons" />
     <bpmn:sequenceFlow id="SequenceFlow_0qc5j30" name="yes" sourceRef="ExGwPositionsCorrect" targetRef="ExclusiveGateway_1bdmnut" />
@@ -117,7 +117,7 @@
       <bpmn:outgoing>SequenceFlow_1x3nblr</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_1x3nblr" name="no" sourceRef="ExGwPositionsCorrect" targetRef="TaskOrderShunting">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${positionsOk == false}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${VAR_POSITIONS_OK == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="TaskCheckWaggonPositions" name="Check waggon positions" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.CheckWaggonPositionsDelegate">
       <bpmn:incoming>SequenceFlow_0iv6lm4</bpmn:incoming>
@@ -198,7 +198,7 @@
   <bpmn:signal id="Signal_0sxtkd6" name="SIG_RO_CANC" />
   <bpmn:error id="Error_1vb65d1" name="ERR_CREATE_DO" />
   <bpmn:process id="shuntingProcess" isExecutable="true">
-    <bpmn:userTask id="TaskShuntWaggons" name="Shunt waggons">
+    <bpmn:userTask id="TASK_SHUNT_WAGGONS" name="Shunt waggons">
       <bpmn:extensionElements>
         <camunda:taskListener class="org.camunda.bpm.unittest.listener.departtrain.ShuntWaggonsComplementListener" event="complete" />
       </bpmn:extensionElements>
@@ -212,8 +212,8 @@
     <bpmn:endEvent id="EndEvent_1qamnt2">
       <bpmn:incoming>SequenceFlow_1lz38ap</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_1llmj3e" sourceRef="IntermediateThrowEvent_041qgz3" targetRef="TaskShuntWaggons" />
-    <bpmn:sequenceFlow id="SequenceFlow_1lz38ap" sourceRef="TaskShuntWaggons" targetRef="EndEvent_1qamnt2" />
+    <bpmn:sequenceFlow id="SequenceFlow_1llmj3e" sourceRef="IntermediateThrowEvent_041qgz3" targetRef="TASK_SHUNT_WAGGONS" />
+    <bpmn:sequenceFlow id="SequenceFlow_1lz38ap" sourceRef="TASK_SHUNT_WAGGONS" targetRef="EndEvent_1qamnt2" />
   </bpmn:process>
   <bpmn:message id="Message_0lj90x5" name="MSG_SH_DONE" />
   <bpmn:message id="Message_0xtnbts" name="MSG_SH_ORD" />
@@ -401,7 +401,7 @@
       <bpmndi:BPMNShape id="EndEvent_1qamnt2_di" bpmnElement="EndEvent_1qamnt2">
         <dc:Bounds x="1002" y="690" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="UserTask_18li5tk_di" bpmnElement="TaskShuntWaggons">
+      <bpmndi:BPMNShape id="UserTask_18li5tk_di" bpmnElement="TASK_SHUNT_WAGGONS">
         <dc:Bounds x="684" y="668" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0xyk95k_di" bpmnElement="SequenceFlow_0xyk95k">
