@@ -37,21 +37,21 @@ public class AsyncTestCase extends BpmTestCase {
 		ProcessDefinition processDefinition = definitons.get(0);
 	}
 	
-	@Test
+	// @Test
 	@Deployment(resources = { "async/asyncTestProcess.bpmn" })
 	public void testDieOnLevel10() {
 		runtimeService().startProcessInstanceByKey(PROCESS_ASYNC, getVariables(10));
 		executeTaskXYZ();
 	}
 	
-	@Test
+	// @Test
 	@Deployment(resources = { "async/asyncTestProcess.bpmn" })
 	public void testDieOnLevel20() {
 		runtimeService().startProcessInstanceByKey(PROCESS_ASYNC, getVariables(20));
 		executeTaskXYZ();
 	}
 	
-	@Test
+	// @Test
 	@Deployment(resources = { "async/asyncTestProcess.bpmn" })
 	public void testDieOnLevel30() {
 		runtimeService().startProcessInstanceByKey(PROCESS_ASYNC, getVariables(30));
