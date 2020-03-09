@@ -60,6 +60,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 				.processDefinitionKey(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY).list().size());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	@Deployment(resources = { "departtrain/departTrainProcess.bpmn" })
 	public void testProcessMutlipleCriticalWaggons() {
@@ -76,11 +77,25 @@ public class DepartTrainTestCase extends BpmTestCase {
 		assertEquals(5, RailwayStationBusinessLogic.getInstance().countWaggons());
 
 		// 3 critical, 1 non critical waggons
-		startProcess("W1", "W2", "W3", "W4");
+		ProcessInstance processInstance = startProcess("W1", "W2", "W3", "W4");
 
 		// we must have 3 repair processes...
 		assertEquals(3, processEngine.getRuntimeService().createProcessInstanceQuery()
 				.processDefinitionKey(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY).list().size());
+
+		// 3 waggons must be marked as to be repaired...
+		List<String> waggonsToRepair = (List<String>) processEngine.getRuntimeService().getVariable(processInstance.getId(),
+				DepartTrainProcessConstants.VAR_WAGGONS_TO_REPAIR);
+		assertEquals(3, waggonsToRepair.size());
+
+		// master process is waiting...
+		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_CHECK_WAGGONS);
+
+		// 3 tasks 'TASK_ASSUME_REPAIR_TIME'
+		assertEquals(3, processEngine.getTaskService().createTaskQuery()
+				.taskDefinitionKey(DepartTrainProcessConstants.TASK_ASSUME_REPAIR_TIME).list().size());
+		
+		
 	}
 
 	@Test
