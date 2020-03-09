@@ -185,14 +185,19 @@
     <bpmn:sequenceFlow id="SequenceFlow_0r593fk" sourceRef="ExclusiveGateway_1bfkdvy" targetRef="ExclusiveGateway_1iltr14">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${allRepairsDone == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:textAnnotation id="TextAnnotation_154ha91">
-      <bpmn:text>for critical errors, a repair process is started automatically</bpmn:text>
-    </bpmn:textAnnotation>
     <bpmn:association id="Association_0exob2b" sourceRef="TaskProcessCriticalErrors" targetRef="TextAnnotation_154ha91" />
     <bpmn:textAnnotation id="TextAnnotation_0kcw0vs">
       <bpmn:text>for non critical errors, the waggon master deceides if a repair process is started</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0stdpj1" sourceRef="TaskCheckWaggons" targetRef="TextAnnotation_0kcw0vs" />
+    <bpmn:textAnnotation id="TextAnnotation_154ha91">
+      <bpmn:text>for critical errors, a repair process is started automatically. In 'VAR_WAGGONS_TO_REPAIR' merkt sich der Hauptprozess, welche Wagen er zurückgemeldet bekommen muss.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0er4m22" sourceRef="StartEvent_1" targetRef="TextAnnotation_1h9tplh" />
+    <bpmn:textAnnotation id="TextAnnotation_1h9tplh">
+      <bpmn:text>Alle zu planenden Wagen werden mit 'VAR_PLANNED_WAGGONS' geliefert.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_022z90p" sourceRef="TaskAllRepairsDone" targetRef="TextAnnotation_0wo4rks" />
   </bpmn:process>
   <bpmn:message id="Message_00coaok" name="MSG_DEPARTURE_PLANNED" />
   <bpmn:signal id="Signal_0sxtkd6" name="SIG_RO_CANC" />
@@ -214,6 +219,9 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1lz38ap" sourceRef="TaskShuntWaggons" targetRef="EndEvent_1qamnt2" />
     <bpmn:sequenceFlow id="SequenceFlow_1llmj3e" sourceRef="IntermediateThrowEvent_041qgz3" targetRef="TaskShuntWaggons" />
+    <bpmn:textAnnotation id="TextAnnotation_0wo4rks">
+      <bpmn:text>Speichert alle rückgemeldeten Wagen in 'VAR_REPAIRED_WAGGONS'. Schaltet durch, wenn ('VAR_WAGGONS_TO_REPAIR' == 'VAR_REPAIRED_WAGGONS').</bpmn:text>
+    </bpmn:textAnnotation>
   </bpmn:process>
   <bpmn:message id="Message_0lj90x5" name="MSG_SH_DONE" />
   <bpmn:message id="Message_0xtnbts" name="MSG_SH_ORD" />
@@ -240,6 +248,10 @@
       <bpmn:incoming>SequenceFlow_0p13r56</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_19zluq2</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:association id="Association_0cw6ytl" sourceRef="StartEvent_14lghgj" targetRef="TextAnnotation_1mqltw5" />
+    <bpmn:textAnnotation id="TextAnnotation_1mqltw5">
+      <bpmn:text>Der zu reparierende Wagen wird 'VAR_SINGLE_WAGGON_TO_REPAIR' verwaltet.</bpmn:text>
+    </bpmn:textAnnotation>
   </bpmn:process>
   <bpmn:message id="Message_1xb7dif" name="MSG_INVOKE_WAG_REP" />
   <bpmn:message id="Message_05gh04p" name="MSG_WG_REPAIRED" />
@@ -475,11 +487,11 @@
         <dc:Bounds x="401" y="-15" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_154ha91_di" bpmnElement="TextAnnotation_154ha91">
-        <dc:Bounds x="248" y="63" width="100" height="84" />
+        <dc:Bounds x="206" y="-20" width="100" height="228" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0exob2b_di" bpmnElement="Association_0exob2b">
-        <di:waypoint x="401" y="51" />
-        <di:waypoint x="348" y="79" />
+        <di:waypoint x="401" y="43" />
+        <di:waypoint x="306" y="76" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_0kcw0vs_di" bpmnElement="TextAnnotation_0kcw0vs">
         <dc:Bounds x="927" y="25" width="100" height="98" />
@@ -563,6 +575,27 @@
       <bpmndi:BPMNShape id="UserTask_0spss36_di" bpmnElement="TaskProcessRepair">
         <dc:Bounds x="490" y="-224" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1mqltw5_di" bpmnElement="TextAnnotation_1mqltw5">
+        <dc:Bounds x="306" y="-282" width="100" height="113" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0cw6ytl_di" bpmnElement="Association_0cw6ytl">
+        <di:waypoint x="303" y="-193" />
+        <di:waypoint x="306" y="-195" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_1h9tplh_di" bpmnElement="TextAnnotation_1h9tplh">
+        <dc:Bounds x="189" y="261" width="100" height="113" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0er4m22_di" bpmnElement="Association_0er4m22">
+        <di:waypoint x="262" y="439" />
+        <di:waypoint x="250" y="374" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_0wo4rks_di" bpmnElement="TextAnnotation_0wo4rks">
+        <dc:Bounds x="364" y="575" width="100" height="199" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_022z90p_di" bpmnElement="Association_022z90p">
+        <di:waypoint x="565" y="293" />
+        <di:waypoint x="454" y="575" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
