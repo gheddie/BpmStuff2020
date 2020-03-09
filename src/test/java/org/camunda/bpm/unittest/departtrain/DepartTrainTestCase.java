@@ -126,6 +126,10 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 		// choose exit track after all repairs...
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
+		
+		executeSingleTask(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK, processInstance.getBusinessKey());
+		
+		ensureSingleTaskPresent(DepartTrainProcessConstants.TASK_CONFIRM_ROLLOUT, processInstance.getBusinessKey(), false);
 	}
 
 	@Test

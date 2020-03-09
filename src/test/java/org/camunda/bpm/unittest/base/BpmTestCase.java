@@ -47,13 +47,21 @@ public class BpmTestCase {
 	}
 
 	protected void ensureProcessesRunning(String processDefinitionKey, int count) {
-		List<ProcessInstance> processInstancesList = runtimeService().createProcessInstanceQuery().processDefinitionKey(processDefinitionKey).list();
+		List<ProcessInstance> processInstancesList = runtimeService().createProcessInstanceQuery()
+				.processDefinitionKey(processDefinitionKey).list();
 		assertEquals(count, processInstancesList.size());
 	}
 
 	protected void ensureProcessesRunning(int count) {
 		List<ProcessInstance> processInstancesList = runtimeService().createProcessInstanceQuery().list();
 		assertEquals(count, processInstancesList.size());
+	}
+
+	protected void executeSingleTask(String taskDefinitionKey, String businessKey) {
+		List<Task> taskList = taskService().createTaskQuery().taskDefinitionKey(taskDefinitionKey)
+				.processInstanceBusinessKey(businessKey).list();
+		assertEquals(1, taskList.size());
+		taskService().complete(taskList.get(0).getId());
 	}
 
 	protected void ensureVariableSet(String variableName) {
