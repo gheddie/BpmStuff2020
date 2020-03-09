@@ -7,6 +7,7 @@
     <bpmn:messageFlow id="MessageFlow_1mf5jru" sourceRef="TaskOrderShunting" targetRef="IntermediateThrowEvent_041qgz3" />
     <bpmn:messageFlow id="MessageFlow_1i1pw2i" sourceRef="TaskShuntWaggons" targetRef="IntermediateThrowEvent_11pdw8a" />
     <bpmn:messageFlow id="MessageFlow_19y0vqj" sourceRef="TASK_PROCESS_REPAIR" targetRef="IntermediateThrowEvent_04lf6qc" />
+    <bpmn:messageFlow id="MessageFlow_0zrk4uy" sourceRef="TaskProcessCriticalErrors" targetRef="StartEvent_14lghgj" />
   </bpmn:collaboration>
   <bpmn:process id="departTrainProcess" isExecutable="true">
     <bpmn:laneSet id="LaneSet_0870o2p">
@@ -506,7 +507,7 @@
       <bpmndi:BPMNShape id="StartEvent_1h4jsh2_di" bpmnElement="StartEvent_14lghgj">
         <dc:Bounds x="270" y="-202" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="245" y="-159" width="87" height="14" />
+          <dc:Bounds x="198" y="-157.5" width="80" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0juzu23_di" bpmnElement="SequenceFlow_0juzu23">
@@ -595,6 +596,12 @@
       <bpmndi:BPMNEdge id="Association_022z90p_di" bpmnElement="Association_022z90p">
         <di:waypoint x="592" y="279" />
         <di:waypoint x="561" y="295" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_0zrk4uy_di" bpmnElement="MessageFlow_0zrk4uy">
+        <di:waypoint x="451" y="-15" />
+        <di:waypoint x="451" y="-90" />
+        <di:waypoint x="288" y="-90" />
+        <di:waypoint x="288" y="-166" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
