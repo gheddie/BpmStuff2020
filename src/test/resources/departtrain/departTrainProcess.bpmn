@@ -3,7 +3,7 @@
   <bpmn:collaboration id="Collaboration_0j8d25t">
     <bpmn:participant id="Participant_0va8iib" name="Rail station" processRef="departTrainProcess" />
     <bpmn:participant id="Participant_00fpcik" name="Shunter" processRef="shuntingProcess" />
-    <bpmn:participant id="Participant_0z4n82j" name="Repair facility" processRef="repairFacilityProcess" />
+    <bpmn:participant id="Participant_0z4n82j" name="Repair facility" processRef="PROCESS_REPAIR_FACILITY" />
     <bpmn:messageFlow id="MessageFlow_1mf5jru" sourceRef="TaskOrderShunting" targetRef="IntermediateThrowEvent_041qgz3" />
     <bpmn:messageFlow id="MessageFlow_1i1pw2i" sourceRef="TaskShuntWaggons" targetRef="IntermediateThrowEvent_11pdw8a" />
     <bpmn:messageFlow id="MessageFlow_19y0vqj" sourceRef="TASK_PROCESS_REPAIR" targetRef="IntermediateThrowEvent_04lf6qc" />
@@ -226,7 +226,7 @@
   <bpmn:message id="Message_0lj90x5" name="MSG_SH_DONE" />
   <bpmn:message id="Message_0xtnbts" name="MSG_SH_ORD" />
   <bpmn:error id="Error_0ia8k1j" name="ERR_NO_EXIT_TR" />
-  <bpmn:process id="repairFacilityProcess" isExecutable="true">
+  <bpmn:process id="PROCESS_REPAIR_FACILITY" isExecutable="true">
     <bpmn:startEvent id="StartEvent_14lghgj" name="MSG_INVOKE_WAG_REP">
       <bpmn:outgoing>SequenceFlow_0juzu23</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_1xb7dif" />

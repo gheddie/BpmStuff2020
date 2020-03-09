@@ -43,10 +43,16 @@ public class DepartTrainProcessConstants {
 	public static final String VAR_DEP_PROC_BK = "VAR_DEP_PROC_BK";
 
 	// ##############################################################################
-	// ####################################### meesages
+	// ####################################### messages
 	// ##############################################################################
 	
 	public static final String MSG_INVOKE_WAG_REP = "MSG_INVOKE_WAG_REP";
 	
 	public static final String MSG_DEPARTURE_PLANNED = "MSG_DEPARTURE_PLANNED";
+	
+	// ##############################################################################
+	// ####################################### processes
+	// ##############################################################################
+	
+	public static final String PROCESS_REPAIR_FACILITY = "PROCESS_REPAIR_FACILITY";
 }

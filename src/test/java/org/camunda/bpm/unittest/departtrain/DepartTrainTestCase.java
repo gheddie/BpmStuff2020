@@ -54,17 +54,33 @@ public class DepartTrainTestCase extends BpmTestCase {
 		RailwayStationBusinessLogic.getInstance().setDefectCode("W3", WaggonErrorCode.N1);
 
 		// start process A
-		ProcessInstance instance = startProcess("W1", "W2", "W3", "W4", "W5");
+		startProcess("W1", "W2", "W3", "W4", "W5");
 
 		assertEquals(2, processEngine.getRuntimeService().createProcessInstanceQuery()
-				.processDefinitionKey("repairFacilityProcess").list().size());
+				.processDefinitionKey(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY).list().size());
 	}
-	
+
 	@Test
 	@Deployment(resources = { "departtrain/departTrainProcess.bpmn" })
 	public void testProcessMutlipleCriticalWaggons() {
-		
+
 		RailwayStationBusinessLogic.getInstance().reset();
+
+		// prepare test data
+		RailwayStationBusinessLogic.getInstance().withTracks("Track1", "TrackExit").withWaggons("Track1", "W1", "W2", "W3", "W4",
+				"W5");
+		RailwayStationBusinessLogic.getInstance().setDefectCode("W1", WaggonErrorCode.C1);
+		RailwayStationBusinessLogic.getInstance().setDefectCode("W2", WaggonErrorCode.C1);
+		RailwayStationBusinessLogic.getInstance().setDefectCode("W3", WaggonErrorCode.C1);
+		RailwayStationBusinessLogic.getInstance().print(true);
+		assertEquals(5, RailwayStationBusinessLogic.getInstance().countWaggons());
+
+		// 3 critical, 1 non critical waggons
+		startProcess("W1", "W2", "W3", "W4");
+
+		// we must have 3 repair processes...
+		assertEquals(3, processEngine.getRuntimeService().createProcessInstanceQuery()
+				.processDefinitionKey(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY).list().size());
 	}
 
 	@Test
@@ -183,7 +199,8 @@ public class DepartTrainTestCase extends BpmTestCase {
 		Map<String, Object> rolloutVariables = new HashMap<String, Object>();
 		rolloutVariables.put("rolloutConfirmed", doRollOut);
 		processEngine.getTaskService().complete(
-				ensureSingleTaskPresent(DepartTrainProcessConstants.TASK_CONFIRM_ROLLOUT, processInstance.getBusinessKey(), false).getId(),
+				ensureSingleTaskPresent(DepartTrainProcessConstants.TASK_CONFIRM_ROLLOUT, processInstance.getBusinessKey(), false)
+						.getId(),
 				rolloutVariables);
 	}
 
@@ -192,8 +209,8 @@ public class DepartTrainTestCase extends BpmTestCase {
 		Map<String, Object> variables = new HashMap<String, Object>();
 		variables.put(DepartTrainProcessConstants.VAR_PLANNED_WAGGONS, Arrays.asList(waggonNumbers));
 		ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByMessage(
-				DepartTrainProcessConstants.MSG_DEPARTURE_PLANNED, RailwayStationBusinessLogic.getInstance().generateBusinessKey(),
-				variables);
+				DepartTrainProcessConstants.MSG_DEPARTURE_PLANNED,
+				RailwayStationBusinessLogic.getInstance().generateBusinessKey(), variables);
 		return instance;
 	}
 }
