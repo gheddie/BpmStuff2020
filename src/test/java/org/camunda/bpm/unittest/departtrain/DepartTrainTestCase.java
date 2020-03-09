@@ -88,14 +88,22 @@ public class DepartTrainTestCase extends BpmTestCase {
 				DepartTrainProcessConstants.VAR_WAGGONS_TO_REPAIR);
 		assertEquals(3, waggonsToRepair.size());
 
-		// master process is waiting...
-		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_CHECK_WAGGONS);
+		// master process is waiting at message catch...
+		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_WG_REPAIRED);
 
 		// 3 tasks 'TASK_ASSUME_REPAIR_TIME'
+		List<Task> assumeTasks = processEngine.getTaskService().createTaskQuery()
+				.taskDefinitionKey(DepartTrainProcessConstants.TASK_ASSUME_REPAIR_TIME).list();
+		assertEquals(3, assumeTasks.size());
+		
+		//  process them
+		for (Task assumeTask : assumeTasks) {
+			processEngine.getTaskService().complete(assumeTask.getId());
+		}
+		
+		// 3 tasks 'TASK_ASSUME_REPAIR_TIME'
 		assertEquals(3, processEngine.getTaskService().createTaskQuery()
-				.taskDefinitionKey(DepartTrainProcessConstants.TASK_ASSUME_REPAIR_TIME).list().size());
-		
-		
+				.taskDefinitionKey(DepartTrainProcessConstants.TASK_PROCESS_REPAIR).list().size());
 	}
 
 	@Test
@@ -120,7 +128,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		assertThat(instanceB).isWaitingAt(DepartTrainProcessConstants.SIG_RO_CANC);
 
 		// process A
-		assertThat(instanceA).isWaitingAt(DepartTrainProcessConstants.TASK_CHECK_WAGGONS);
+		assertThat(instanceA).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_WG_REPAIRED);
 
 		completeWaggonChecks(instanceA);
 
@@ -151,7 +159,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		assertThat(instanceA).isEnded();
 
 		// B caught signal and must now check its own waggons...
-		assertThat(instanceB).isWaitingAt(DepartTrainProcessConstants.TASK_CHECK_WAGGONS);
+		// assertThat(instanceB).isWaitingAt(DepartTrainProcessConstants.TASK_CHECK_WAGGONS);
 
 		// complete checks for B...
 		completeWaggonChecks(instanceB);
