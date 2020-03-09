@@ -6,7 +6,7 @@
     <bpmn:participant id="Participant_0z4n82j" name="Repair facility" processRef="repairFacilityProcess" />
     <bpmn:messageFlow id="MessageFlow_1mf5jru" sourceRef="TaskOrderShunting" targetRef="IntermediateThrowEvent_041qgz3" />
     <bpmn:messageFlow id="MessageFlow_1i1pw2i" sourceRef="TaskShuntWaggons" targetRef="IntermediateThrowEvent_11pdw8a" />
-    <bpmn:messageFlow id="MessageFlow_19y0vqj" sourceRef="Task_0t0q7uh" targetRef="IntermediateThrowEvent_04lf6qc" />
+    <bpmn:messageFlow id="MessageFlow_19y0vqj" sourceRef="TaskProcessRepair" targetRef="IntermediateThrowEvent_04lf6qc" />
   </bpmn:collaboration>
   <bpmn:process id="departTrainProcess" isExecutable="true">
     <bpmn:laneSet id="LaneSet_0870o2p">
@@ -190,7 +190,7 @@
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0exob2b" sourceRef="TaskProcessCriticalErrors" targetRef="TextAnnotation_154ha91" />
     <bpmn:textAnnotation id="TextAnnotation_0kcw0vs">
-      <bpmn:text>for non critical errors, the waggon master deceides if a repair process is started </bpmn:text>
+      <bpmn:text>for non critical errors, the waggon master deceides if a repair process is started</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0stdpj1" sourceRef="TaskCheckWaggons" targetRef="TextAnnotation_0kcw0vs" />
   </bpmn:process>
@@ -219,21 +219,29 @@
   <bpmn:message id="Message_0xtnbts" name="MSG_SH_ORD" />
   <bpmn:error id="Error_0ia8k1j" name="ERR_NO_EXIT_TR" />
   <bpmn:process id="repairFacilityProcess" isExecutable="true">
-    <bpmn:startEvent id="StartEvent_14lghgj" name="MSG_WAG_REP">
+    <bpmn:startEvent id="StartEvent_14lghgj" name="MSG_INVOKE_WAG_REP">
       <bpmn:outgoing>SequenceFlow_0juzu23</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_1xb7dif" />
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_0juzu23" sourceRef="StartEvent_14lghgj" targetRef="Task_0t0q7uh" />
-    <bpmn:endEvent id="EndEvent_1tkvh09">
-      <bpmn:incoming>SequenceFlow_0p13r56</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_0p13r56" sourceRef="Task_0t0q7uh" targetRef="EndEvent_1tkvh09" />
-    <bpmn:userTask id="Task_0t0q7uh" name="Assume repair time">
+    <bpmn:sequenceFlow id="SequenceFlow_0juzu23" sourceRef="StartEvent_14lghgj" targetRef="TaskAssumeRepairTime" />
+    <bpmn:sequenceFlow id="SequenceFlow_0p13r56" sourceRef="TaskAssumeRepairTime" targetRef="TaskProcessRepair" />
+    <bpmn:userTask id="TaskAssumeRepairTime" name="Assume repair time">
       <bpmn:incoming>SequenceFlow_0juzu23</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0p13r56</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_1tkvh09">
+      <bpmn:incoming>SequenceFlow_19zluq2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_19zluq2" sourceRef="TaskProcessRepair" targetRef="EndEvent_1tkvh09" />
+    <bpmn:userTask id="TaskProcessRepair" name="Process repair">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="org.camunda.bpm.unittest.listener.departtrain.ProcessRepairComplementListener" event="complete" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0p13r56</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_19zluq2</bpmn:outgoing>
+    </bpmn:userTask>
   </bpmn:process>
-  <bpmn:message id="Message_1xb7dif" name="MSG_WAG_REP" />
+  <bpmn:message id="Message_1xb7dif" name="MSG_INVOKE_WAG_REP" />
   <bpmn:message id="Message_05gh04p" name="MSG_WG_REPAIRED" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0j8d25t">
@@ -494,13 +502,13 @@
         <di:waypoint x="356" y="-184" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EndEvent_1tkvh09_di" bpmnElement="EndEvent_1tkvh09">
-        <dc:Bounds x="506" y="-202" width="36" height="36" />
+        <dc:Bounds x="650" y="-202" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0p13r56_di" bpmnElement="SequenceFlow_0p13r56">
         <di:waypoint x="456" y="-184" />
-        <di:waypoint x="506" y="-184" />
+        <di:waypoint x="490" y="-184" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_1127fox_di" bpmnElement="Task_0t0q7uh">
+      <bpmndi:BPMNShape id="UserTask_1127fox_di" bpmnElement="TaskAssumeRepairTime">
         <dc:Bounds x="356" y="-224" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_198wx9r_di" bpmnElement="SequenceFlow_198wx9r">
@@ -514,8 +522,8 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="MessageFlow_19y0vqj_di" bpmnElement="MessageFlow_19y0vqj">
-        <di:waypoint x="406" y="-144" />
-        <di:waypoint x="406" y="-90" />
+        <di:waypoint x="540" y="-144" />
+        <di:waypoint x="540" y="-90" />
         <di:waypoint x="581" y="-90" />
         <di:waypoint x="581" y="110" />
       </bpmndi:BPMNEdge>
@@ -548,6 +556,13 @@
         <di:waypoint x="699" y="343" />
         <di:waypoint x="699" y="153" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_19zluq2_di" bpmnElement="SequenceFlow_19zluq2">
+        <di:waypoint x="590" y="-184" />
+        <di:waypoint x="650" y="-184" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_0spss36_di" bpmnElement="TaskProcessRepair">
+        <dc:Bounds x="490" y="-224" width="100" height="80" />
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

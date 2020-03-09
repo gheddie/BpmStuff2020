@@ -1,5 +1,6 @@
 package org.camunda.bpm.unittest.delegate.departtrain;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -15,7 +16,11 @@ public class ProcessCriticalErrorsDelegate implements JavaDelegate {
 		List<String> plannedWaggons = (List<String>) execution.getVariable(DepartTrainTestCase.VAR_PLANNED_WAGGONS);
 		for (String plannedWaggon : plannedWaggons) {
 			if (RailwayStationBusinessLogic.getInstance().isWaggonCritical(plannedWaggon)) {
-				execution.getProcessEngine().getRuntimeService().startProcessInstanceByMessage(DepartTrainTestCase.MSG_WAG_REP);
+				HashMap<String, Object> variables = new HashMap<String, Object>();
+				// pass master process business key
+				String masterProcessBusinessKey = execution.getBusinessKey();
+				variables.put(DepartTrainTestCase.VAR_DEP_PROC_BK, masterProcessBusinessKey);
+				execution.getProcessEngine().getRuntimeService().startProcessInstanceByMessage(DepartTrainTestCase.MSG_INVOKE_WAG_REP, variables);
 			}			
 		}
 	}
