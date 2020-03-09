@@ -44,7 +44,7 @@
       <bpmn:outgoing>SequenceFlow_19xhofc</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_00coaok" />
     </bpmn:startEvent>
-    <bpmn:serviceTask id="TaskCreateDepartingOrder" name="Create departing order" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.CheckWaggonsAvailableDelegate">
+    <bpmn:serviceTask id="TaskCreateDepartingOrder" name="Create departing order" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.CreateDepartingOrderDelegate">
       <bpmn:incoming>SequenceFlow_03tnthx</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1y63fyx</bpmn:outgoing>
     </bpmn:serviceTask>

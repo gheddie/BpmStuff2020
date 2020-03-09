@@ -9,7 +9,7 @@ import org.camunda.bpm.unittest.departtrain.DepartTrainTestCase;
 import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessLogic;
 import org.camunda.bpm.unittest.departtrain.businesslogic.exception.RailWayException;
 
-public class CheckWaggonsAvailableDelegate implements JavaDelegate {
+public class CreateDepartingOrderDelegate implements JavaDelegate {
 
 	@Override
 	public void execute(DelegateExecution execution) {
