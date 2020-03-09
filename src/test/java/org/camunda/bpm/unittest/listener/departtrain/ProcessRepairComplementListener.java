@@ -9,7 +9,7 @@ public class ProcessRepairComplementListener implements TaskListener {
 
 	@Override
 	public void notify(DelegateTask delegateTask) {
-		delegateTask.getProcessEngine().getRuntimeService().correlateMessage("MSG_WG_REPAIRED",
+		delegateTask.getProcessEngine().getRuntimeService().correlateMessage(DepartTrainProcessConstants.MSG_WG_REPAIRED,
 				(String) delegateTask.getProcessEngine().getRuntimeService().getVariable(delegateTask.getExecutionId(),
 						DepartTrainProcessConstants.VAR_DEP_PROC_BK),
 				HashBuilder.create()

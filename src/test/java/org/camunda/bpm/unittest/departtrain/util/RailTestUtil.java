@@ -1,5 +1,6 @@
 package org.camunda.bpm.unittest.departtrain.util;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,6 +29,17 @@ public class RailTestUtil {
 	}
 
 	public static boolean areListsEqual(List<String> list1, List<String> list2) {
-		return false;
+
+		Collections.sort(list1);
+		Collections.sort(list2);
+		if (list1.size() != list2.size()) {
+			return false;
+		}
+		for (int index = 0; index < list1.size(); index++) {
+			if (!(list1.get(index).equals(list2.get(index)))) {
+				return false;				
+			}
+		}
+		return true;
 	}
 }

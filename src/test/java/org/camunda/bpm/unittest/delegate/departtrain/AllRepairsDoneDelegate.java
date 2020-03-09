@@ -10,6 +10,7 @@ import org.camunda.bpm.unittest.departtrain.util.RailTestUtil;
 
 public class AllRepairsDoneDelegate implements JavaDelegate {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
 		if (execution.getVariable(DepartTrainProcessConstants.VAR_REPAIRED_WAGGONS) == null) {
@@ -17,10 +18,14 @@ public class AllRepairsDoneDelegate implements JavaDelegate {
 		}
 		List<String> repairedWaggons = (List<String>) execution.getVariable(DepartTrainProcessConstants.VAR_REPAIRED_WAGGONS);
 		repairedWaggons.add((String) execution.getVariable(DepartTrainProcessConstants.VAR_SINGLE_WAGGON_TO_REPAIR));
-		
+
 		// all waggons repaired?
-		RailTestUtil.areListsEqual(repairedWaggons, (List<String>) execution.getVariable(DepartTrainProcessConstants.VAR_WAGGONS_TO_REPAIR));
+		boolean allRepaired = RailTestUtil.areListsEqual(repairedWaggons,
+				(List<String>) execution.getVariable(DepartTrainProcessConstants.VAR_WAGGONS_TO_REPAIR));
 		
-		execution.setVariable(DepartTrainProcessConstants.VAR_ALL_REPAIRS_DONE, repairedWaggons.size() == 1);
+		System.out.println(" ### all repaired : " + allRepaired);
+		
+		execution.setVariable(DepartTrainProcessConstants.VAR_ALL_REPAIRS_DONE, allRepaired);
+		// execution.setVariable(DepartTrainProcessConstants.VAR_ALL_REPAIRS_DONE, repairedWaggons.size() == 3);
 	}
 }

@@ -47,8 +47,8 @@ public class DepartTrainProcessConstants {
 	// ##############################################################################
 	
 	public static final String MSG_INVOKE_WAG_REP = "MSG_INVOKE_WAG_REP";
-	
 	public static final String MSG_DEPARTURE_PLANNED = "MSG_DEPARTURE_PLANNED";
+	public static final String MSG_WG_REPAIRED = "MSG_WG_REPAIRED";
 	
 	// ##############################################################################
 	// ####################################### message catchers

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.util.Arrays;
+import org.camunda.bpm.engine.runtime.EventSubscription;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
@@ -106,10 +107,20 @@ public class DepartTrainTestCase extends BpmTestCase {
 				.taskDefinitionKey(DepartTrainProcessConstants.TASK_PROCESS_REPAIR).list();
 		assertEquals(3, repairTasks.size());
 		
-		// repair a waggon...
-		processEngine.getTaskService().complete(repairTasks.get(0).getId());
+		List<EventSubscription> list = processEngine.getRuntimeService().createEventSubscriptionQuery().list();
 		
-		// choose exit track after first repair...
+		// repair waggon 1 of 3 --> not done (back to message catch)
+		processEngine.getTaskService().complete(repairTasks.get(0).getId());
+		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_WG_REPAIRED);
+		
+		// repair waggon 2 of 3 --> not done (back to message catch)
+		processEngine.getTaskService().complete(repairTasks.get(1).getId());
+		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_WG_REPAIRED);
+		
+		// repair waggon 3 of 3 --> done!!!
+		processEngine.getTaskService().complete(repairTasks.get(2).getId());
+		
+		// choose exit track after all repairs...
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
 	}
 
