@@ -24,7 +24,10 @@ public class DepartTrainTestCase extends BpmTestCase {
 	@Rule
 	public ProcessEngineRule processEngine = new ProcessEngineRule();
 
-	// tasks
+	// ##############################################################################
+	// ####################################### tasks
+	// ##############################################################################
+	
 	private static final String TASK_CHOOSE_EXIT_TRACK = "TaskChooseExitTrack";
 	private static final String TASK_CHECK_WAGGONS = "TaskCheckWaggons";
 	private static final String TASK_CONFIRM_ROLLOUT = "TaskConfirmRollout";
@@ -34,17 +37,34 @@ public class DepartTrainTestCase extends BpmTestCase {
 	// signals
 	private static final String SIGNAL_CATCH_RO_CANC = "SignalCatchRoCanc";
 
-	// variables
+	// ##############################################################################
+	// ####################################### variables
+	// ##############################################################################
+	
+	// Gesamtliste, die in den Prozess eingegeben wird
 	public static final String VAR_PLANNED_WAGGONS = "plannedWaggons";
+	
+	// Entscheidet, ob zu 'TaskChooseExitTrack' übergegangen wird ---> 'TaskAllRepairsDone'
 	public static final String VAR_ALL_REPAIRS_DONE = "allRepairsDone";
+	
+	// Hier werden in 'TaskAllRepairsDone' alle zurückgemeldeten Reparaturen gespeichert
+	// Es wird zu 'TaskChooseExitTrack' weitergegeben, wenn gilt: ('VAR_REPAIRED_WAGGONS' == 'VAR_WAGGONS_TO_REPAIR')
 	public static final String VAR_REPAIRED_WAGGONS = "repairedWaggons";
-	public static final String VAR_SINGLE_REPAIRED_WAGGON = "singleRepairedWaggon";
+	
+	// Hier wird sich ab 'TaskProcessCriticalErrors' gemerkt, welche Wagen als repariert zurückzumelden sind
+	public static final String VAR_WAGGONS_TO_REPAIR = "waggonsToRepair";
+	
+	// Wird durch den Reparatur-Prozess geschleift und auuch von diesem zurückgegeben
+	public static final String VAR_SINGLE_WAGGON_TO_REPAIR = "singleWaggonToRepair";
 	
 	// business key of the 'master' process --> passed to repair 
 	// process to able to call back to master
 	public static final String VAR_DEP_PROC_BK = "depProcBk";
 
-	// messages
+	// ##############################################################################
+	// ####################################### meesages
+	// ##############################################################################
+	
 	public static final String MSG_INVOKE_WAG_REP = "MSG_INVOKE_WAG_REP";
 
 	/**
@@ -108,7 +128,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 		// receive waggon repaired message (A)
 		Map<String, Object> variablesRepairedWaggonsA = new HashMap<String, Object>();
-		variablesRepairedWaggonsA.put(VAR_SINGLE_REPAIRED_WAGGON, "ABC123");
+		variablesRepairedWaggonsA.put(VAR_SINGLE_WAGGON_TO_REPAIR, "ABC123");
 		// process repair assume for instance A
 		List<Task> assumeListA = processEngine.getTaskService().createTaskQuery().taskDefinitionKey(TASK_ASSUME_REPAIR_TIME).list();
 		assertEquals(1, assumeListA.size());
@@ -138,7 +158,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 		// receive waggon repaired message (B)
 		Map<String, Object> variablesRepairedWaggonsB = new HashMap<String, Object>();
-		variablesRepairedWaggonsB.put(VAR_SINGLE_REPAIRED_WAGGON, "ABC123");
+		variablesRepairedWaggonsB.put(VAR_SINGLE_WAGGON_TO_REPAIR, "ABC123");
 		// process assume for instance B
 		List<Task> assumeListB = processEngine.getTaskService().createTaskQuery().taskDefinitionKey(TASK_ASSUME_REPAIR_TIME).list();
 		assertEquals(1, assumeListB.size());
