@@ -144,7 +144,7 @@
     <bpmn:userTask id="TASK_CHECK_WAGGONS" name="Check waggons">
       <bpmn:multiInstanceLoopCharacteristics camunda:collection="VAR_PLANNED_WAGGONS" camunda:elementVariable="VAR_PLANNED_WAGGON" />
     </bpmn:userTask>
-    <bpmn:startEvent id="StartEvent_1" name="departure planned">
+    <bpmn:startEvent id="StartEvent_1" name="MSG_DEPARTURE_PLANNED">
       <bpmn:outgoing>SequenceFlow_19xhofc</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_00coaok" />
     </bpmn:startEvent>
@@ -261,7 +261,7 @@
       <bpmndi:BPMNShape id="StartEvent_0wjvc5k_di" bpmnElement="StartEvent_1">
         <dc:Bounds x="210" y="420" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="183" y="463" width="90" height="14" />
+          <dc:Bounds x="187" y="463" width="83" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_12r73qe_di" bpmnElement="EndEvent_12r73qe">

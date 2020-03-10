@@ -226,12 +226,10 @@ public class DepartTrainTestCase extends BpmTestCase {
 	}
 
 	private void processRollout(ProcessInstance processInstance, boolean doRollOut) {
-		Map<String, Object> rolloutVariables = new HashMap<String, Object>();
-		rolloutVariables.put(DepartTrainProcessConstants.VAR_ROLLOUT_CONFIRMED, doRollOut);
 		processEngine.getTaskService().complete(
 				ensureSingleTaskPresent(DepartTrainProcessConstants.TASK_CONFIRM_ROLLOUT, processInstance.getBusinessKey(), false)
 						.getId(),
-				rolloutVariables);
+				HashBuilder.create().withValuePair(DepartTrainProcessConstants.VAR_ROLLOUT_CONFIRMED, doRollOut).build());
 	}
 
 	private ProcessInstance startDepartureProcess(String... waggonNumbers) {
