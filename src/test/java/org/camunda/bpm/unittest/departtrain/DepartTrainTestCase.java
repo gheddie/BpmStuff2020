@@ -182,7 +182,8 @@ public class DepartTrainTestCase extends BpmTestCase {
 		List<Task> assumeListA = processEngine.getTaskService().createTaskQuery()
 				.taskDefinitionKey(DepartTrainProcessConstants.TASK_ASSUME_REPAIR_TIME).list();
 		assertEquals(1, assumeListA.size());
-		processEngine.getTaskService().complete(assumeListA.get(0).getId());
+		
+		processWaggonRepairAssumement(instanceA, assumeListA.get(0), 12);
 
 		assertThat(instanceA).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
 
