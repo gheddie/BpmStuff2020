@@ -23,6 +23,9 @@ public class DepartTrainProcessConstants {
 	// ####################################### variables
 	// ##############################################################################
 	
+	// times assumements to collect
+	public static final String VAR_COLLECTED_ASSUMEMENTS = "VAR_COLLECTED_ASSUMEMENTS";
+	
 	public static final String VAR_ROLLOUT_CONFIRMED = "VAR_ROLLOUT_CONFIRMED";
 	
 	public static final String VAR_POSITIONS_OK = "VAR_POSITIONS_OK";
