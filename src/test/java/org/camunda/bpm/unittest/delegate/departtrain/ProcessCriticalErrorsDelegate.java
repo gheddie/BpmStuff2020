@@ -15,18 +15,18 @@ public class ProcessCriticalErrorsDelegate implements JavaDelegate {
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
 		List<String> plannedWaggons = (List<String>) execution.getVariable(DepartTrainProcessConstants.VAR_PLANNED_WAGGONS);
-		List<String> waggonsToRepair = new ArrayList<String>();
+		List<String> waggonsToAssume = new ArrayList<String>();
 		for (String plannedWaggon : plannedWaggons) {
 			if (RailwayStationBusinessLogic.getInstance().isWaggonCritical(plannedWaggon)) {
 				// pass master process business key to call back...
 				execution.getProcessEngine().getRuntimeService()
-						.startProcessInstanceByMessage(DepartTrainProcessConstants.MSG_INVOKE_WAG_REP, HashBuilder.create()
+						.startProcessInstanceByMessage(DepartTrainProcessConstants.MSG_INVOKE_WAG_ASSUMEMENT, HashBuilder.create()
 								.withValuePair(DepartTrainProcessConstants.VAR_DEP_PROC_BK, execution.getBusinessKey())
 								.withValuePair(DepartTrainProcessConstants.VAR_SINGLE_WAGGON_TO_REPAIR, plannedWaggon).build());
 				// store waggons to repair in 'VAR_WAGGONS_TO_REPAIR'
-				waggonsToRepair.add(plannedWaggon);
+				waggonsToAssume.add(plannedWaggon);
 			}
 		}
-		execution.setVariable(DepartTrainProcessConstants.VAR_WAGGONS_TO_REPAIR, waggonsToRepair);
+		execution.setVariable(DepartTrainProcessConstants.VAR_WAGGONS_TO_ASSUME, waggonsToAssume);
 	}
 }

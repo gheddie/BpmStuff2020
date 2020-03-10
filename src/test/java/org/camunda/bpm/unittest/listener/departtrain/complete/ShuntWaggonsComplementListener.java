@@ -1,4 +1,4 @@
-package org.camunda.bpm.unittest.listener.departtrain;
+package org.camunda.bpm.unittest.listener.departtrain.complete;
 
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.runtimeService;
 

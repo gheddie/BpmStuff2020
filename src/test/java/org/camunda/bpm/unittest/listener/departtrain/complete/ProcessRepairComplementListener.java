@@ -1,4 +1,4 @@
-package org.camunda.bpm.unittest.listener.departtrain;
+package org.camunda.bpm.unittest.listener.departtrain.complete;
 
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;

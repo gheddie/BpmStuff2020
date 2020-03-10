@@ -6,7 +6,7 @@
     <bpmn:participant id="Participant_0z4n82j" name="Repair facility" processRef="PROCESS_REPAIR_FACILITY" />
     <bpmn:messageFlow id="MessageFlow_1mf5jru" sourceRef="TaskOrderShunting" targetRef="IntermediateThrowEvent_041qgz3" />
     <bpmn:messageFlow id="MessageFlow_1i1pw2i" sourceRef="TASK_SHUNT_WAGGONS" targetRef="CATCH_MSG_SH_DONE" />
-    <bpmn:messageFlow id="MessageFlow_19y0vqj" sourceRef="TASK_PROCESS_REPAIR" targetRef="CATCH_MSG_WG_REPAIRED" />
+    <bpmn:messageFlow id="MessageFlow_19y0vqj" sourceRef="TASK_ASSUME_REPAIR_TIME" targetRef="CATCH_MSG_WG_REPAIRED" />
     <bpmn:messageFlow id="MessageFlow_0zrk4uy" sourceRef="TaskProcessCriticalErrors" targetRef="StartEvent_14lghgj" />
   </bpmn:collaboration>
   <bpmn:process id="departTrainProcess" isExecutable="true">
@@ -27,7 +27,7 @@
         <bpmn:flowNodeRef>BoundaryEvent_1p8wdzo</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TASK_CHOOSE_EXIT_TRACK</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExGateway_1bfkdvy</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TaskAllRepairsDone</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TaskAllAssumementsDone</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TaskCreateDepartingOrder</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>SIG_RO_CANC</bpmn:flowNodeRef>
@@ -97,13 +97,13 @@
     <bpmn:sequenceFlow id="SequenceFlow_13gkobw" sourceRef="TaskCheckWaggonPositions" targetRef="ExGwPositionsCorrect" />
     <bpmn:sequenceFlow id="SequenceFlow_0iv6lm4" sourceRef="TASK_CHOOSE_EXIT_TRACK" targetRef="TaskCheckWaggonPositions" />
     <bpmn:sequenceFlow id="SequenceFlow_1wur16x" sourceRef="BoundaryEvent_1p8wdzo" targetRef="TASK_CHOOSE_EXIT_TRACK" />
-    <bpmn:sequenceFlow id="SequenceFlow_198wx9r" sourceRef="CATCH_MSG_WG_REPAIRED" targetRef="TaskAllRepairsDone" />
+    <bpmn:sequenceFlow id="SequenceFlow_198wx9r" sourceRef="CATCH_MSG_WG_REPAIRED" targetRef="TaskAllAssumementsDone" />
     <bpmn:serviceTask id="TaskProcessCriticalErrors" name="Process critical errors" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.ProcessCriticalErrorsDelegate">
       <bpmn:incoming>SequenceFlow_1y63fyx</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0rupt2s</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="SequenceFlow_0rupt2s" sourceRef="TaskProcessCriticalErrors" targetRef="CATCH_MSG_WG_REPAIRED" />
-    <bpmn:sequenceFlow id="SequenceFlow_1gxtmn8" sourceRef="TaskAllRepairsDone" targetRef="ExGateway_1bfkdvy" />
+    <bpmn:sequenceFlow id="SequenceFlow_1gxtmn8" sourceRef="TaskAllAssumementsDone" targetRef="ExGateway_1bfkdvy" />
     <bpmn:sequenceFlow id="SequenceFlow_0r593fk" sourceRef="ExGateway_1bfkdvy" targetRef="CATCH_MSG_WG_REPAIRED">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${VAR_ALL_REPAIRS_DONE == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -137,7 +137,7 @@
       <bpmn:outgoing>SequenceFlow_0r593fk</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_0qqkgo2</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="TaskAllRepairsDone" name="All repairs done?" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.AllRepairsDoneDelegate">
+    <bpmn:serviceTask id="TaskAllAssumementsDone" name="All assumements done?" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.AllRepairsDoneDelegate">
       <bpmn:incoming>SequenceFlow_198wx9r</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1gxtmn8</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -167,7 +167,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_03tnthx" sourceRef="ExclusiveGateway_0dsc91r" targetRef="TaskCreateDepartingOrder" />
     <bpmn:sequenceFlow id="SequenceFlow_1gi1snx" sourceRef="BoundaryEvent_01ns58k" targetRef="SIG_RO_CANC" />
     <bpmn:sequenceFlow id="SequenceFlow_00nynq5" sourceRef="SIG_RO_CANC" targetRef="ExclusiveGateway_0dsc91r" />
-    <bpmn:intermediateCatchEvent id="CATCH_MSG_WG_REPAIRED" name="MSG_WG_REPAIRED">
+    <bpmn:intermediateCatchEvent id="CATCH_MSG_WG_REPAIRED" name="MSG_REPAIR_ASSUMED">
       <bpmn:incoming>SequenceFlow_0rupt2s</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0r593fk</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_198wx9r</bpmn:outgoing>
@@ -179,7 +179,7 @@
     </bpmn:userTask>
     <bpmn:association id="Association_0exob2b" sourceRef="TaskProcessCriticalErrors" targetRef="TextAnnotation_154ha91" />
     <bpmn:association id="Association_0stdpj1" sourceRef="TASK_CHECK_WAGGONS" targetRef="TextAnnotation_0kcw0vs" />
-    <bpmn:association id="Association_022z90p" sourceRef="TaskAllRepairsDone" targetRef="TextAnnotation_0wo4rks" />
+    <bpmn:association id="Association_022z90p" sourceRef="TaskAllAssumementsDone" targetRef="TextAnnotation_0wo4rks" />
     <bpmn:textAnnotation id="TextAnnotation_1h9tplh">
       <bpmn:text>Alle zu planenden Wagen werden mit 'VAR_PLANNED_WAGGONS' geliefert.</bpmn:text>
     </bpmn:textAnnotation>
@@ -222,6 +222,24 @@
     <bpmn:sequenceFlow id="SequenceFlow_0juzu23" sourceRef="StartEvent_14lghgj" targetRef="TASK_ASSUME_REPAIR_TIME" />
     <bpmn:sequenceFlow id="SequenceFlow_0p13r56" sourceRef="TASK_ASSUME_REPAIR_TIME" targetRef="TASK_PROCESS_REPAIR" />
     <bpmn:sequenceFlow id="SequenceFlow_19zluq2" sourceRef="TASK_PROCESS_REPAIR" targetRef="EndEvent_1tkvh09" />
+    <bpmn:boundaryEvent id="BoundaryEvent_0ujz97o" attachedToRef="repairSubProcess">
+      <bpmn:cancelEventDefinition />
+    </bpmn:boundaryEvent>
+    <bpmn:transaction id="repairSubProcess">
+      <bpmn:startEvent id="StartEvent_0e8lsvg">
+        <bpmn:outgoing>SequenceFlow_1rxgm5c</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:endEvent id="EndEvent_1n6x06t">
+        <bpmn:incoming>SequenceFlow_0mio9fg</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:userTask id="Task_186g8uu" name="Repair Waggons">
+        <bpmn:incoming>SequenceFlow_1rxgm5c</bpmn:incoming>
+        <bpmn:outgoing>SequenceFlow_0mio9fg</bpmn:outgoing>
+        <bpmn:multiInstanceLoopCharacteristics camunda:collection="waggonsToRepair" camunda:elementVariable="waggonToRepair" />
+      </bpmn:userTask>
+      <bpmn:sequenceFlow id="SequenceFlow_1rxgm5c" sourceRef="StartEvent_0e8lsvg" targetRef="Task_186g8uu" />
+      <bpmn:sequenceFlow id="SequenceFlow_0mio9fg" sourceRef="Task_186g8uu" targetRef="EndEvent_1n6x06t" />
+    </bpmn:transaction>
     <bpmn:userTask id="TASK_PROCESS_REPAIR" name="Process repair">
       <bpmn:extensionElements>
         <camunda:taskListener class="org.camunda.bpm.unittest.listener.departtrain.ProcessRepairComplementListener" event="complete" />
@@ -229,42 +247,30 @@
       <bpmn:incoming>SequenceFlow_0p13r56</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_19zluq2</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:startEvent id="StartEvent_14lghgj" name="MSG_INVOKE_WAG_ASSUMEMENT">
+      <bpmn:outgoing>SequenceFlow_0juzu23</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_1hobrwx" />
+    </bpmn:startEvent>
+    <bpmn:userTask id="TASK_ASSUME_REPAIR_TIME" name="Assume repair time">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="org.camunda.bpm.unittest.listener.departtrain.RepairAssumenentComplementListener" event="complete" />
+        <camunda:taskListener class="org.camunda.bpm.unittest.listener.departtrain.create.RepairAssumenentCreateListener" event="create" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0juzu23</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0p13r56</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="VAR_WAGGONS_TO_ASSUME" camunda:elementVariable="VAR_WAGGON_TO_ASSUME" />
+    </bpmn:userTask>
     <bpmn:endEvent id="EndEvent_1tkvh09">
       <bpmn:incoming>SequenceFlow_19zluq2</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:userTask id="TASK_ASSUME_REPAIR_TIME" name="Assume repair time">
-      <bpmn:incoming>SequenceFlow_0juzu23</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0p13r56</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:startEvent id="StartEvent_14lghgj" name="MSG_INVOKE_WAG_REP">
-      <bpmn:outgoing>SequenceFlow_0juzu23</bpmn:outgoing>
-      <bpmn:messageEventDefinition messageRef="Message_1xb7dif" />
-    </bpmn:startEvent>
-    <bpmn:subProcess id="repairSubProcess">
-      <bpmn:startEvent id="StartEvent_0e8lsvg">
-        <bpmn:outgoing>SequenceFlow_1rxgm5c</bpmn:outgoing>
-      </bpmn:startEvent>
-      <bpmn:endEvent id="EndEvent_1n6x06t">
-        <bpmn:incoming>SequenceFlow_0mio9fg</bpmn:incoming>
-      </bpmn:endEvent>
-      <bpmn:sequenceFlow id="SequenceFlow_0mio9fg" sourceRef="Task_186g8uu" targetRef="EndEvent_1n6x06t" />
-      <bpmn:sequenceFlow id="SequenceFlow_1rxgm5c" sourceRef="StartEvent_0e8lsvg" targetRef="Task_186g8uu" />
-      <bpmn:userTask id="Task_186g8uu" name="Repair Waggons">
-        <bpmn:incoming>SequenceFlow_1rxgm5c</bpmn:incoming>
-        <bpmn:outgoing>SequenceFlow_0mio9fg</bpmn:outgoing>
-        <bpmn:multiInstanceLoopCharacteristics />
-      </bpmn:userTask>
-    </bpmn:subProcess>
-    <bpmn:boundaryEvent id="BoundaryEvent_0ujz97o" attachedToRef="repairSubProcess">
-      <bpmn:cancelEventDefinition />
-    </bpmn:boundaryEvent>
     <bpmn:association id="Association_0cw6ytl" sourceRef="StartEvent_14lghgj" targetRef="TextAnnotation_1mqltw5" />
     <bpmn:textAnnotation id="TextAnnotation_1mqltw5">
       <bpmn:text>Der zu reparierende Wagen wird 'VAR_SINGLE_WAGGON_TO_REPAIR' verwaltet.</bpmn:text>
     </bpmn:textAnnotation>
   </bpmn:process>
   <bpmn:message id="Message_1xb7dif" name="MSG_INVOKE_WAG_REP" />
-  <bpmn:message id="Message_05gh04p" name="MSG_WG_REPAIRED" />
+  <bpmn:message id="Message_05gh04p" name="MSG_REPAIR_ASSUMED" />
+  <bpmn:message id="Message_1hobrwx" name="MSG_INVOKE_WAG_ASSUMEMENT" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0j8d25t">
       <bpmndi:BPMNShape id="Participant_0va8iib_di" bpmnElement="Participant_0va8iib">
@@ -513,7 +519,7 @@
       <bpmndi:BPMNShape id="StartEvent_1h4jsh2_di" bpmnElement="StartEvent_14lghgj">
         <dc:Bounds x="270" y="-202" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="198" y="-157" width="80" height="27" />
+          <dc:Bounds x="183" y="-157" width="87" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0juzu23_di" bpmnElement="SequenceFlow_0juzu23">
@@ -525,7 +531,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0p13r56_di" bpmnElement="SequenceFlow_0p13r56">
         <di:waypoint x="456" y="-184" />
-        <di:waypoint x="531" y="-184" />
+        <di:waypoint x="647" y="-184" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_1127fox_di" bpmnElement="TASK_ASSUME_REPAIR_TIME">
         <dc:Bounds x="356" y="-224" width="100" height="80" />
@@ -539,18 +545,20 @@
       <bpmndi:BPMNShape id="IntermediateCatchEvent_05eqkdf_di" bpmnElement="CATCH_MSG_WG_REPAIRED">
         <dc:Bounds x="563" y="98" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="467" y="132" width="87" height="27" />
+          <dc:Bounds x="471" y="132" width="79" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="MessageFlow_19y0vqj_di" bpmnElement="MessageFlow_19y0vqj">
-        <di:waypoint x="581" y="-144" />
+        <di:waypoint x="406" y="-144" />
+        <di:waypoint x="406" y="-123" />
+        <di:waypoint x="581" y="-123" />
         <di:waypoint x="581" y="98" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1gxtmn8_di" bpmnElement="SequenceFlow_1gxtmn8">
         <di:waypoint x="642" y="293" />
         <di:waypoint x="642" y="318" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="ServiceTask_10u2yb0_di" bpmnElement="TaskAllRepairsDone">
+      <bpmndi:BPMNShape id="ServiceTask_10u2yb0_di" bpmnElement="TaskAllAssumementsDone">
         <dc:Bounds x="592" y="213" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_1bfkdvy_di" bpmnElement="ExGateway_1bfkdvy" isMarkerVisible="true">
@@ -566,11 +574,11 @@
         <di:waypoint x="599" y="116" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_19zluq2_di" bpmnElement="SequenceFlow_19zluq2">
-        <di:waypoint x="631" y="-184" />
+        <di:waypoint x="747" y="-184" />
         <di:waypoint x="841" y="-184" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_0spss36_di" bpmnElement="TASK_PROCESS_REPAIR">
-        <dc:Bounds x="531" y="-224" width="100" height="80" />
+        <dc:Bounds x="647" y="-224" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1mqltw5_di" bpmnElement="TextAnnotation_1mqltw5">
         <dc:Bounds x="158" y="-288" width="100" height="113" />
@@ -603,9 +611,6 @@
         <di:waypoint x="642" y="368" />
         <di:waypoint x="642" y="401" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="SubProcess_0cdukfj_di" bpmnElement="repairSubProcess" isExpanded="true">
-        <dc:Bounds x="998" y="-322" width="647" height="220" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="StartEvent_0e8lsvg_di" bpmnElement="StartEvent_0e8lsvg">
         <dc:Bounds x="1099" y="-229" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -625,6 +630,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BoundaryEvent_16i3boy_di" bpmnElement="BoundaryEvent_0ujz97o">
         <dc:Bounds x="980" y="-340" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Transaction_0b879pr_di" bpmnElement="repairSubProcess" isExpanded="true">
+        <dc:Bounds x="998" y="-322" width="647" height="220" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

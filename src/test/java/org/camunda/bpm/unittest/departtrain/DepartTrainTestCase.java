@@ -37,6 +37,18 @@ public class DepartTrainTestCase extends BpmTestCase {
 	public void testDeployment() {
 		// ...
 	}
+	
+	@Test
+	@Deployment(resources = { "departtrain/departTrainProcess.bpmn" })
+	public void testStraightAssumement() {
+		
+		RailwayStationBusinessLogic.getInstance().reset();
+
+		// prepare test data
+		RailwayStationBusinessLogic.getInstance().withTracks("Track1@true", "TrackExit").withWaggons("Track1", "W1@C1#N1", "W2@C1", "W3", "W4", "W5");
+	
+		startDepartureProcess("W1", "W2", "W3", "W4");
+	}
 
 	@Test
 	@Deployment(resources = { "departtrain/departTrainProcess.bpmn" })
@@ -215,6 +227,10 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 		// waggons must have left the station...
 		assertEquals(0, RailwayStationBusinessLogic.getInstance().countWaggons());
+	}
+	
+	private void processExitTrack(ProcessInstance processInstance, String waggonNumber, int hours) {
+		
 	}
 
 	private void processExitTrack(ProcessInstance processInstance, String trackNumber) {

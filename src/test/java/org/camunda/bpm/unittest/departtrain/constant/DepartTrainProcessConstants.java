@@ -22,6 +22,9 @@ public class DepartTrainProcessConstants {
 	// ##############################################################################
 	// ####################################### variables
 	// ##############################################################################
+	 
+	// Liste von Wagen, die an 'TASK_ASSUME_REPAIR_TIME' übergeben werden
+	public static final String VAR_WAGGONS_TO_ASSUME = "VAR_WAGGONS_TO_ASSUME";
 	
 	// times assumements to collect
 	public static final String VAR_COLLECTED_ASSUMEMENTS = "VAR_COLLECTED_ASSUMEMENTS";
@@ -60,6 +63,7 @@ public class DepartTrainProcessConstants {
 	public static final String MSG_DEPARTURE_PLANNED = "MSG_DEPARTURE_PLANNED";
 	public static final String MSG_WG_REPAIRED = "MSG_WG_REPAIRED";
 	public static final String MSG_SH_ORD = "MSG_SH_ORD";
+	public static final String MSG_INVOKE_WAG_ASSUMEMENT = "MSG_INVOKE_WAG_ASSUMEMENT";
 	
 	// ##############################################################################
 	// ####################################### errors
