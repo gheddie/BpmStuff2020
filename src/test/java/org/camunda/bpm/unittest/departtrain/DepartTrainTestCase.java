@@ -117,7 +117,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 			processEngine.getTaskService().complete(assumeTask.getId());
 		}
 
-		// 3 tasks 'TASK_PROCESS_REPAIR'
+		// 3 tasks 'TASK_PROCESS_REPAIR'...
 		List<Task> repairTasks = processEngine.getTaskService().createTaskQuery()
 				.taskDefinitionKey(DepartTrainProcessConstants.TASK_PROCESS_REPAIR).list();
 		assertEquals(3, repairTasks.size());
