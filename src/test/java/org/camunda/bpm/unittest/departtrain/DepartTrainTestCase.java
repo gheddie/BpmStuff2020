@@ -61,7 +61,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		processWaggonRepairAssumement(processInstance, assumementTasks.get(1), 4);
 
 		// all assumed --> choose exit track...
-		ensureSingleTaskPresent(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK, processInstance.getBusinessKey(), false);
+		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
 	}
 
 	@Test
