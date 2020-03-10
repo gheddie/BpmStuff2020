@@ -17,6 +17,7 @@ import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusiness
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.WaggonErrorCode;
 import org.camunda.bpm.unittest.departtrain.businesslogic.exception.RailwayStationBusinessLogicException;
 import org.camunda.bpm.unittest.departtrain.constant.DepartTrainProcessConstants;
+import org.camunda.bpm.unittest.util.HashBuilder;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -63,7 +64,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 	@SuppressWarnings("unchecked")
 	@Test
 	@Deployment(resources = { "departtrain/departTrainProcess.bpmn" })
-	public void testProcessMutlipleCriticalWaggons() {
+	public void testProcessMultipleCriticalWaggons() {
 
 		RailwayStationBusinessLogic.getInstance().reset();
 
@@ -125,10 +126,16 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 		// choose exit track after all repairs...
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
+
+		// this is an error --> loop
+		processExitTrack(processInstance, "UNKNOWN");
+		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
 		
-		executeSingleTask(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK, processInstance.getBusinessKey());
+		// again
+		processExitTrack(processInstance, "TrackExit");
 		
-		// ensureSingleTaskPresent(DepartTrainProcessConstants.TASK_CONFIRM_ROLLOUT, processInstance.getBusinessKey(), false);
+		// wait for shunting response
+		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_SH_DONE);
 	}
 
 	@Test
@@ -169,7 +176,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		assertThat(instanceA).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
 
 		// finish track choosing for A
-		processExitTrackChoosing(instanceA);
+		processExitTrack(instanceA, "T1");
 
 		// shunt A...
 		processShunting(instanceA);
@@ -193,7 +200,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		processEngine.getTaskService().complete(processRepairListB.get(0).getId());
 
 		// B waiting for exit track
-		processExitTrackChoosing(instanceB);
+		processExitTrack(instanceB, "T1");
 
 		processShunting(instanceB);
 
@@ -209,14 +216,11 @@ public class DepartTrainTestCase extends BpmTestCase {
 		assertEquals(0, RailwayStationBusinessLogic.getInstance().countWaggons());
 	}
 
-	private Map<String, Object> processExitTrackChoosing(ProcessInstance processInstance) {
-		Map<String, Object> exitTrackVariables = new HashMap<String, Object>();
-		exitTrackVariables.put(DepartTrainProcessConstants.VAR_EXIT_TRACK, "T1");
+	private void processExitTrack(ProcessInstance processInstance, String trackNumber) {
 		processEngine.getTaskService().complete(
 				processEngine.getTaskService().createTaskQuery().processInstanceBusinessKey(processInstance.getBusinessKey())
 						.taskDefinitionKey(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK).list().get(0).getId(),
-				exitTrackVariables);
-		return exitTrackVariables;
+				HashBuilder.create().withValue(DepartTrainProcessConstants.VAR_EXIT_TRACK, trackNumber).build());
 	}
 
 	private void processShunting(ProcessInstance instanceA) {

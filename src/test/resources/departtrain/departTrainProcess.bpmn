@@ -5,7 +5,7 @@
     <bpmn:participant id="Participant_00fpcik" name="Shunter" processRef="shuntingProcess" />
     <bpmn:participant id="Participant_0z4n82j" name="Repair facility" processRef="PROCESS_REPAIR_FACILITY" />
     <bpmn:messageFlow id="MessageFlow_1mf5jru" sourceRef="TaskOrderShunting" targetRef="IntermediateThrowEvent_041qgz3" />
-    <bpmn:messageFlow id="MessageFlow_1i1pw2i" sourceRef="TASK_SHUNT_WAGGONS" targetRef="IntermediateThrowEvent_11pdw8a" />
+    <bpmn:messageFlow id="MessageFlow_1i1pw2i" sourceRef="TASK_SHUNT_WAGGONS" targetRef="CATCH_MSG_SH_DONE" />
     <bpmn:messageFlow id="MessageFlow_19y0vqj" sourceRef="TASK_PROCESS_REPAIR" targetRef="CATCH_MSG_WG_REPAIRED" />
     <bpmn:messageFlow id="MessageFlow_0zrk4uy" sourceRef="TaskProcessCriticalErrors" targetRef="StartEvent_14lghgj" />
   </bpmn:collaboration>
@@ -20,7 +20,7 @@
         <bpmn:flowNodeRef>TASK_CONFIRM_ROLLOUT</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_1bdmnut</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>SignalThrowRoCanc</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>IntermediateThrowEvent_11pdw8a</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>CATCH_MSG_SH_DONE</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TaskOrderShunting</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExGwPositionsCorrect</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TaskCheckWaggonPositions</bpmn:flowNodeRef>
@@ -70,7 +70,7 @@
       <bpmn:incoming>SequenceFlow_1dbkbrx</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_01mca4f</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_11pdw8a" name="MSG_SH_DONE">
+    <bpmn:intermediateCatchEvent id="CATCH_MSG_SH_DONE" name="MSG_SH_DONE">
       <bpmn:incoming>SequenceFlow_0xyk95k</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1dszain</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_0lj90x5" />
@@ -81,9 +81,9 @@
       <bpmn:outgoing>SequenceFlow_1dbkbrx</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_01mca4f" sourceRef="TASK_CONFIRM_ROLLOUT" targetRef="ExGwRollout" />
-    <bpmn:sequenceFlow id="SequenceFlow_1dszain" sourceRef="IntermediateThrowEvent_11pdw8a" targetRef="ExclusiveGateway_1bdmnut" />
+    <bpmn:sequenceFlow id="SequenceFlow_1dszain" sourceRef="CATCH_MSG_SH_DONE" targetRef="ExclusiveGateway_1bdmnut" />
     <bpmn:sequenceFlow id="SequenceFlow_1dbkbrx" sourceRef="ExclusiveGateway_1bdmnut" targetRef="TASK_CONFIRM_ROLLOUT" />
-    <bpmn:sequenceFlow id="SequenceFlow_0xyk95k" sourceRef="TaskOrderShunting" targetRef="IntermediateThrowEvent_11pdw8a" />
+    <bpmn:sequenceFlow id="SequenceFlow_0xyk95k" sourceRef="TaskOrderShunting" targetRef="CATCH_MSG_SH_DONE" />
     <bpmn:sequenceFlow id="SequenceFlow_1vu95o9" sourceRef="TaskCancelDepartOrder" targetRef="SignalThrowRoCanc" />
     <bpmn:sequenceFlow id="SequenceFlow_0rbvy8h" sourceRef="TaskRemoveWaggons" targetRef="ExclusiveGateway_0f0uu4b" />
     <bpmn:sequenceFlow id="SequenceFlow_0550o6l" sourceRef="SignalThrowRoCanc" targetRef="ExclusiveGateway_0f0uu4b" />
@@ -385,7 +385,7 @@
           <dc:Bounds x="953" y="282" width="17" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="IntermediateCatchEvent_1dzns8n_di" bpmnElement="IntermediateThrowEvent_11pdw8a">
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_1dzns8n_di" bpmnElement="CATCH_MSG_SH_DONE">
         <dc:Bounds x="1002" y="392" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1048" y="403" width="85" height="14" />
@@ -468,8 +468,9 @@
         <di:waypoint x="642" y="481" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0rupt2s_di" bpmnElement="SequenceFlow_0rupt2s">
-        <di:waypoint x="500" y="59" />
-        <di:waypoint x="566" y="106" />
+        <di:waypoint x="451" y="65" />
+        <di:waypoint x="451" y="117" />
+        <di:waypoint x="563" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_1ebuac8_di" bpmnElement="TaskProcessCriticalErrors">
         <dc:Bounds x="401" y="-15" width="100" height="80" />
@@ -520,7 +521,7 @@
       <bpmndi:BPMNShape id="IntermediateCatchEvent_05eqkdf_di" bpmnElement="CATCH_MSG_WG_REPAIRED">
         <dc:Bounds x="563" y="98" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="465" y="106" width="87" height="27" />
+          <dc:Bounds x="467" y="132" width="87" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="MessageFlow_19y0vqj_di" bpmnElement="MessageFlow_19y0vqj">

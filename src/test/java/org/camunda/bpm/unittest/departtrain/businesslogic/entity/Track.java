@@ -14,6 +14,8 @@ public class Track {
 	private String trackNumber;
 	
 	private List<Waggon> waggons;
+	
+	private boolean exitTrack;
 
 	public List<String> getWaggonNumbers(boolean showWaggonDefects) {
 		List<String> result = new ArrayList<String>();

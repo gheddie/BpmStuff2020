@@ -88,6 +88,14 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 	public boolean isWaggonCritical(String waggonNumber) {
 		return stationData.isWaggonCritical(waggonNumber);
 	}
+	
+	public boolean isExitTrack(String trackNumber) {
+		Track track = stationData.findTrack(trackNumber);
+		if (track == null) {
+			return false;
+		}
+		return track.isExitTrack();
+	}
 
 	// ---
 

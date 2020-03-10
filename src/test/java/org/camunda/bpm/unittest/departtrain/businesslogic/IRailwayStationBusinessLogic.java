@@ -18,4 +18,6 @@ public interface IRailwayStationBusinessLogic {
 	void setDefectCode(String waggonNumber, WaggonErrorCode waggonErrorCode);
 	
 	boolean isWaggonCritical(String waggonNumber);
+	
+	boolean isExitTrack(String trackNumber);
 }

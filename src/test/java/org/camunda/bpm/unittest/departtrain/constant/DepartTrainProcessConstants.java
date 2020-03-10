@@ -70,6 +70,7 @@ public class DepartTrainProcessConstants {
 	// ##############################################################################
 	
 	public static final String CATCH_MSG_WG_REPAIRED = "CATCH_MSG_WG_REPAIRED";
+	public static final String CATCH_MSG_SH_DONE = "CATCH_MSG_SH_DONE";
 	
 	// ##############################################################################
 	// ####################################### processes
