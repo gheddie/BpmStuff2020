@@ -9,7 +9,6 @@ public class DepartTrainProcessConstants {
 	public static final String TASK_CHOOSE_EXIT_TRACK = "TASK_CHOOSE_EXIT_TRACK";
 	public static final String TASK_CHECK_WAGGONS = "TASK_CHECK_WAGGONS";
 	public static final String TASK_CONFIRM_ROLLOUT = "TASK_CONFIRM_ROLLOUT";
-	public static final String TASK_PROCESS_REPAIR = "TASK_PROCESS_REPAIR";
 	public static final String TASK_ASSUME_REPAIR_TIME = "TASK_ASSUME_REPAIR_TIME";
 	public static final String TASK_SHUNT_WAGGONS = "TASK_SHUNT_WAGGONS";
 
@@ -22,6 +21,15 @@ public class DepartTrainProcessConstants {
 	// ##############################################################################
 	// ####################################### variables
 	// ##############################################################################
+	
+	// start time of the process
+	public static final String VAR_NOW = "VAR_NOW";
+	
+	// planned departure time
+	public static final String VAR_PLANNED_DEPARTMENT_DATE = "VAR_PLANNED_DEPARTMENT_DATE";
+	
+	// Dauert die Reparatur aller Wagen so lnge, das Zug nicht geplant abfahren kann?
+	public static final String VAR_REPAIR_TIME_EXCEEDED = "VAR_REPAIR_TIME_EXCEEDED";
 	 
 	// Liste von Wagen, die an 'TASK_ASSUME_REPAIR_TIME' übergeben werden
 	public static final String VAR_WAGGONS_TO_ASSUME = "VAR_WAGGONS_TO_ASSUME";
