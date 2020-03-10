@@ -68,6 +68,10 @@ public class BpmTestCase {
 		assertEquals(1, runtimeService().createVariableInstanceQuery().variableName(variableName).list().size());
 	}
 
+	protected int ensureProcessInstanceCount(String processDefinitionKey) {
+		return runtimeService().createProcessInstanceQuery().processDefinitionKey(processDefinitionKey).list().size();
+	}
+
 	protected void debugEngineState() {
 
 		System.out.println("---------------[ENGINE STATE]------------------");

@@ -37,17 +37,29 @@ public class DepartTrainTestCase extends BpmTestCase {
 	public void testDeployment() {
 		// ...
 	}
-	
+
 	@Test
 	@Deployment(resources = { "departtrain/departTrainProcess.bpmn" })
 	public void testStraightAssumement() {
-		
+
 		RailwayStationBusinessLogic.getInstance().reset();
 
 		// prepare test data
-		RailwayStationBusinessLogic.getInstance().withTracks("Track1@true", "TrackExit").withWaggons("Track1", "W1@C1#N1", "W2@C1", "W3", "W4", "W5");
-	
-		startDepartureProcess("W1", "W2", "W3", "W4");
+		RailwayStationBusinessLogic.getInstance().withTracks("Track1@true", "TrackExit").withWaggons("Track1", "W1@C1#N1",
+				"W2@C1", "W3", "W4", "W5");
+
+		ProcessInstance processInstance = startDepartureProcess("W1", "W2", "W3", "W4");
+
+		// we have two assumement processes, so 2 assumement tasks...
+		assertEquals(2, ensureProcessInstanceCount(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY));
+		List<Task> assumementTasks = ensureTaskCountPresent(DepartTrainProcessConstants.TASK_ASSUME_REPAIR_TIME, 2);
+
+		// assume a waggon
+		processWaggonRepairAssumement(processInstance, assumementTasks.get(0), 14);
+		processWaggonRepairAssumement(processInstance, assumementTasks.get(1), 27);
+		
+		// all assumed --> choose exit track...
+		ensureSingleTaskPresent(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK, processInstance.getBusinessKey(), false);
 	}
 
 	@Test
@@ -63,8 +75,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		// start process A
 		startDepartureProcess("W1", "W2", "W3", "W4", "W5");
 
-		assertEquals(2, processEngine.getRuntimeService().createProcessInstanceQuery()
-				.processDefinitionKey(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY).list().size());
+		assertEquals(2, ensureProcessInstanceCount(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -86,12 +97,11 @@ public class DepartTrainTestCase extends BpmTestCase {
 		ProcessInstance processInstance = startDepartureProcess("W1@C1", "W2@C1", "W3@C1", "W4");
 
 		// we must have 3 repair processes...
-		assertEquals(3, processEngine.getRuntimeService().createProcessInstanceQuery()
-				.processDefinitionKey(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY).list().size());
+		assertEquals(3, ensureProcessInstanceCount(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY));
 
 		// 3 waggons must be marked as to be repaired...
 		List<String> waggonsToRepair = (List<String>) processEngine.getRuntimeService().getVariable(processInstance.getId(),
-				DepartTrainProcessConstants.VAR_WAGGONS_TO_REPAIR);
+				DepartTrainProcessConstants.VAR_WAGGONS_TO_ASSUME);
 		assertEquals(3, waggonsToRepair.size());
 
 		// master process is waiting at message catch...
@@ -114,19 +124,19 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 		// repair waggon 1 of 3 --> not done (back to message catch)
 		assertEquals(1, processEngine.getRuntimeService().createEventSubscriptionQuery()
-				.eventName(DepartTrainProcessConstants.MSG_WG_REPAIRED).list().size());
+				.eventName(DepartTrainProcessConstants.MSG_REPAIR_ASSUMED).list().size());
 		processEngine.getTaskService().complete(repairTasks.get(0).getId());
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_WG_REPAIRED);
 
 		// repair waggon 2 of 3 --> not done (back to message catch)
 		assertEquals(1, processEngine.getRuntimeService().createEventSubscriptionQuery()
-				.eventName(DepartTrainProcessConstants.MSG_WG_REPAIRED).list().size());
+				.eventName(DepartTrainProcessConstants.MSG_REPAIR_ASSUMED).list().size());
 		processEngine.getTaskService().complete(repairTasks.get(1).getId());
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_WG_REPAIRED);
 
 		// repair waggon 3 of 3 --> done!!!
 		assertEquals(1, processEngine.getRuntimeService().createEventSubscriptionQuery()
-				.eventName(DepartTrainProcessConstants.MSG_WG_REPAIRED).list().size());
+				.eventName(DepartTrainProcessConstants.MSG_REPAIR_ASSUMED).list().size());
 		processEngine.getTaskService().complete(repairTasks.get(2).getId());
 
 		// choose exit track after all repairs...
@@ -141,11 +151,11 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 		// wait for shunting response
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_SH_DONE);
-		
+
 		processShunting(processInstance);
-		
+
 		processRollout(processInstance, true);
-		
+
 		// process finished
 		assertThat(processInstance).isEnded();
 	}
@@ -228,9 +238,10 @@ public class DepartTrainTestCase extends BpmTestCase {
 		// waggons must have left the station...
 		assertEquals(0, RailwayStationBusinessLogic.getInstance().countWaggons());
 	}
-	
-	private void processExitTrack(ProcessInstance processInstance, String waggonNumber, int hours) {
-		
+
+	private void processWaggonRepairAssumement(ProcessInstance processInstance, Task assumementTask, int hours) {
+		processEngine.getTaskService().complete(assumementTask.getId(),
+				HashBuilder.create().withValuePair(DepartTrainProcessConstants.VAR_ASSUMED_TIME, hours).build());
 	}
 
 	private void processExitTrack(ProcessInstance processInstance, String trackNumber) {
@@ -240,7 +251,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 				HashBuilder.create().withValuePair(DepartTrainProcessConstants.VAR_EXIT_TRACK, trackNumber).build());
 	}
 
-	private void processShunting(ProcessInstance instanceA) {
+	private void processShunting(ProcessInstance processInstance) {
 		ensureSingleTaskPresent(DepartTrainProcessConstants.TASK_SHUNT_WAGGONS, true);
 	}
 

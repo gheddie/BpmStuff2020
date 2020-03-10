@@ -39,17 +39,17 @@ public class DepartTrainProcessConstants {
 	public static final String VAR_PLANNED_WAGGONS = "VAR_PLANNED_WAGGONS";
 	
 	// Entscheidet, ob zu 'TaskChooseExitTrack' übergegangen wird ---> 'TaskAllRepairsDone'
-	public static final String VAR_ALL_REPAIRS_DONE = "VAR_ALL_REPAIRS_DONE";
+	public static final String VAR_ALL_ASSUMEMENTS_DONE = "VAR_ALL_ASSUMEMENTS_DONE";
 	
 	// Hier werden in 'TaskAllRepairsDone' alle zurückgemeldeten Reparaturen gespeichert
 	// Es wird zu 'TaskChooseExitTrack' weitergegeben, wenn gilt: ('VAR_REPAIRED_WAGGONS' == 'VAR_WAGGONS_TO_REPAIR')
-	public static final String VAR_REPAIRED_WAGGONS = "VAR_REPAIRED_WAGGONS";
-	
-	// Hier wird sich ab 'TaskProcessCriticalErrors' gemerkt, welche Wagen als repariert zurückzumelden sind
-	public static final String VAR_WAGGONS_TO_REPAIR = "VAR_WAGGONS_TO_REPAIR";
+	public static final String VAR_ASSUMED_WAGGONS = "VAR_ASSUMED_WAGGONS";
 	
 	// Wird durch den Reparatur-Prozess geschleift und auuch von diesem zurückgegeben
-	public static final String VAR_SINGLE_WAGGON_TO_REPAIR = "VAR_SINGLE_WAGGON_TO_REPAIR";
+	public static final String VAR_SINGLE_WAGGON_TO_ASSUME = "VAR_SINGLE_WAGGON_TO_ASSUME";
+	
+	// Die für einen Wagen abgeschätzte Reparatur-Zeit
+	public static final String VAR_ASSUMED_TIME = "VAR_ASSUMED_TIME";
 	
 	// business key of the 'master' process --> passed to repair 
 	// process to able to call back to master
@@ -61,7 +61,7 @@ public class DepartTrainProcessConstants {
 	
 	public static final String MSG_INVOKE_WAG_REP = "MSG_INVOKE_WAG_REP";
 	public static final String MSG_DEPARTURE_PLANNED = "MSG_DEPARTURE_PLANNED";
-	public static final String MSG_WG_REPAIRED = "MSG_WG_REPAIRED";
+	public static final String MSG_REPAIR_ASSUMED = "MSG_REPAIR_ASSUMED";
 	public static final String MSG_SH_ORD = "MSG_SH_ORD";
 	public static final String MSG_INVOKE_WAG_ASSUMEMENT = "MSG_INVOKE_WAG_ASSUMEMENT";
 	
@@ -80,7 +80,7 @@ public class DepartTrainProcessConstants {
 	public static final String CATCH_MSG_SH_DONE = "CATCH_MSG_SH_DONE";
 	
 	// ##############################################################################
-	// ####################################### processes
+	// ####################################### process definitions
 	// ##############################################################################
 	
 	public static final String PROCESS_REPAIR_FACILITY = "PROCESS_REPAIR_FACILITY";
