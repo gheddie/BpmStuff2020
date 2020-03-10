@@ -57,7 +57,8 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 	}
 
 	public String generateBusinessKey() {
-		return String.valueOf(System.currentTimeMillis()) + "_" + String.valueOf(random.nextInt(1000));
+		String result = String.valueOf(System.currentTimeMillis()) + "_" + String.valueOf(random.nextInt(1000));
+		return result;
 	}
 	
 	@Override

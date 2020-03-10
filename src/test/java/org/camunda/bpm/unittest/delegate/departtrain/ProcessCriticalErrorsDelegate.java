@@ -16,11 +16,13 @@ public class ProcessCriticalErrorsDelegate implements JavaDelegate {
 	public void execute(DelegateExecution execution) throws Exception {
 		List<String> plannedWaggons = (List<String>) execution.getVariable(DepartTrainProcessConstants.VAR_PLANNED_WAGGONS);
 		List<String> waggonsToAssume = new ArrayList<String>();
+		String subProcessBusinessKey = null;
 		for (String plannedWaggon : plannedWaggons) {
 			if (RailwayStationBusinessLogic.getInstance().isWaggonCritical(plannedWaggon)) {
+				subProcessBusinessKey = RailwayStationBusinessLogic.getInstance().generateBusinessKey();
 				// pass master process business key to call back...
 				execution.getProcessEngine().getRuntimeService()
-						.startProcessInstanceByMessage(DepartTrainProcessConstants.MSG_INVOKE_WAG_ASSUMEMENT, HashBuilder.create()
+						.startProcessInstanceByMessage(DepartTrainProcessConstants.MSG_INVOKE_WAG_ASSUMEMENT, subProcessBusinessKey, HashBuilder.create()
 								.withValuePair(DepartTrainProcessConstants.VAR_DEP_PROC_BK, execution.getBusinessKey())
 								.withValuePair(DepartTrainProcessConstants.VAR_SINGLE_WAGGON_TO_ASSUME, plannedWaggon).build());
 				// store waggons to repair in 'VAR_WAGGONS_TO_REPAIR'

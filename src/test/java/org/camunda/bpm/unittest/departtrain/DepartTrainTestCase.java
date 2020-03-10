@@ -60,8 +60,14 @@ public class DepartTrainTestCase extends BpmTestCase {
 		processWaggonRepairAssumement(processInstance, assumementTasks.get(0), 11);
 		processWaggonRepairAssumement(processInstance, assumementTasks.get(1), 4);
 
+		// 2 facility processes waiting at 'CATCH_MSG_START_REPAIR'...
+		assertEquals(2,
+				processEngine.getRuntimeService().createProcessInstanceQuery()
+						.activityIdIn(DepartTrainProcessConstants.CATCH_MSG_START_REPAIR)
+						.processDefinitionKey(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY).list().size());
+
 		// all assumed --> choose exit track...
-		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
+		// assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
 	}
 
 	@Test

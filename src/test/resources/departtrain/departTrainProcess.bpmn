@@ -8,7 +8,7 @@
     <bpmn:messageFlow id="MessageFlow_1i1pw2i" sourceRef="TASK_SHUNT_WAGGONS" targetRef="CATCH_MSG_SH_DONE" />
     <bpmn:messageFlow id="MessageFlow_19y0vqj" sourceRef="TASK_ASSUME_REPAIR_TIME" targetRef="CATCH_MSG_WG_REPAIRED" />
     <bpmn:messageFlow id="MessageFlow_0zrk4uy" sourceRef="TaskProcessCriticalErrors" targetRef="StartEvent_14lghgj" />
-    <bpmn:messageFlow id="MessageFlow_1qn9jjk" sourceRef="TaskStartRepair" targetRef="IntermediateThrowEvent_0ytpfw5" />
+    <bpmn:messageFlow id="MessageFlow_1qn9jjk" sourceRef="TaskStartRepair" targetRef="CATCH_MSG_START_REPAIR" />
     <bpmn:messageFlow id="MessageFlow_1f7o4w7" sourceRef="TaskRepairWaggon" targetRef="IntermediateCatchEvent_1g4pn4h" />
   </bpmn:collaboration>
   <bpmn:process id="departTrainProcess" isExecutable="true">
@@ -41,14 +41,14 @@
         <bpmn:flowNodeRef>BoundaryEvent_1p8wdzo</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_1qk7c3h</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>MsGwRepairCallback</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>IntermediateCatchEvent_1eppsxp</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_0g000y0</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>IntermediateCatchEvent_1g4pn4h</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>IntermediateCatchEvent_1eppsxp</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_0y2tr9m" name="Waggon master">
         <bpmn:flowNodeRef>TaskProcessCriticalErrors</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>CATCH_MSG_WG_REPAIRED</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TASK_CHECK_WAGGONS</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>CATCH_MSG_WG_REPAIRED</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:sequenceFlow id="SequenceFlow_1y63fyx" sourceRef="TaskCreateDepartingOrder" targetRef="TaskProcessCriticalErrors" />
@@ -113,12 +113,6 @@
       <bpmn:incoming>SequenceFlow_0tndfq7</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0tndfq7" sourceRef="TaskCheckRepairTime" targetRef="EndEvent_0cuje8w" />
-    <bpmn:intermediateCatchEvent id="CATCH_MSG_WG_REPAIRED" name="MSG_REPAIR_ASSUMED">
-      <bpmn:incoming>SequenceFlow_0rupt2s</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_0r593fk</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_198wx9r</bpmn:outgoing>
-      <bpmn:messageEventDefinition messageRef="Message_05gh04p" />
-    </bpmn:intermediateCatchEvent>
     <bpmn:serviceTask id="TaskStartRepair" name="Start Repair" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.StartRepairDelegate">
       <bpmn:incoming>SequenceFlow_10qmx0f</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0qu7xlo</bpmn:outgoing>
@@ -218,11 +212,6 @@
       <bpmn:outgoing>SequenceFlow_162h2mm</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_0hl5x1x</bpmn:outgoing>
     </bpmn:eventBasedGateway>
-    <bpmn:intermediateCatchEvent id="IntermediateCatchEvent_1eppsxp" name="MSG_REPAIR_TIME_EXCEEDED">
-      <bpmn:incoming>SequenceFlow_162h2mm</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1twoir4</bpmn:outgoing>
-      <bpmn:messageEventDefinition messageRef="Message_1er2zeq" />
-    </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="SequenceFlow_162h2mm" sourceRef="MsGwRepairCallback" targetRef="IntermediateCatchEvent_1eppsxp" />
     <bpmn:sequenceFlow id="SequenceFlow_0hl5x1x" sourceRef="MsGwRepairCallback" targetRef="IntermediateCatchEvent_1g4pn4h" />
     <bpmn:sequenceFlow id="SequenceFlow_1twoir4" sourceRef="IntermediateCatchEvent_1eppsxp" targetRef="ExclusiveGateway_0g000y0" />
@@ -237,6 +226,17 @@
       <bpmn:incoming>SequenceFlow_0hl5x1x</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0a22uxm</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_0kxapt3" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="CATCH_MSG_WG_REPAIRED" name="MSG_REPAIR_ASSUMED">
+      <bpmn:incoming>SequenceFlow_0rupt2s</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0r593fk</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_198wx9r</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_05gh04p" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="IntermediateCatchEvent_1eppsxp" name="MSG_REPAIR_TIME_EXCEEDED">
+      <bpmn:incoming>SequenceFlow_162h2mm</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1twoir4</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_1er2zeq" />
     </bpmn:intermediateCatchEvent>
     <bpmn:association id="Association_0exob2b" sourceRef="TaskProcessCriticalErrors" targetRef="TextAnnotation_154ha91" />
     <bpmn:association id="Association_022z90p" sourceRef="TaskAllAssumementsDone" targetRef="TextAnnotation_0wo4rks" />
@@ -292,9 +292,9 @@
       <bpmn:incoming>SequenceFlow_0juzu23</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1l55lzh</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="SequenceFlow_1l55lzh" sourceRef="TASK_ASSUME_REPAIR_TIME" targetRef="IntermediateThrowEvent_0ytpfw5" />
-    <bpmn:sequenceFlow id="SequenceFlow_0f5tqfq" sourceRef="IntermediateThrowEvent_0ytpfw5" targetRef="TaskRepairWaggon" />
-    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_0ytpfw5" name="MSG_START_REPAIR">
+    <bpmn:sequenceFlow id="SequenceFlow_1l55lzh" sourceRef="TASK_ASSUME_REPAIR_TIME" targetRef="CATCH_MSG_START_REPAIR" />
+    <bpmn:sequenceFlow id="SequenceFlow_0f5tqfq" sourceRef="CATCH_MSG_START_REPAIR" targetRef="TaskRepairWaggon" />
+    <bpmn:intermediateCatchEvent id="CATCH_MSG_START_REPAIR" name="MSG_START_REPAIR">
       <bpmn:incoming>SequenceFlow_1l55lzh</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0f5tqfq</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_1v4ctnp" />
@@ -530,7 +530,7 @@
       <bpmndi:BPMNEdge id="SequenceFlow_0rupt2s_di" bpmnElement="SequenceFlow_0rupt2s">
         <di:waypoint x="451" y="65" />
         <di:waypoint x="451" y="117" />
-        <di:waypoint x="563" y="117" />
+        <di:waypoint x="624" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_1ebuac8_di" bpmnElement="TaskProcessCriticalErrors">
         <dc:Bounds x="401" y="-15" width="100" height="80" />
@@ -566,22 +566,20 @@
         <dc:Bounds x="356" y="-224" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_198wx9r_di" bpmnElement="SequenceFlow_198wx9r">
-        <di:waypoint x="581" y="134" />
-        <di:waypoint x="581" y="160" />
-        <di:waypoint x="642" y="160" />
+        <di:waypoint x="642" y="134" />
         <di:waypoint x="642" y="213" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_05eqkdf_di" bpmnElement="CATCH_MSG_WG_REPAIRED">
-        <dc:Bounds x="563" y="98" width="36" height="36" />
+        <dc:Bounds x="624" y="98" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="471" y="132" width="79" height="27" />
+          <dc:Bounds x="532" y="132" width="79" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="MessageFlow_19y0vqj_di" bpmnElement="MessageFlow_19y0vqj">
         <di:waypoint x="406" y="-144" />
         <di:waypoint x="406" y="-123" />
-        <di:waypoint x="581" y="-123" />
-        <di:waypoint x="581" y="98" />
+        <di:waypoint x="642" y="-123" />
+        <di:waypoint x="642" y="98" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1gxtmn8_di" bpmnElement="SequenceFlow_1gxtmn8">
         <di:waypoint x="642" y="293" />
@@ -600,7 +598,7 @@
         <di:waypoint x="667" y="343" />
         <di:waypoint x="737" y="343" />
         <di:waypoint x="737" y="116" />
-        <di:waypoint x="599" y="116" />
+        <di:waypoint x="660" y="116" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_1mqltw5_di" bpmnElement="TextAnnotation_1mqltw5">
         <dc:Bounds x="158" y="-288" width="100" height="113" />
@@ -683,10 +681,10 @@
         <di:waypoint x="456" y="-184" />
         <di:waypoint x="817" y="-184" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="IntermediateCatchEvent_1dpwar8_di" bpmnElement="IntermediateThrowEvent_0ytpfw5">
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_1dpwar8_di" bpmnElement="CATCH_MSG_START_REPAIR">
         <dc:Bounds x="817" y="-202" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="791" y="-239.5" width="88" height="27" />
+          <dc:Bounds x="791" y="-239" width="88" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0f5tqfq_di" bpmnElement="SequenceFlow_0f5tqfq">
@@ -708,14 +706,14 @@
         <dc:Bounds x="962" y="425" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_1eppsxp_di" bpmnElement="IntermediateCatchEvent_1eppsxp">
-        <dc:Bounds x="1047" y="432" width="36" height="36" />
+        <dc:Bounds x="1069" y="432" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1022" y="475" width="87" height="27" />
+          <dc:Bounds x="1044" y="475" width="87" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_162h2mm_di" bpmnElement="SequenceFlow_162h2mm">
         <di:waypoint x="1012" y="450" />
-        <di:waypoint x="1047" y="450" />
+        <di:waypoint x="1069" y="450" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_1g4pn4h_di" bpmnElement="IntermediateCatchEvent_1g4pn4h">
         <dc:Bounds x="969" y="352" width="36" height="36" />
@@ -731,7 +729,7 @@
         <dc:Bounds x="1161" y="425" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1twoir4_di" bpmnElement="SequenceFlow_1twoir4">
-        <di:waypoint x="1083" y="450" />
+        <di:waypoint x="1105" y="450" />
         <di:waypoint x="1161" y="450" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0a22uxm_di" bpmnElement="SequenceFlow_0a22uxm">
