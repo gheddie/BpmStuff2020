@@ -2,7 +2,6 @@ package org.camunda.bpm.unittest.departtrain.businesslogic;
 
 import java.util.List;
 
-import org.camunda.bpm.unittest.departtrain.businesslogic.entity.WaggonErrorCode;
 import org.camunda.bpm.unittest.departtrain.businesslogic.exception.RailWayException;
 
 public interface IRailwayStationBusinessLogic {

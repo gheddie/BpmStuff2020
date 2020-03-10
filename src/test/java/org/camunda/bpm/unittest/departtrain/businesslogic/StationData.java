@@ -7,7 +7,6 @@ import java.util.List;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.DepartmentOrder;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Track;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Waggon;
-import org.camunda.bpm.unittest.departtrain.businesslogic.entity.WaggonErrorCode;
 import org.camunda.bpm.unittest.departtrain.businesslogic.exception.RailwayStationBusinessLogicException;
 import org.camunda.bpm.unittest.departtrain.businesslogic.util.BusinessLogicUtil;
 import org.camunda.bpm.unittest.departtrain.util.RailTestUtil;
@@ -81,11 +80,7 @@ public class StationData {
 	}
 
 	public boolean isWaggonCritical(String waggonNumber) {
-		WaggonErrorCode waggonErrorCode = findWaggon(waggonNumber).getWaggonErrorCode();
-		if (waggonErrorCode == null) {
-			return false;
-		}
-		return waggonErrorCode.isCritical();
+		return findWaggon(waggonNumber).isDefect();
 	}
 
 	public void reset() {

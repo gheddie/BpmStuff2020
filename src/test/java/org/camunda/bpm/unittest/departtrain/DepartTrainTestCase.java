@@ -3,11 +3,8 @@ package org.camunda.bpm.unittest.departtrain;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.assertThat;
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.assertj.core.util.Arrays;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
@@ -15,7 +12,6 @@ import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
 import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessLogic;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Waggon;
-import org.camunda.bpm.unittest.departtrain.businesslogic.entity.WaggonErrorCode;
 import org.camunda.bpm.unittest.departtrain.businesslogic.exception.RailwayStationBusinessLogicException;
 import org.camunda.bpm.unittest.departtrain.constant.DepartTrainProcessConstants;
 import org.camunda.bpm.unittest.util.HashBuilder;
@@ -68,7 +64,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 		// prepare test data
 		RailwayStationBusinessLogic.getInstance().withTracks("Track1@true", "TrackExit@true").withWaggons("Track1", "W1@C1",
-				"W2@C1", "W3@C1", "W4", "W5@C1");
+				"W2@C1#N1", "W3@C1", "W4", "W5@C1");
 
 		RailwayStationBusinessLogic.getInstance().print(true);
 

@@ -13,7 +13,6 @@ import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
 import org.junit.Rule;
-import org.junit.Test;
 
 public class Async2TestCase extends BpmTestCase {
 	
