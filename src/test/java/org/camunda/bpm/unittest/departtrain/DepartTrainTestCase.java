@@ -133,6 +133,13 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 		// wait for shunting response
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_SH_DONE);
+		
+		processShunting(processInstance);
+		
+		processRollout(processInstance, true);
+		
+		// process finished
+		assertThat(processInstance).isEnded();
 	}
 
 	@Test
