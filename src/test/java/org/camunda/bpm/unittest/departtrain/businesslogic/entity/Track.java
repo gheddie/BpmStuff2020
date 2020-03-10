@@ -9,14 +9,14 @@ import org.camunda.bpm.unittest.departtrain.util.RailTestUtil;
 import lombok.Data;
 
 @Data
-public class Track {
+public class Track extends RailTestEntity<Track> {
 
 	private String trackNumber;
 	
 	private List<Waggon> waggons;
 	
 	private boolean exitTrack;
-
+	
 	public List<String> getWaggonNumbers(boolean showWaggonDefects) {
 		List<String> result = new ArrayList<String>();
 		if (waggons == null) {
@@ -36,5 +36,14 @@ public class Track {
 
 	public Waggon getWaggon(String waggonNumber) {
 		return RailTestUtil.hashWaggons(waggons).get(waggonNumber);
+	}
+
+	@Override
+	public Track fromString(String value) {
+		setTrackNumber(getPrimaryValue(value));
+		if (hasSecondaryValue(value)) {
+			setExitTrack(Boolean.parseBoolean((String) getSecondaryValue(value)));			
+		}
+		return this;
 	}
 }

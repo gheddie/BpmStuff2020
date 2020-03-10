@@ -48,10 +48,6 @@ public class StationData {
 		}
 	}
 
-	public void setDefectCode(String waggonNumber, WaggonErrorCode waggonErrorCode) {
-		findWaggon(waggonNumber).setWaggonErrorCode(waggonErrorCode);
-	}
-
 	private Waggon findWaggon(String waggonNumber) {
 		Waggon waggon = null;
 		for (Track track : tracks) {
@@ -64,18 +60,13 @@ public class StationData {
 	}
 
 	public void addTrack(String trackNumber) {
-		Track track = new Track();
-		track.setTrackNumber(trackNumber);
-		tracks.add(track);
+		tracks.add(new Track().fromString(trackNumber));
 	}
 
 	public void addWaggons(String trackNumber, String[] waggonNumbers) {
 		List<Waggon> waggons = new ArrayList<Waggon>();
-		Waggon waggon = null;
 		for (String waggonNumber : waggonNumbers) {
-			waggon = new Waggon();
-			waggon.setWaggonNumber(waggonNumber);
-			waggons.add(waggon);
+			waggons.add(new Waggon().fromString(waggonNumber));
 		}
 		Track findTrack = findTrack(trackNumber);
 		if (findTrack == null) {

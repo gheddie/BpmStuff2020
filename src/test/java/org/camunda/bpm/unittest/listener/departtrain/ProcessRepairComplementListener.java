@@ -16,7 +16,7 @@ public class ProcessRepairComplementListener implements TaskListener {
 				(String) delegateTask.getProcessEngine().getRuntimeService().getVariable(delegateTask.getExecutionId(),
 						DepartTrainProcessConstants.VAR_DEP_PROC_BK),
 				HashBuilder.create()
-						.withValue(DepartTrainProcessConstants.VAR_SINGLE_WAGGON_TO_REPAIR,
+						.withValuePair(DepartTrainProcessConstants.VAR_SINGLE_WAGGON_TO_REPAIR,
 								repairedWaggon)
 						.build());
 	}

@@ -14,7 +14,7 @@ public class HashBuilder {
 		return new HashBuilder();
 	}
 
-	public HashBuilder withValue(String key, Object value) {
+	public HashBuilder withValuePair(String key, Object value) {
 		values.put(key, value);
 		return this;
 	}

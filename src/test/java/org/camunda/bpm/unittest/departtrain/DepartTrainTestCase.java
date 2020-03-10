@@ -14,6 +14,7 @@ import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
 import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessLogic;
+import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Waggon;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.WaggonErrorCode;
 import org.camunda.bpm.unittest.departtrain.businesslogic.exception.RailwayStationBusinessLogicException;
 import org.camunda.bpm.unittest.departtrain.constant.DepartTrainProcessConstants;
@@ -48,14 +49,11 @@ public class DepartTrainTestCase extends BpmTestCase {
 		RailwayStationBusinessLogic.getInstance().reset();
 
 		// prepare test data
-		RailwayStationBusinessLogic.getInstance().withTracks("Track1", "TrackExit").withWaggons("Track1", "W1", "W2", "W3", "W4",
-				"W5");
-		RailwayStationBusinessLogic.getInstance().setDefectCode("W1", WaggonErrorCode.C1);
-		RailwayStationBusinessLogic.getInstance().setDefectCode("W2", WaggonErrorCode.C1);
-		RailwayStationBusinessLogic.getInstance().setDefectCode("W3", WaggonErrorCode.N1);
+		RailwayStationBusinessLogic.getInstance().withTracks("Track1", "TrackExit").withWaggons("Track1", "W1@C1", "W2@C1",
+				"W3@N1", "W4", "W5");
 
 		// start process A
-		startProcess("W1", "W2", "W3", "W4", "W5");
+		startDepartureProcess("W1", "W2", "W3", "W4", "W5");
 
 		assertEquals(2, processEngine.getRuntimeService().createProcessInstanceQuery()
 				.processDefinitionKey(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY).list().size());
@@ -69,16 +67,15 @@ public class DepartTrainTestCase extends BpmTestCase {
 		RailwayStationBusinessLogic.getInstance().reset();
 
 		// prepare test data
-		RailwayStationBusinessLogic.getInstance().withTracks("Track1", "TrackExit").withWaggons("Track1", "W1", "W2", "W3", "W4",
-				"W5");
-		RailwayStationBusinessLogic.getInstance().setDefectCode("W1", WaggonErrorCode.C1);
-		RailwayStationBusinessLogic.getInstance().setDefectCode("W2", WaggonErrorCode.C1);
-		RailwayStationBusinessLogic.getInstance().setDefectCode("W3", WaggonErrorCode.C1);
+		RailwayStationBusinessLogic.getInstance().withTracks("Track1@true", "TrackExit@true").withWaggons("Track1", "W1@C1",
+				"W2@C1", "W3@C1", "W4", "W5@C1");
+
 		RailwayStationBusinessLogic.getInstance().print(true);
+
 		assertEquals(5, RailwayStationBusinessLogic.getInstance().countWaggons());
 
 		// 3 critical, 1 non critical waggons
-		ProcessInstance processInstance = startProcess("W1", "W2", "W3", "W4");
+		ProcessInstance processInstance = startDepartureProcess("W1@C1", "W2@C1", "W3@C1", "W4");
 
 		// we must have 3 repair processes...
 		assertEquals(3, processEngine.getRuntimeService().createProcessInstanceQuery()
@@ -130,10 +127,10 @@ public class DepartTrainTestCase extends BpmTestCase {
 		// this is an error --> loop
 		processExitTrack(processInstance, "UNKNOWN");
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
-		
+
 		// again
 		processExitTrack(processInstance, "TrackExit");
-		
+
 		// wait for shunting response
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_SH_DONE);
 	}
@@ -145,16 +142,17 @@ public class DepartTrainTestCase extends BpmTestCase {
 		RailwayStationBusinessLogic.getInstance().reset();
 
 		// prepare test data
-		RailwayStationBusinessLogic.getInstance().withTracks("Track1", "Track2", "TrackExit").withWaggons("Track1", "W1", "W2");
-		RailwayStationBusinessLogic.getInstance().setDefectCode("W1", WaggonErrorCode.C1);
+		RailwayStationBusinessLogic.getInstance().withTracks("Track1@true", "TrackExit").withWaggons("Track1", "W1@C1", "W2");
+
 		RailwayStationBusinessLogic.getInstance().print(true);
+
 		assertEquals(2, RailwayStationBusinessLogic.getInstance().countWaggons());
 
 		// start process A
-		ProcessInstance instanceA = startProcess("W1", "W2");
+		ProcessInstance instanceA = startDepartureProcess("W1", "W2");
 
 		// start process B
-		ProcessInstance instanceB = startProcess("W1", "W2");
+		ProcessInstance instanceB = startDepartureProcess("W1", "W2");
 
 		// process B
 		assertThat(instanceB).isWaitingAt(DepartTrainProcessConstants.SIG_RO_CANC);
@@ -176,7 +174,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		assertThat(instanceA).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
 
 		// finish track choosing for A
-		processExitTrack(instanceA, "T1");
+		processExitTrack(instanceA, "Track1");
 
 		// shunt A...
 		processShunting(instanceA);
@@ -200,7 +198,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		processEngine.getTaskService().complete(processRepairListB.get(0).getId());
 
 		// B waiting for exit track
-		processExitTrack(instanceB, "T1");
+		processExitTrack(instanceB, "Track1");
 
 		processShunting(instanceB);
 
@@ -220,7 +218,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		processEngine.getTaskService().complete(
 				processEngine.getTaskService().createTaskQuery().processInstanceBusinessKey(processInstance.getBusinessKey())
 						.taskDefinitionKey(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK).list().get(0).getId(),
-				HashBuilder.create().withValue(DepartTrainProcessConstants.VAR_EXIT_TRACK, trackNumber).build());
+				HashBuilder.create().withValuePair(DepartTrainProcessConstants.VAR_EXIT_TRACK, trackNumber).build());
 	}
 
 	private void processShunting(ProcessInstance instanceA) {
@@ -236,13 +234,12 @@ public class DepartTrainTestCase extends BpmTestCase {
 				rolloutVariables);
 	}
 
-	private ProcessInstance startProcess(String... waggonNumbers) {
-
-		Map<String, Object> variables = new HashMap<String, Object>();
-		variables.put(DepartTrainProcessConstants.VAR_PLANNED_WAGGONS, Arrays.asList(waggonNumbers));
+	private ProcessInstance startDepartureProcess(String... waggonNumbers) {
+		List<String> extractedWaggonNumbers = Waggon.getWaggonNumbers(waggonNumbers);
 		ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByMessage(
 				DepartTrainProcessConstants.MSG_DEPARTURE_PLANNED,
-				RailwayStationBusinessLogic.getInstance().generateBusinessKey(), variables);
+				RailwayStationBusinessLogic.getInstance().generateBusinessKey(), HashBuilder.create()
+						.withValuePair(DepartTrainProcessConstants.VAR_PLANNED_WAGGONS, extractedWaggonNumbers).build());
 		return instance;
 	}
 }

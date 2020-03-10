@@ -80,13 +80,9 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 	}
 	
 	@Override
-	public void setDefectCode(String waggonNumber, WaggonErrorCode waggonErrorCode) {
-		stationData.setDefectCode(waggonNumber, waggonErrorCode);
-	}
-	
-	@Override
 	public boolean isWaggonCritical(String waggonNumber) {
-		return stationData.isWaggonCritical(waggonNumber);
+		boolean critical = stationData.isWaggonCritical(waggonNumber);
+		return critical;
 	}
 	
 	public boolean isExitTrack(String trackNumber) {
