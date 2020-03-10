@@ -22,9 +22,6 @@ public class DepartTrainProcessConstants {
 	// ####################################### variables
 	// ##############################################################################
 	
-	// start time of the process
-	public static final String VAR_NOW = "VAR_NOW";
-	
 	// planned departure time
 	public static final String VAR_PLANNED_DEPARTMENT_DATE = "VAR_PLANNED_DEPARTMENT_DATE";
 	
@@ -59,10 +56,13 @@ public class DepartTrainProcessConstants {
 	// Die für einen Wagen abgeschätzte Reparatur-Zeit
 	public static final String VAR_ASSUMED_TIME = "VAR_ASSUMED_TIME";
 	
+	// Aufsummierte Zeitabschätzungen
+	public static final String VAR_SUMMED_UP_ASSUMED_HOURS = "VAR_SUMMED_UP_ASSUMED_HOURS";
+	
 	// business key of the 'master' process --> passed to repair 
 	// process to able to call back to master
 	public static final String VAR_DEP_PROC_BK = "VAR_DEP_PROC_BK";
-
+	
 	// ##############################################################################
 	// ####################################### messages
 	// ##############################################################################

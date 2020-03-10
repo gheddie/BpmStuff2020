@@ -14,6 +14,10 @@ public class CreateDepartingOrderDelegate implements JavaDelegate {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void execute(DelegateExecution execution) {
+		
+		// initialize 'VAR_SUMMED_UP_ASSUMED_HOURS' here...
+		execution.setVariable(DepartTrainProcessConstants.VAR_SUMMED_UP_ASSUMED_HOURS, 0);
+		
 		List<String> plannedWaggons = null;
 		try {
 			plannedWaggons = (List<String>) execution.getVariable(DepartTrainProcessConstants.VAR_PLANNED_WAGGONS);
