@@ -16,11 +16,11 @@ public class AllAssumementsDoneDelegate implements JavaDelegate {
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
 		if (execution.getVariable(DepartTrainProcessConstants.VAR_ASSUMED_WAGGONS) == null) {
-			execution.setVariable(DepartTrainProcessConstants.VAR_ASSUMED_WAGGONS, new HashMap<String, RepairProcessInfo>());
+			execution.setVariable(DepartTrainProcessConstants.VAR_ASSUMED_WAGGONS, new ArrayList<RepairProcessInfo>());
 		}
-		HashMap<String, RepairProcessInfo> assumedWaggons = (HashMap<String, RepairProcessInfo>) execution.getVariable(DepartTrainProcessConstants.VAR_ASSUMED_WAGGONS);
+		List<RepairProcessInfo> assumedWaggons = (List<RepairProcessInfo>) execution.getVariable(DepartTrainProcessConstants.VAR_ASSUMED_WAGGONS);
 		RepairProcessInfo actuallyAssumed = (RepairProcessInfo) execution.getVariable(DepartTrainProcessConstants.VAR_SINGLE_WAGGON_TO_ASSUME);
-		assumedWaggons.put(actuallyAssumed.getWaggonNumber(), actuallyAssumed);
+		assumedWaggons.add(actuallyAssumed);
 		
 		// all waggons assumed?
 		List<String> waggonsToAssume = (List<String>) execution.getVariable(DepartTrainProcessConstants.VAR_WAGGONS_TO_ASSUME);
@@ -36,9 +36,9 @@ public class AllAssumementsDoneDelegate implements JavaDelegate {
 		execution.setVariable(DepartTrainProcessConstants.VAR_SUMMED_UP_ASSUMED_HOURS, assumedUpToNow);
 	}
 
-	private List<String> convert(HashMap<String, RepairProcessInfo> assumedWaggons) {
+	private List<String> convert(List<RepairProcessInfo> assumedWaggons) {
 		List<String> result = new ArrayList<String>();
-		for (RepairProcessInfo assumedWaggon : assumedWaggons.values()) {
+		for (RepairProcessInfo assumedWaggon : assumedWaggons) {
 			result.add(assumedWaggon.getWaggonNumber());
 		}
 		return result;
