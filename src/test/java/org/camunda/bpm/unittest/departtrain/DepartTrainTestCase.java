@@ -77,9 +77,9 @@ public class DepartTrainTestCase extends BpmTestCase {
 				DepartTrainProcessConstants.MSG_START_REPAIR, businessKeys);
 
 		// main process is waiting at 'TASK_START_REPAIR' (2 of them)...
-		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_START_REPAIR);
+		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_EVALUATE_REPAIR);
 		List<Task> startWaggonRepairTasks = processEngine.getTaskService().createTaskQuery().processInstanceId(processInstance.getId())
-				.taskDefinitionKey(DepartTrainProcessConstants.TASK_START_REPAIR).list();
+				.taskDefinitionKey(DepartTrainProcessConstants.TASK_EVALUATE_REPAIR).list();
 		assertEquals(2, startWaggonRepairTasks.size());
 
 		// complete start repair order tasks (event sub process)...
@@ -159,7 +159,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		processWaggonRepairAssumement(processInstance, repairTasks.get(2), 2);
 
 		// ...
-		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_START_REPAIR);
+		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_EVALUATE_REPAIR);
 
 		/*
 		// this is an error --> loop
@@ -214,7 +214,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		processWaggonRepairAssumement(instanceA, assumeListA.get(0), 12);
 
 		// ...
-		assertThat(instanceA).isWaitingAt(DepartTrainProcessConstants.TASK_START_REPAIR);
+		assertThat(instanceA).isWaitingAt(DepartTrainProcessConstants.TASK_EVALUATE_REPAIR);
 
 		/*
 		// finish track choosing for A

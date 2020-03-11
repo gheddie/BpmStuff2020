@@ -12,7 +12,7 @@ public class DepartTrainProcessConstants {
 	public static final String TASK_ASSUME_REPAIR_TIME = "TASK_ASSUME_REPAIR_TIME";
 	public static final String TASK_SHUNT_WAGGONS = "TASK_SHUNT_WAGGONS";
 	public static final String TASK_REPAIR_WAGGON = "TASK_REPAIR_WAGGON";
-	public static final String TASK_START_REPAIR = "TASK_START_REPAIR";
+	public static final String TASK_EVALUATE_REPAIR = "TASK_EVALUATE_REPAIR";
 
 	// ##############################################################################
 	// ####################################### signals
