@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Random;
 
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.DepartmentOrder;
-import org.camunda.bpm.unittest.departtrain.businesslogic.entity.DepartmentOrderState;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Track;
+import org.camunda.bpm.unittest.departtrain.businesslogic.enumeration.DepartmentOrderState;
 import org.camunda.bpm.unittest.departtrain.businesslogic.exception.RailWayException;
 
 public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic {

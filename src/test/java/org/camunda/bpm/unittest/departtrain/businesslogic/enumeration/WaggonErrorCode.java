@@ -1,4 +1,4 @@
-package org.camunda.bpm.unittest.departtrain.businesslogic.entity;
+package org.camunda.bpm.unittest.departtrain.businesslogic.enumeration;
 
 public enum WaggonErrorCode {
 

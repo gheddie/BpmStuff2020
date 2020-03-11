@@ -3,6 +3,7 @@ package org.camunda.bpm.unittest.departtrain.businesslogic.entity;
 import java.util.HashMap;
 import java.util.List;
 
+import org.camunda.bpm.unittest.departtrain.businesslogic.enumeration.DepartmentOrderState;
 import org.camunda.bpm.unittest.departtrain.util.RailTestUtil;
 
 import lombok.Data;

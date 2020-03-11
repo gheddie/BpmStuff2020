@@ -19,6 +19,7 @@ import org.camunda.bpm.unittest.base.BpmTestCase;
 import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessLogic;
 import org.camunda.bpm.unittest.departtrain.businesslogic.RepairProcessInfo;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Waggon;
+import org.camunda.bpm.unittest.departtrain.businesslogic.enumeration.RepairEvaluationResult;
 import org.camunda.bpm.unittest.departtrain.businesslogic.exception.RailwayStationBusinessLogicException;
 import org.camunda.bpm.unittest.departtrain.constant.DepartTrainProcessConstants;
 import org.camunda.bpm.unittest.util.HashBuilder;
@@ -66,14 +67,22 @@ public class DepartTrainTestCase extends BpmTestCase {
 		processWaggonRepairAssumement(processInstance, assumementTasks.get(0), 11);
 		processWaggonRepairAssumement(processInstance, assumementTasks.get(1), 4);
 
-		// TODO
-		ensureTaskCountPresent("TaskSub", processInstance.getId(), 2);
-		
+		// 2 evaluations to be done...
+		List<Task> evaluationTasks = ensureTaskCountPresent(DepartTrainProcessConstants.TASK_EVALUATE_WAGGON,
+				processInstance.getId(), 2);
+
 		// 2 facility processes are waiting at 'CATCH_MSG_START_REPAIR'...
-		List<ProcessInstance> facilityProcessesInstances = getProcessesInstances(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY);
+		List<ProcessInstance> facilityProcessesInstances = getProcessesInstances(
+				DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY);
 		assertEquals(2, facilityProcessesInstances.size());
 		assertThat(facilityProcessesInstances.get(0)).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_START_REPAIR);
 		assertThat(facilityProcessesInstances.get(1)).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_START_REPAIR);
+
+		processStartWaggonEvaluation(evaluationTasks.get(0), RepairEvaluationResult.PROCESS_WAGGON);
+		processStartWaggonEvaluation(evaluationTasks.get(1), RepairEvaluationResult.REPLACE_WAGGON);
+
+		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_PROMPT_WAGGON_REPAIR,
+				DepartTrainProcessConstants.TASK_PROMPT_WAGGON_REPLACEMENT);
 	}
 
 	@Test
@@ -259,8 +268,10 @@ public class DepartTrainTestCase extends BpmTestCase {
 				HashBuilder.create().withValuePair(DepartTrainProcessConstants.VAR_ROLLOUT_CONFIRMED, doRollOut).build());
 	}
 
-	private void processStartWaggonEvaluation(Task startWaggonRepairTask) {
-		processEngine.getTaskService().complete(startWaggonRepairTask.getId());
+	private void processStartWaggonEvaluation(Task startWaggonRepairTask, RepairEvaluationResult repairEvaluationResult) {
+		// VAR_SINGLE_ASSUMED_WAGGON
+		processEngine.getTaskService().complete(startWaggonRepairTask.getId(), HashBuilder.create()
+				.withValuePair(DepartTrainProcessConstants.VAR_WAGGON_EVALUATION_RESULT, repairEvaluationResult).build());
 	}
 
 	private LocalDateTime getDefaultPlannedDepartureTime() {

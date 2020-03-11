@@ -12,6 +12,9 @@ public class DepartTrainProcessConstants {
 	public static final String TASK_ASSUME_REPAIR_TIME = "TASK_ASSUME_REPAIR_TIME";
 	public static final String TASK_SHUNT_WAGGONS = "TASK_SHUNT_WAGGONS";
 	public static final String TASK_REPAIR_WAGGON = "TASK_REPAIR_WAGGON";
+	public static final String TASK_EVALUATE_WAGGON = "TASK_EVALUATE_WAGGON";
+	public static final String TASK_PROMPT_WAGGON_REPLACEMENT = "TASK_PROMPT_WAGGON_REPLACEMENT";
+	public static final String TASK_PROMPT_WAGGON_REPAIR = "TASK_PROMPT_WAGGON_REPAIR";
 
 	// ##############################################################################
 	// ####################################### signals
@@ -51,6 +54,9 @@ public class DepartTrainProcessConstants {
 	// Es wird zu 'TaskChooseExitTrack' weitergegeben, wenn gilt: ('VAR_REPAIRED_WAGGONS' == 'VAR_WAGGONS_TO_REPAIR')
 	public static final String VAR_ASSUMED_WAGGONS = "VAR_ASSUMED_WAGGONS";
 	
+	// a single assumed waggon
+	public static final String VAR_ASSUMED_WAGGON = "VAR_ASSUMED_WAGGON";
+	
 	// Wird durch den Reparatur-Prozess geschleift und auuch von diesem zurückgegeben
 	public static final String VAR_SINGLE_WAGGON_TO_ASSUME = "VAR_SINGLE_WAGGON_TO_ASSUME";
 	
@@ -59,6 +65,9 @@ public class DepartTrainProcessConstants {
 	
 	// Aufsummierte Zeitabschätzungen
 	public static final String VAR_SUMMED_UP_ASSUMED_HOURS = "VAR_SUMMED_UP_ASSUMED_HOURS";
+	
+	// an evaluation result for a single waggon in the evaluation sub process
+	public static final String VAR_WAGGON_EVALUATION_RESULT = "VAR_WAGGON_EVALUATION_RESULT";
 	
 	// business key of the 'master' process --> passed to repair 
 	// process to able to call back to master
