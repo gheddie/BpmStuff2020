@@ -1,187 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_0d74ssk" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
   <bpmn:collaboration id="Collaboration_0j8d25t">
-    <bpmn:participant id="Participant_0va8iib" name="Rail station" processRef="departTrainProcess" />
-    <bpmn:participant id="Participant_00fpcik" name="Shunter" processRef="shuntingProcess" />
+    <bpmn:participant id="Participant_0va8iib" name="Rail station" processRef="PROCESS_DEPART_TRAIN" />
+    <bpmn:participant id="Participant_00fpcik" name="Shunter" processRef="PROCESS_SHUNTER" />
     <bpmn:participant id="Participant_0z4n82j" name="Repair facility" processRef="PROCESS_REPAIR_FACILITY" />
     <bpmn:messageFlow id="MessageFlow_1mf5jru" sourceRef="TaskOrderShunting" targetRef="IntermediateThrowEvent_041qgz3" />
     <bpmn:messageFlow id="MessageFlow_1i1pw2i" sourceRef="TASK_SHUNT_WAGGONS" targetRef="CATCH_MSG_SH_DONE" />
     <bpmn:messageFlow id="MessageFlow_19y0vqj" sourceRef="TASK_ASSUME_REPAIR_TIME" targetRef="CATCH_MSG_WG_REPAIRED" />
     <bpmn:messageFlow id="MessageFlow_0zrk4uy" sourceRef="TaskProcessCriticalErrors" targetRef="StartEvent_14lghgj" />
-    <bpmn:messageFlow id="MessageFlow_1qn9jjk" sourceRef="TASK_EVALUATE_REPAIR" targetRef="CATCH_MSG_START_REPAIR" />
-    <bpmn:messageFlow id="MessageFlow_1f7o4w7" sourceRef="TASK_REPAIR_WAGGON" targetRef="IntermediateCatchEvent_1g4pn4h" />
   </bpmn:collaboration>
-  <bpmn:process id="departTrainProcess" isExecutable="true">
+  <bpmn:process id="PROCESS_DEPART_TRAIN" isExecutable="true">
     <bpmn:laneSet id="LaneSet_0870o2p">
-      <bpmn:lane id="Lane_1n1vf0d" name="Disponent">
-        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TaskCreateDepartingOrder</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>SIG_RO_CANC</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>ExclusiveGateway_0dsc91r</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>BoundaryEvent_01ns58k</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TaskProcessCriticalErrors</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>CATCH_MSG_WG_REPAIRED</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TaskAllAssumementsDone</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>IntermediateCatchEvent_1g4pn4h</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>ExGateway_1bfkdvy</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TASK_EVALUATE_REPAIR</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>MsGwRepairCallback</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>IntermediateCatchEvent_1eppsxp</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>ExclusiveGateway_0g000y0</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>ExclusiveGateway_1qk7c3h</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TASK_CONFIRM_ROLLOUT</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>ExclusiveGateway_1bdmnut</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>ExGwPositionsCorrect</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TaskCheckWaggonPositions</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>BoundaryEvent_1p8wdzo</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TaskOrderShunting</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TASK_CHOOSE_EXIT_TRACK</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>CATCH_MSG_SH_DONE</bpmn:flowNodeRef>
+      <bpmn:lane id="Lane_0y2tr9m" name="Waggon master" />
+      <bpmn:lane id="Lane_1n1vf0d" name="Administraton">
         <bpmn:flowNodeRef>ExGwRollout</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>EndEvent_12r73qe</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_0f0uu4b</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>SignalThrowRoCanc</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TaskCancelDepartOrder</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TaskRemoveWaggons</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TASK_CONFIRM_ROLLOUT</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_1bdmnut</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TaskProcessCriticalErrors</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TaskOrderShunting</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TaskCheckWaggonPositions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TASK_CHOOSE_EXIT_TRACK</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TaskCreateDepartingOrder</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_0dsc91r</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_1qk7c3h</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_0g000y0</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>MsGwRepairCallback</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>SubProcess_1s2wqfm</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>SignalThrowRoCanc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>CATCH_MSG_SH_DONE</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExGwPositionsCorrect</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>SIG_RO_CANC</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>CATCH_MSG_WG_REPAIRED</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>BoundaryEvent_01ns58k</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>BoundaryEvent_1p8wdzo</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>IntermediateCatchEvent_1eppsxp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>IntermediateCatchEvent_1g4pn4h</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExGateway_1bfkdvy</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TaskAllAssumementsDone</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_10y35re</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TaskOut</bpmn:flowNodeRef>
+        <bpmn:childLaneSet id="LaneSet_0jjenap">
+          <bpmn:lane id="Lane_0tnss8c" name="Disponent">
+            <bpmn:flowNodeRef>ExGwRollout</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>EndEvent_12r73qe</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>ExclusiveGateway_0f0uu4b</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>TaskCancelDepartOrder</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>TaskRemoveWaggons</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>TASK_CONFIRM_ROLLOUT</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>ExclusiveGateway_1bdmnut</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>TaskProcessCriticalErrors</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>TaskOrderShunting</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>TaskCheckWaggonPositions</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>TASK_CHOOSE_EXIT_TRACK</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>TaskCreateDepartingOrder</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>ExclusiveGateway_0dsc91r</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>ExclusiveGateway_1qk7c3h</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>ExclusiveGateway_0g000y0</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>MsGwRepairCallback</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>SignalThrowRoCanc</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>CATCH_MSG_SH_DONE</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>ExGwPositionsCorrect</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>SIG_RO_CANC</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>CATCH_MSG_WG_REPAIRED</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>BoundaryEvent_01ns58k</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>BoundaryEvent_1p8wdzo</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>IntermediateCatchEvent_1eppsxp</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>IntermediateCatchEvent_1g4pn4h</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>ExGateway_1bfkdvy</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>TaskAllAssumementsDone</bpmn:flowNodeRef>
+          </bpmn:lane>
+          <bpmn:lane id="Lane_0zda05c" name="Supervisor">
+            <bpmn:flowNodeRef>SubProcess_1s2wqfm</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>EndEvent_10y35re</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>TaskOut</bpmn:flowNodeRef>
+          </bpmn:lane>
+        </bpmn:childLaneSet>
       </bpmn:lane>
-      <bpmn:lane id="Lane_0y2tr9m" name="Waggon master" />
     </bpmn:laneSet>
-    <bpmn:sequenceFlow id="SequenceFlow_1y63fyx" sourceRef="TaskCreateDepartingOrder" targetRef="TaskProcessCriticalErrors" />
-    <bpmn:sequenceFlow id="SequenceFlow_198wx9r" sourceRef="CATCH_MSG_WG_REPAIRED" targetRef="TaskAllAssumementsDone" />
-    <bpmn:sequenceFlow id="SequenceFlow_0rupt2s" sourceRef="TaskProcessCriticalErrors" targetRef="CATCH_MSG_WG_REPAIRED" />
-    <bpmn:sequenceFlow id="SequenceFlow_1gxtmn8" sourceRef="TaskAllAssumementsDone" targetRef="ExGateway_1bfkdvy" />
-    <bpmn:sequenceFlow id="SequenceFlow_0r593fk" sourceRef="ExGateway_1bfkdvy" targetRef="CATCH_MSG_WG_REPAIRED">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${VAR_ALL_ASSUMEMENTS_DONE == false}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_0qqkgo2" sourceRef="ExGateway_1bfkdvy" targetRef="TASK_EVALUATE_REPAIR" />
-    <bpmn:sequenceFlow id="SequenceFlow_0qu7xlo" sourceRef="TASK_EVALUATE_REPAIR" targetRef="MsGwRepairCallback" />
-    <bpmn:sequenceFlow id="SequenceFlow_0cr72l6" sourceRef="ExclusiveGateway_0g000y0" targetRef="ExclusiveGateway_1qk7c3h" />
-    <bpmn:sequenceFlow id="SequenceFlow_162h2mm" sourceRef="MsGwRepairCallback" targetRef="IntermediateCatchEvent_1eppsxp" />
-    <bpmn:sequenceFlow id="SequenceFlow_1twoir4" sourceRef="IntermediateCatchEvent_1eppsxp" targetRef="ExclusiveGateway_0g000y0" />
-    <bpmn:sequenceFlow id="SequenceFlow_0hl5x1x" sourceRef="MsGwRepairCallback" targetRef="IntermediateCatchEvent_1g4pn4h" />
-    <bpmn:sequenceFlow id="SequenceFlow_0a22uxm" sourceRef="IntermediateCatchEvent_1g4pn4h" targetRef="ExclusiveGateway_0g000y0" />
-    <bpmn:startEvent id="StartEvent_1" name="MSG_DEPARTURE_PLANNED">
-      <bpmn:outgoing>SequenceFlow_19xhofc</bpmn:outgoing>
-      <bpmn:messageEventDefinition messageRef="Message_00coaok" />
-    </bpmn:startEvent>
-    <bpmn:serviceTask id="TaskCreateDepartingOrder" name="Create departing order" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.CreateDepartingOrderDelegate">
-      <bpmn:incoming>SequenceFlow_03tnthx</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1y63fyx</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:intermediateCatchEvent id="SIG_RO_CANC" name="SIG_RO_CANC">
-      <bpmn:incoming>SequenceFlow_1gi1snx</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_00nynq5</bpmn:outgoing>
-      <bpmn:signalEventDefinition signalRef="Signal_0sxtkd6" />
-    </bpmn:intermediateCatchEvent>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_0dsc91r">
-      <bpmn:incoming>SequenceFlow_19xhofc</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_00nynq5</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_03tnthx</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:boundaryEvent id="BoundaryEvent_01ns58k" name="ERR_CREATE_DO" attachedToRef="TaskCreateDepartingOrder">
-      <bpmn:outgoing>SequenceFlow_1gi1snx</bpmn:outgoing>
-      <bpmn:errorEventDefinition errorRef="Error_1vb65d1" />
-    </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_19xhofc" sourceRef="StartEvent_1" targetRef="ExclusiveGateway_0dsc91r" />
-    <bpmn:sequenceFlow id="SequenceFlow_03tnthx" sourceRef="ExclusiveGateway_0dsc91r" targetRef="TaskCreateDepartingOrder" />
-    <bpmn:sequenceFlow id="SequenceFlow_1gi1snx" sourceRef="BoundaryEvent_01ns58k" targetRef="SIG_RO_CANC" />
-    <bpmn:sequenceFlow id="SequenceFlow_00nynq5" sourceRef="SIG_RO_CANC" targetRef="ExclusiveGateway_0dsc91r" />
-    <bpmn:serviceTask id="TaskProcessCriticalErrors" name="Process critical errors" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.ProcessCriticalErrorsDelegate">
-      <bpmn:incoming>SequenceFlow_1y63fyx</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0rupt2s</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:intermediateCatchEvent id="CATCH_MSG_WG_REPAIRED" name="MSG_REPAIR_ASSUMED">
-      <bpmn:incoming>SequenceFlow_0rupt2s</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_0r593fk</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_198wx9r</bpmn:outgoing>
-      <bpmn:messageEventDefinition messageRef="Message_05gh04p" />
-    </bpmn:intermediateCatchEvent>
-    <bpmn:serviceTask id="TaskAllAssumementsDone" name="All assumements done?" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.AllAssumementsDoneDelegate">
-      <bpmn:incoming>SequenceFlow_198wx9r</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1gxtmn8</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:intermediateCatchEvent id="IntermediateCatchEvent_1g4pn4h" name="MSG_REPAIRED_IN_TIME">
-      <bpmn:incoming>SequenceFlow_0hl5x1x</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0a22uxm</bpmn:outgoing>
-      <bpmn:messageEventDefinition messageRef="Message_0kxapt3" />
-    </bpmn:intermediateCatchEvent>
-    <bpmn:exclusiveGateway id="ExGateway_1bfkdvy" name="all assumements done?" default="SequenceFlow_0qqkgo2">
-      <bpmn:incoming>SequenceFlow_1gxtmn8</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0r593fk</bpmn:outgoing>
-      <bpmn:outgoing>SequenceFlow_0qqkgo2</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:userTask id="TASK_EVALUATE_REPAIR" name="Evalute repair">
-      <bpmn:incoming>SequenceFlow_0qqkgo2</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0qu7xlo</bpmn:outgoing>
-      <bpmn:multiInstanceLoopCharacteristics camunda:collection="VAR_ASSUMED_WAGGONS" camunda:elementVariable="VAR_ASSUMED_WAGGON" />
-    </bpmn:userTask>
-    <bpmn:eventBasedGateway id="MsGwRepairCallback">
-      <bpmn:incoming>SequenceFlow_0qu7xlo</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_162h2mm</bpmn:outgoing>
-      <bpmn:outgoing>SequenceFlow_0hl5x1x</bpmn:outgoing>
-    </bpmn:eventBasedGateway>
-    <bpmn:intermediateCatchEvent id="IntermediateCatchEvent_1eppsxp" name="MSG_REPAIR_TIME_EXCEEDED">
-      <bpmn:incoming>SequenceFlow_162h2mm</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1twoir4</bpmn:outgoing>
-      <bpmn:messageEventDefinition messageRef="Message_1er2zeq" />
-    </bpmn:intermediateCatchEvent>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_0g000y0">
-      <bpmn:incoming>SequenceFlow_1twoir4</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_0a22uxm</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0cr72l6</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_1qk7c3h">
-      <bpmn:incoming>SequenceFlow_18o5zi2</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_0cr72l6</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0ch8mi7</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_0ch8mi7" sourceRef="ExclusiveGateway_1qk7c3h" targetRef="TASK_CHOOSE_EXIT_TRACK" />
-    <bpmn:sequenceFlow id="SequenceFlow_18o5zi2" sourceRef="BoundaryEvent_1p8wdzo" targetRef="ExclusiveGateway_1qk7c3h" />
-    <bpmn:userTask id="TASK_CONFIRM_ROLLOUT" name="Confirm rollout">
-      <bpmn:incoming>SequenceFlow_1dbkbrx</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_01mca4f</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_1bdmnut">
-      <bpmn:incoming>SequenceFlow_0qc5j30</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_1dszain</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1dbkbrx</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:exclusiveGateway id="ExGwPositionsCorrect" name="positions correct?" default="SequenceFlow_0qc5j30">
-      <bpmn:incoming>SequenceFlow_13gkobw</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0qc5j30</bpmn:outgoing>
-      <bpmn:outgoing>SequenceFlow_1x3nblr</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="TaskCheckWaggonPositions" name="Check waggon positions" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.CheckWaggonPositionsDelegate">
-      <bpmn:incoming>SequenceFlow_0iv6lm4</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_13gkobw</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:boundaryEvent id="BoundaryEvent_1p8wdzo" name="ERR_NO_EXIT_TR" attachedToRef="TaskCheckWaggonPositions">
-      <bpmn:outgoing>SequenceFlow_18o5zi2</bpmn:outgoing>
-      <bpmn:errorEventDefinition errorRef="Error_0ia8k1j" />
-    </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_01mca4f" sourceRef="TASK_CONFIRM_ROLLOUT" targetRef="ExGwRollout" />
-    <bpmn:sequenceFlow id="SequenceFlow_1dbkbrx" sourceRef="ExclusiveGateway_1bdmnut" targetRef="TASK_CONFIRM_ROLLOUT" />
-    <bpmn:sequenceFlow id="SequenceFlow_0xyk95k" sourceRef="TaskOrderShunting" targetRef="CATCH_MSG_SH_DONE" />
-    <bpmn:sequenceFlow id="SequenceFlow_1dszain" sourceRef="CATCH_MSG_SH_DONE" targetRef="ExclusiveGateway_1bdmnut" />
-    <bpmn:sequenceFlow id="SequenceFlow_0qc5j30" name="yes" sourceRef="ExGwPositionsCorrect" targetRef="ExclusiveGateway_1bdmnut" />
-    <bpmn:sequenceFlow id="SequenceFlow_1x3nblr" name="no" sourceRef="ExGwPositionsCorrect" targetRef="TaskOrderShunting">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${VAR_POSITIONS_OK == false}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_13gkobw" sourceRef="TaskCheckWaggonPositions" targetRef="ExGwPositionsCorrect" />
-    <bpmn:sequenceFlow id="SequenceFlow_0iv6lm4" sourceRef="TASK_CHOOSE_EXIT_TRACK" targetRef="TaskCheckWaggonPositions" />
-    <bpmn:serviceTask id="TaskOrderShunting" name="Order shunting" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.OrderShuntingDelegate">
-      <bpmn:incoming>SequenceFlow_1x3nblr</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0xyk95k</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:userTask id="TASK_CHOOSE_EXIT_TRACK" name="Choose exit track">
-      <bpmn:incoming>SequenceFlow_0ch8mi7</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0iv6lm4</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:intermediateCatchEvent id="CATCH_MSG_SH_DONE" name="MSG_SH_DONE">
-      <bpmn:incoming>SequenceFlow_0xyk95k</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1dszain</bpmn:outgoing>
-      <bpmn:messageEventDefinition messageRef="Message_0lj90x5" />
-    </bpmn:intermediateCatchEvent>
     <bpmn:exclusiveGateway id="ExGwRollout" default="SequenceFlow_04qyvr6">
       <bpmn:incoming>SequenceFlow_01mca4f</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_04qyvr6</bpmn:outgoing>
@@ -208,6 +109,98 @@
       <bpmn:incoming>SequenceFlow_04qyvr6</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0rbvy8h</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:userTask id="TASK_CONFIRM_ROLLOUT" name="Confirm rollout">
+      <bpmn:incoming>SequenceFlow_1dbkbrx</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_01mca4f</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="CATCH_MSG_SH_DONE" name="MSG_SH_DONE">
+      <bpmn:incoming>SequenceFlow_0xyk95k</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1dszain</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_0lj90x5" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1bdmnut">
+      <bpmn:incoming>SequenceFlow_0qc5j30</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1dszain</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1dbkbrx</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="TaskProcessCriticalErrors" name="Process critical errors" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.ProcessCriticalErrorsDelegate">
+      <bpmn:incoming>SequenceFlow_1y63fyx</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0rupt2s</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="TaskOrderShunting" name="Order shunting" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.OrderShuntingDelegate">
+      <bpmn:incoming>SequenceFlow_1x3nblr</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0xyk95k</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="ExGwPositionsCorrect" name="positions correct?" default="SequenceFlow_0qc5j30">
+      <bpmn:incoming>SequenceFlow_13gkobw</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0qc5j30</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1x3nblr</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="TaskCheckWaggonPositions" name="Check waggon positions" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.CheckWaggonPositionsDelegate">
+      <bpmn:incoming>SequenceFlow_0iv6lm4</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_13gkobw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="TASK_CHOOSE_EXIT_TRACK" name="Choose exit track">
+      <bpmn:incoming>SequenceFlow_0ch8mi7</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0iv6lm4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="StartEvent_1" name="MSG_DEPARTURE_PLANNED">
+      <bpmn:outgoing>SequenceFlow_19xhofc</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_00coaok" />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="TaskCreateDepartingOrder" name="Create departing order" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.CreateDepartingOrderDelegate">
+      <bpmn:incoming>SequenceFlow_03tnthx</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1y63fyx</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:intermediateCatchEvent id="SIG_RO_CANC" name="SIG_RO_CANC">
+      <bpmn:incoming>SequenceFlow_1gi1snx</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_00nynq5</bpmn:outgoing>
+      <bpmn:signalEventDefinition signalRef="Signal_0sxtkd6" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0dsc91r">
+      <bpmn:incoming>SequenceFlow_19xhofc</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_00nynq5</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_03tnthx</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:intermediateCatchEvent id="CATCH_MSG_WG_REPAIRED" name="MSG_REPAIR_ASSUMED">
+      <bpmn:incoming>SequenceFlow_0rupt2s</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0r593fk</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_198wx9r</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_05gh04p" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1qk7c3h">
+      <bpmn:incoming>SequenceFlow_18o5zi2</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0cr72l6</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0ch8mi7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:intermediateCatchEvent id="IntermediateCatchEvent_1eppsxp" name="MSG_REPAIR_TIME_EXCEEDED">
+      <bpmn:incoming>SequenceFlow_162h2mm</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1twoir4</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_1er2zeq" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="IntermediateCatchEvent_1g4pn4h" name="MSG_REPAIRED_IN_TIME">
+      <bpmn:incoming>SequenceFlow_0hl5x1x</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0a22uxm</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_0kxapt3" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0g000y0">
+      <bpmn:incoming>SequenceFlow_1twoir4</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0a22uxm</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0cr72l6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:eventBasedGateway id="MsGwRepairCallback">
+      <bpmn:outgoing>SequenceFlow_162h2mm</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0hl5x1x</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:boundaryEvent id="BoundaryEvent_01ns58k" name="ERR_CREATE_DO" attachedToRef="TaskCreateDepartingOrder">
+      <bpmn:outgoing>SequenceFlow_1gi1snx</bpmn:outgoing>
+      <bpmn:errorEventDefinition errorRef="Error_1vb65d1" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_1p8wdzo" name="ERR_NO_EXIT_TR" attachedToRef="TaskCheckWaggonPositions">
+      <bpmn:outgoing>SequenceFlow_18o5zi2</bpmn:outgoing>
+      <bpmn:errorEventDefinition errorRef="Error_0ia8k1j" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_01mca4f" sourceRef="TASK_CONFIRM_ROLLOUT" targetRef="ExGwRollout" />
     <bpmn:sequenceFlow id="SequenceFlow_134eiha" sourceRef="ExGwRollout" targetRef="TaskCancelDepartOrder">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${VAR_ROLLOUT_CONFIRMED == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -216,27 +209,94 @@
     <bpmn:sequenceFlow id="SequenceFlow_0rbvy8h" sourceRef="TaskRemoveWaggons" targetRef="ExclusiveGateway_0f0uu4b" />
     <bpmn:sequenceFlow id="SequenceFlow_0550o6l" sourceRef="SignalThrowRoCanc" targetRef="ExclusiveGateway_0f0uu4b" />
     <bpmn:sequenceFlow id="SequenceFlow_1vu95o9" sourceRef="TaskCancelDepartOrder" targetRef="SignalThrowRoCanc" />
-    <bpmn:association id="Association_0exob2b" sourceRef="TaskProcessCriticalErrors" targetRef="TextAnnotation_154ha91" />
-    <bpmn:association id="Association_022z90p" sourceRef="TaskAllAssumementsDone" targetRef="TextAnnotation_0wo4rks" />
-    <bpmn:textAnnotation id="TextAnnotation_154ha91">
-      <bpmn:text>for critical errors, a repair process is started automatically. In 'VAR_WAGGONS_TO_REPAIR' merkt sich der Hauptprozess, welche Wagen er zurückgemeldet bekommen muss.</bpmn:text>
-    </bpmn:textAnnotation>
+    <bpmn:sequenceFlow id="SequenceFlow_1dbkbrx" sourceRef="ExclusiveGateway_1bdmnut" targetRef="TASK_CONFIRM_ROLLOUT" />
+    <bpmn:sequenceFlow id="SequenceFlow_0xyk95k" sourceRef="TaskOrderShunting" targetRef="CATCH_MSG_SH_DONE" />
+    <bpmn:sequenceFlow id="SequenceFlow_1dszain" sourceRef="CATCH_MSG_SH_DONE" targetRef="ExclusiveGateway_1bdmnut" />
+    <bpmn:sequenceFlow id="SequenceFlow_0qc5j30" name="yes" sourceRef="ExGwPositionsCorrect" targetRef="ExclusiveGateway_1bdmnut" />
+    <bpmn:sequenceFlow id="SequenceFlow_1y63fyx" sourceRef="TaskCreateDepartingOrder" targetRef="TaskProcessCriticalErrors" />
+    <bpmn:sequenceFlow id="SequenceFlow_0rupt2s" sourceRef="TaskProcessCriticalErrors" targetRef="CATCH_MSG_WG_REPAIRED" />
+    <bpmn:sequenceFlow id="SequenceFlow_1x3nblr" name="no" sourceRef="ExGwPositionsCorrect" targetRef="TaskOrderShunting">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${VAR_POSITIONS_OK == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_13gkobw" sourceRef="TaskCheckWaggonPositions" targetRef="ExGwPositionsCorrect" />
+    <bpmn:sequenceFlow id="SequenceFlow_0iv6lm4" sourceRef="TASK_CHOOSE_EXIT_TRACK" targetRef="TaskCheckWaggonPositions" />
+    <bpmn:sequenceFlow id="SequenceFlow_0ch8mi7" sourceRef="ExclusiveGateway_1qk7c3h" targetRef="TASK_CHOOSE_EXIT_TRACK" />
+    <bpmn:sequenceFlow id="SequenceFlow_0r593fk" sourceRef="ExGateway_1bfkdvy" targetRef="CATCH_MSG_WG_REPAIRED">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${VAR_ALL_ASSUMEMENTS_DONE == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_198wx9r" sourceRef="CATCH_MSG_WG_REPAIRED" targetRef="TaskAllAssumementsDone" />
+    <bpmn:sequenceFlow id="SequenceFlow_19xhofc" sourceRef="StartEvent_1" targetRef="ExclusiveGateway_0dsc91r" />
+    <bpmn:sequenceFlow id="SequenceFlow_03tnthx" sourceRef="ExclusiveGateway_0dsc91r" targetRef="TaskCreateDepartingOrder" />
+    <bpmn:sequenceFlow id="SequenceFlow_1gi1snx" sourceRef="BoundaryEvent_01ns58k" targetRef="SIG_RO_CANC" />
+    <bpmn:sequenceFlow id="SequenceFlow_00nynq5" sourceRef="SIG_RO_CANC" targetRef="ExclusiveGateway_0dsc91r" />
+    <bpmn:sequenceFlow id="SequenceFlow_18o5zi2" sourceRef="BoundaryEvent_1p8wdzo" targetRef="ExclusiveGateway_1qk7c3h" />
+    <bpmn:sequenceFlow id="SequenceFlow_0cr72l6" sourceRef="ExclusiveGateway_0g000y0" targetRef="ExclusiveGateway_1qk7c3h" />
+    <bpmn:sequenceFlow id="SequenceFlow_162h2mm" sourceRef="MsGwRepairCallback" targetRef="IntermediateCatchEvent_1eppsxp" />
+    <bpmn:sequenceFlow id="SequenceFlow_1twoir4" sourceRef="IntermediateCatchEvent_1eppsxp" targetRef="ExclusiveGateway_0g000y0" />
+    <bpmn:sequenceFlow id="SequenceFlow_0hl5x1x" sourceRef="MsGwRepairCallback" targetRef="IntermediateCatchEvent_1g4pn4h" />
+    <bpmn:sequenceFlow id="SequenceFlow_0a22uxm" sourceRef="IntermediateCatchEvent_1g4pn4h" targetRef="ExclusiveGateway_0g000y0" />
+    <bpmn:subProcess id="SubProcess_1s2wqfm">
+      <bpmn:incoming>SequenceFlow_150gc27</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_11jsxbj</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="VAR_ASSUMED_WAGGONS" camunda:elementVariable="VAR_ASSUMED_WAGGON" />
+      <bpmn:sequenceFlow id="SequenceFlow_1ax1mlt" sourceRef="StartEvent_1qobht4" targetRef="TaskSub" />
+      <bpmn:endEvent id="EndEvent_1tpr4bc">
+        <bpmn:incoming>SequenceFlow_1lkf4dp</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="SequenceFlow_1lkf4dp" sourceRef="TaskSub" targetRef="EndEvent_1tpr4bc" />
+      <bpmn:startEvent id="StartEvent_1qobht4">
+        <bpmn:outgoing>SequenceFlow_1ax1mlt</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:userTask id="TaskSub" name="Sub">
+        <bpmn:incoming>SequenceFlow_1ax1mlt</bpmn:incoming>
+        <bpmn:outgoing>SequenceFlow_1lkf4dp</bpmn:outgoing>
+      </bpmn:userTask>
+    </bpmn:subProcess>
+    <bpmn:exclusiveGateway id="ExGateway_1bfkdvy" name="all assumements done?">
+      <bpmn:incoming>SequenceFlow_1gxtmn8</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0r593fk</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_150gc27</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_1gxtmn8" sourceRef="TaskAllAssumementsDone" targetRef="ExGateway_1bfkdvy" />
+    <bpmn:serviceTask id="TaskAllAssumementsDone" name="All assumements done?" camunda:class="org.camunda.bpm.unittest.delegate.departtrain.AllAssumementsDoneDelegate">
+      <bpmn:incoming>SequenceFlow_198wx9r</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1gxtmn8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_150gc27" sourceRef="ExGateway_1bfkdvy" targetRef="SubProcess_1s2wqfm" />
+    <bpmn:sequenceFlow id="SequenceFlow_11jsxbj" sourceRef="SubProcess_1s2wqfm" targetRef="TaskOut" />
+    <bpmn:endEvent id="EndEvent_10y35re">
+      <bpmn:incoming>SequenceFlow_1p42ngv</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1p42ngv" sourceRef="TaskOut" targetRef="EndEvent_10y35re" />
+    <bpmn:userTask id="TaskOut" name="Out">
+      <bpmn:incoming>SequenceFlow_11jsxbj</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1p42ngv</bpmn:outgoing>
+    </bpmn:userTask>
     <bpmn:textAnnotation id="TextAnnotation_1h9tplh">
       <bpmn:text>Alle zu planenden Wagen werden mit 'VAR_PLANNED_WAGGONS' geliefert.</bpmn:text>
     </bpmn:textAnnotation>
-    <bpmn:association id="Association_0er4m22" sourceRef="StartEvent_1" targetRef="TextAnnotation_1h9tplh" />
-    <bpmn:textAnnotation id="TextAnnotation_0wo4rks">
-      <bpmn:text>Speichert alle rückgemeldeten Wagen in 'VAR_REPAIRED_WAGGONS'. Schaltet durch, wenn ('VAR_WAGGONS_TO_REPAIR' == 'VAR_REPAIRED_WAGGONS').</bpmn:text>
+    <bpmn:textAnnotation id="TextAnnotation_154ha91">
+      <bpmn:text>for critical errors, a repair process is started automatically. In 'VAR_WAGGONS_TO_REPAIR' merkt sich der Hauptprozess, welche Wagen er zurückgemeldet bekommen muss.</bpmn:text>
     </bpmn:textAnnotation>
-    <bpmn:association id="Association_0pvxmx7" sourceRef="TASK_EVALUATE_REPAIR" targetRef="TextAnnotation_1yoz8ky" />
+    <bpmn:association id="Association_0er4m22" sourceRef="StartEvent_1" targetRef="TextAnnotation_1h9tplh" />
+    <bpmn:association id="Association_022z90p" sourceRef="TaskAllAssumementsDone" targetRef="TextAnnotation_0wo4rks" />
+    <bpmn:association id="Association_0exob2b" sourceRef="TaskProcessCriticalErrors" targetRef="TextAnnotation_154ha91" />
+    <bpmn:association id="Association_0pvxmx7" sourceRef="SubProcess_1s2wqfm" targetRef="TextAnnotation_1yoz8ky" />
+    <bpmn:association id="Association_1s3fkg8" sourceRef="SubProcess_1s2wqfm" targetRef="TextAnnotation_05cx3x2" />
+    <bpmn:textAnnotation id="TextAnnotation_05cx3x2">
+      <bpmn:text>A sub process for every waggon.</bpmn:text>
+    </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_1yoz8ky">
       <bpmn:text>Alle Reparaturen abgeschätzt. Jetzt muss pro Waggon beurteilt werden, ob er verwendet werden kann oder ob ggf.Ersatzwagen beschafft werden müssen.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0wo4rks">
+      <bpmn:text>Speichert alle rückgemeldeten Wagen in 'VAR_REPAIRED_WAGGONS'. Schaltet durch, wenn ('VAR_WAGGONS_TO_REPAIR' == 'VAR_REPAIRED_WAGGONS').</bpmn:text>
     </bpmn:textAnnotation>
   </bpmn:process>
   <bpmn:message id="Message_00coaok" name="MSG_DEPARTURE_PLANNED" />
   <bpmn:signal id="Signal_0sxtkd6" name="SIG_RO_CANC" />
   <bpmn:error id="Error_1vb65d1" name="ERR_CREATE_DO" />
-  <bpmn:process id="shuntingProcess" isExecutable="true">
+  <bpmn:process id="PROCESS_SHUNTER" isExecutable="true">
     <bpmn:userTask id="TASK_SHUNT_WAGGONS" name="Shunt waggons">
       <bpmn:extensionElements>
         <camunda:taskListener class="org.camunda.bpm.unittest.listener.departtrain.complete.ShuntWaggonsComplementListener" event="complete" />
@@ -259,10 +319,6 @@
   <bpmn:error id="Error_0ia8k1j" name="ERR_NO_EXIT_TR" />
   <bpmn:process id="PROCESS_REPAIR_FACILITY" isExecutable="true">
     <bpmn:sequenceFlow id="SequenceFlow_0juzu23" sourceRef="StartEvent_14lghgj" targetRef="TASK_ASSUME_REPAIR_TIME" />
-    <bpmn:startEvent id="StartEvent_14lghgj" name="MSG_INVOKE_WAG_ASSUMEMENT">
-      <bpmn:outgoing>SequenceFlow_0juzu23</bpmn:outgoing>
-      <bpmn:messageEventDefinition messageRef="Message_1hobrwx" />
-    </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1l55lzh" sourceRef="TASK_ASSUME_REPAIR_TIME" targetRef="CATCH_MSG_START_REPAIR" />
     <bpmn:sequenceFlow id="SequenceFlow_0f5tqfq" sourceRef="CATCH_MSG_START_REPAIR" targetRef="TASK_REPAIR_WAGGON" />
     <bpmn:endEvent id="EndEvent_0zbidy2">
@@ -285,6 +341,10 @@
       <bpmn:incoming>SequenceFlow_0juzu23</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1l55lzh</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:startEvent id="StartEvent_14lghgj" name="MSG_INVOKE_WAG_ASSUMEMENT">
+      <bpmn:outgoing>SequenceFlow_0juzu23</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_1hobrwx" />
+    </bpmn:startEvent>
     <bpmn:association id="Association_0cw6ytl" sourceRef="StartEvent_14lghgj" targetRef="TextAnnotation_1mqltw5" />
     <bpmn:textAnnotation id="TextAnnotation_1mqltw5">
       <bpmn:text>Der zu reparierende Wagen wird 'VAR_SINGLE_WAGGON_TO_REPAIR' verwaltet.</bpmn:text>
@@ -297,323 +357,318 @@
   <bpmn:message id="Message_0kxapt3" name="MSG_REPAIRED_IN_TIME" />
   <bpmn:message id="Message_1er2zeq" name="MSG_REPAIR_TIME_EXCEEDED" />
   <bpmn:message id="Message_1ach1yl" name="MSG_EVA_REP" />
+  <bpmn:message id="Message_1ujsr3s" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0j8d25t">
       <bpmndi:BPMNShape id="Participant_0va8iib_di" bpmnElement="Participant_0va8iib">
-        <dc:Bounds x="110" y="-37" width="2207" height="943" />
+        <dc:Bounds x="110" y="-20" width="2430" height="1235" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_0y2tr9m_di" bpmnElement="Lane_0y2tr9m">
-        <dc:Bounds x="140" y="-37" width="2177" height="219" />
+        <dc:Bounds x="140" y="-20" width="2400" height="219" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_1n1vf0d_di" bpmnElement="Lane_1n1vf0d">
-        <dc:Bounds x="140" y="182" width="2177" height="724" />
+        <dc:Bounds x="140" y="199" width="2400" height="1016" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="StartEvent_0wjvc5k_di" bpmnElement="StartEvent_1">
-        <dc:Bounds x="210" y="764" width="36" height="36" />
+        <dc:Bounds x="324" y="781" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="187" y="807" width="83" height="27" />
+          <dc:Bounds x="301" y="824" width="83" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_12r73qe_di" bpmnElement="EndEvent_12r73qe">
-        <dc:Bounds x="2239" y="493" width="36" height="36" />
+        <dc:Bounds x="2353" y="510" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0iv6lm4_di" bpmnElement="SequenceFlow_0iv6lm4">
-        <di:waypoint x="1540" y="471" />
-        <di:waypoint x="1540" y="340" />
+        <di:waypoint x="1654" y="488" />
+        <di:waypoint x="1654" y="357" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_104emcm_di" bpmnElement="TASK_CHOOSE_EXIT_TRACK">
-        <dc:Bounds x="1490" y="471" width="100" height="80" />
+        <dc:Bounds x="1604" y="488" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_185gt5p_di" bpmnElement="TaskCheckWaggonPositions">
-        <dc:Bounds x="1490" y="260" width="100" height="80" />
+        <dc:Bounds x="1604" y="277" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_1ljqgla_di" bpmnElement="TaskCreateDepartingOrder">
-        <dc:Bounds x="277" y="604" width="100" height="80" />
+        <dc:Bounds x="391" y="621" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_1x46iwm_di" bpmnElement="SIG_RO_CANC">
-        <dc:Bounds x="412" y="764" width="36" height="36" />
+        <dc:Bounds x="526" y="781" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="390" y="810" width="79" height="14" />
+          <dc:Bounds x="504" y="827" width="79" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="UserTask_0l2wanp_di" bpmnElement="TASK_CONFIRM_ROLLOUT">
-        <dc:Bounds x="1830" y="260" width="100" height="80" />
+        <dc:Bounds x="1944" y="277" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_1usq80e_di" bpmnElement="ExGwRollout" isMarkerVisible="true">
-        <dc:Bounds x="1855" y="486" width="50" height="50" />
+        <dc:Bounds x="1969" y="503" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_04qyvr6_di" bpmnElement="SequenceFlow_04qyvr6">
-        <di:waypoint x="1905" y="511" />
-        <di:waypoint x="1964" y="511" />
+        <di:waypoint x="2019" y="528" />
+        <di:waypoint x="2078" y="528" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_0f0uu4b_di" bpmnElement="ExclusiveGateway_0f0uu4b" isMarkerVisible="true">
-        <dc:Bounds x="2132" y="486" width="50" height="50" />
+        <dc:Bounds x="2246" y="503" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1gppc5j_di" bpmnElement="SequenceFlow_1gppc5j">
-        <di:waypoint x="2182" y="511" />
-        <di:waypoint x="2239" y="511" />
+        <di:waypoint x="2296" y="528" />
+        <di:waypoint x="2353" y="528" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_134eiha_di" bpmnElement="SequenceFlow_134eiha">
-        <di:waypoint x="1880" y="536" />
-        <di:waypoint x="1880" y="621" />
-        <di:waypoint x="1964" y="621" />
+        <di:waypoint x="1994" y="553" />
+        <di:waypoint x="1994" y="638" />
+        <di:waypoint x="2078" y="638" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0550o6l_di" bpmnElement="SequenceFlow_0550o6l">
-        <di:waypoint x="2157" y="603" />
-        <di:waypoint x="2157" y="536" />
+        <di:waypoint x="2271" y="620" />
+        <di:waypoint x="2271" y="553" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="IntermediateThrowEvent_0k3yhdp_di" bpmnElement="SignalThrowRoCanc">
-        <dc:Bounds x="2139" y="603" width="36" height="36" />
+        <dc:Bounds x="2253" y="620" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2118" y="646" width="79" height="14" />
+          <dc:Bounds x="2232" y="663" width="79" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1vu95o9_di" bpmnElement="SequenceFlow_1vu95o9">
-        <di:waypoint x="2064" y="621" />
-        <di:waypoint x="2139" y="621" />
+        <di:waypoint x="2178" y="638" />
+        <di:waypoint x="2253" y="638" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_107bkfo_di" bpmnElement="TaskCancelDepartOrder">
-        <dc:Bounds x="1964" y="581" width="100" height="80" />
+        <dc:Bounds x="2078" y="598" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0rbvy8h_di" bpmnElement="SequenceFlow_0rbvy8h">
-        <di:waypoint x="2064" y="511" />
-        <di:waypoint x="2132" y="511" />
+        <di:waypoint x="2178" y="528" />
+        <di:waypoint x="2246" y="528" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_0w745d5_di" bpmnElement="TaskRemoveWaggons">
-        <dc:Bounds x="1964" y="471" width="100" height="80" />
+        <dc:Bounds x="2078" y="488" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_19xhofc_di" bpmnElement="SequenceFlow_19xhofc">
-        <di:waypoint x="246" y="782" />
-        <di:waypoint x="302" y="782" />
+        <di:waypoint x="360" y="799" />
+        <di:waypoint x="416" y="799" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1y63fyx_di" bpmnElement="SequenceFlow_1y63fyx">
-        <di:waypoint x="327" y="604" />
-        <di:waypoint x="327" y="528" />
+        <di:waypoint x="441" y="621" />
+        <di:waypoint x="441" y="545" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1gi1snx_di" bpmnElement="SequenceFlow_1gi1snx">
-        <di:waypoint x="395" y="684" />
-        <di:waypoint x="430" y="684" />
-        <di:waypoint x="430" y="764" />
+        <di:waypoint x="509" y="701" />
+        <di:waypoint x="544" y="701" />
+        <di:waypoint x="544" y="781" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BoundaryEvent_0911gvg_di" bpmnElement="BoundaryEvent_01ns58k">
-        <dc:Bounds x="359" y="666" width="36" height="36" />
+        <dc:Bounds x="473" y="683" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="337" y="709" width="81" height="27" />
+          <dc:Bounds x="451" y="726" width="81" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_0dsc91r_di" bpmnElement="ExclusiveGateway_0dsc91r" isMarkerVisible="true">
-        <dc:Bounds x="302" y="757" width="50" height="50" />
+        <dc:Bounds x="416" y="774" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_03tnthx_di" bpmnElement="SequenceFlow_03tnthx">
-        <di:waypoint x="327" y="757" />
-        <di:waypoint x="327" y="684" />
+        <di:waypoint x="441" y="774" />
+        <di:waypoint x="441" y="701" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_00nynq5_di" bpmnElement="SequenceFlow_00nynq5">
-        <di:waypoint x="412" y="782" />
-        <di:waypoint x="352" y="782" />
+        <di:waypoint x="526" y="799" />
+        <di:waypoint x="466" y="799" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_10q31nk_di" bpmnElement="ExGwPositionsCorrect" isMarkerVisible="true">
-        <dc:Bounds x="1640" y="275" width="50" height="50" />
+        <dc:Bounds x="1754" y="292" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1621" y="251" width="87" height="14" />
+          <dc:Bounds x="1735" y="268" width="87" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0qc5j30_di" bpmnElement="SequenceFlow_0qc5j30">
-        <di:waypoint x="1690" y="300" />
-        <di:waypoint x="1752" y="300" />
+        <di:waypoint x="1804" y="317" />
+        <di:waypoint x="1866" y="317" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1704.9999999999995" y="311" width="17" height="14" />
+          <dc:Bounds x="1818.9999999999995" y="328" width="17" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_1dzns8n_di" bpmnElement="CATCH_MSG_SH_DONE">
-        <dc:Bounds x="1759" y="493" width="36" height="36" />
+        <dc:Bounds x="1873" y="510" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1751" y="464" width="85" height="14" />
+          <dc:Bounds x="1865" y="481" width="85" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_00fpcik_di" bpmnElement="Participant_00fpcik">
-        <dc:Bounds x="110" y="944" width="2205" height="249" />
+        <dc:Bounds x="110" y="1265" width="2431" height="258" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1llmj3e_di" bpmnElement="SequenceFlow_1llmj3e">
-        <di:waypoint x="582" y="1099" />
-        <di:waypoint x="684" y="1099" />
+        <di:waypoint x="582" y="1420" />
+        <di:waypoint x="684" y="1420" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EndEvent_1qamnt2_di" bpmnElement="EndEvent_1qamnt2">
-        <dc:Bounds x="1002" y="1081" width="36" height="36" />
+        <dc:Bounds x="1002" y="1402" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="UserTask_18li5tk_di" bpmnElement="TASK_SHUNT_WAGGONS">
-        <dc:Bounds x="684" y="1059" width="100" height="80" />
+        <dc:Bounds x="684" y="1380" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0xyk95k_di" bpmnElement="SequenceFlow_0xyk95k">
-        <di:waypoint x="1715" y="511" />
-        <di:waypoint x="1759" y="511" />
+        <di:waypoint x="1829" y="528" />
+        <di:waypoint x="1873" y="528" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_0xhyghz_di" bpmnElement="TaskOrderShunting">
-        <dc:Bounds x="1615" y="471" width="100" height="80" />
+        <dc:Bounds x="1729" y="488" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="MessageFlow_1mf5jru_di" bpmnElement="MessageFlow_1mf5jru">
-        <di:waypoint x="1665" y="551" />
-        <di:waypoint x="1665" y="584" />
-        <di:waypoint x="564" y="584" />
-        <di:waypoint x="564" y="1081" />
+        <di:waypoint x="1779" y="568" />
+        <di:waypoint x="1779" y="583" />
+        <di:waypoint x="564" y="594" />
+        <di:waypoint x="564" y="1402" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="StartEvent_0ym7dcl_di" bpmnElement="IntermediateThrowEvent_041qgz3">
-        <dc:Bounds x="546" y="1081" width="36" height="36" />
+        <dc:Bounds x="546" y="1402" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="525" y="1124" width="78" height="14" />
+          <dc:Bounds x="525" y="1445" width="78" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="MessageFlow_1i1pw2i_di" bpmnElement="MessageFlow_1i1pw2i">
-        <di:waypoint x="755" y="1059" />
+        <di:waypoint x="755" y="1380" />
         <di:waypoint x="755" y="625" />
-        <di:waypoint x="1777" y="625" />
-        <di:waypoint x="1777" y="529" />
+        <di:waypoint x="1891" y="625" />
+        <di:waypoint x="1891" y="546" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1lz38ap_di" bpmnElement="SequenceFlow_1lz38ap">
-        <di:waypoint x="784" y="1099" />
-        <di:waypoint x="1002" y="1099" />
+        <di:waypoint x="784" y="1420" />
+        <di:waypoint x="1002" y="1420" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1x3nblr_di" bpmnElement="SequenceFlow_1x3nblr">
-        <di:waypoint x="1665" y="325" />
-        <di:waypoint x="1665" y="471" />
+        <di:waypoint x="1779" y="342" />
+        <di:waypoint x="1779" y="488" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1674" y="435" width="13" height="14" />
+          <dc:Bounds x="1788" y="452" width="13" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_1bdmnut_di" bpmnElement="ExclusiveGateway_1bdmnut" isMarkerVisible="true">
-        <dc:Bounds x="1752" y="275" width="50" height="50" />
+        <dc:Bounds x="1866" y="292" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1dbkbrx_di" bpmnElement="SequenceFlow_1dbkbrx">
-        <di:waypoint x="1802" y="300" />
-        <di:waypoint x="1830" y="300" />
+        <di:waypoint x="1916" y="317" />
+        <di:waypoint x="1944" y="317" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1dszain_di" bpmnElement="SequenceFlow_1dszain">
-        <di:waypoint x="1777" y="493" />
-        <di:waypoint x="1777" y="325" />
+        <di:waypoint x="1891" y="510" />
+        <di:waypoint x="1891" y="342" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_01mca4f_di" bpmnElement="SequenceFlow_01mca4f">
-        <di:waypoint x="1880" y="340" />
-        <di:waypoint x="1880" y="486" />
+        <di:waypoint x="1994" y="357" />
+        <di:waypoint x="1994" y="503" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BoundaryEvent_0zor5qm_di" bpmnElement="BoundaryEvent_1p8wdzo">
-        <dc:Bounds x="1472" y="242" width="36" height="36" />
+        <dc:Bounds x="1586" y="259" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1448" y="199" width="84" height="27" />
+          <dc:Bounds x="1562" y="216" width="84" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0rupt2s_di" bpmnElement="SequenceFlow_0rupt2s">
-        <di:waypoint x="327" y="448" />
-        <di:waypoint x="327" y="239" />
-        <di:waypoint x="476" y="239" />
+        <di:waypoint x="441" y="465" />
+        <di:waypoint x="441" y="256" />
+        <di:waypoint x="590" y="256" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_1ebuac8_di" bpmnElement="TaskProcessCriticalErrors">
-        <dc:Bounds x="277" y="448" width="100" height="80" />
+        <dc:Bounds x="391" y="465" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_154ha91_di" bpmnElement="TextAnnotation_154ha91">
-        <dc:Bounds x="172" y="221" width="129" height="194" />
+        <dc:Bounds x="291" y="244" width="101" height="198" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0exob2b_di" bpmnElement="Association_0exob2b">
-        <di:waypoint x="306" y="448" />
-        <di:waypoint x="288" y="415" />
+        <di:waypoint x="416" y="465" />
+        <di:waypoint x="392" y="425" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Participant_0z4n82j_di" bpmnElement="Participant_0z4n82j">
-        <dc:Bounds x="110" y="-474" width="2203" height="426" />
+        <dc:Bounds x="110" y="-474" width="2423" height="417" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="StartEvent_1h4jsh2_di" bpmnElement="StartEvent_14lghgj">
-        <dc:Bounds x="270" y="-202" width="36" height="36" />
+        <dc:Bounds x="384" y="-202" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="183" y="-157" width="87" height="40" />
+          <dc:Bounds x="297" y="-157" width="87" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0juzu23_di" bpmnElement="SequenceFlow_0juzu23">
-        <di:waypoint x="306" y="-184" />
-        <di:waypoint x="444" y="-184" />
+        <di:waypoint x="420" y="-184" />
+        <di:waypoint x="558" y="-184" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_1127fox_di" bpmnElement="TASK_ASSUME_REPAIR_TIME">
-        <dc:Bounds x="444" y="-224" width="100" height="80" />
+        <dc:Bounds x="558" y="-224" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_198wx9r_di" bpmnElement="SequenceFlow_198wx9r">
-        <di:waypoint x="494" y="256" />
-        <di:waypoint x="494" y="300" />
-        <di:waypoint x="592" y="300" />
+        <di:waypoint x="626" y="255" />
+        <di:waypoint x="851" y="255" />
+        <di:waypoint x="851" y="303" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_05eqkdf_di" bpmnElement="CATCH_MSG_WG_REPAIRED">
-        <dc:Bounds x="476" y="220" width="36" height="36" />
+        <dc:Bounds x="590" y="237" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="384" y="254" width="79" height="27" />
+          <dc:Bounds x="498" y="271" width="79" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="MessageFlow_19y0vqj_di" bpmnElement="MessageFlow_19y0vqj">
-        <di:waypoint x="494" y="-144" />
-        <di:waypoint x="494" y="220" />
+        <di:waypoint x="608" y="-144" />
+        <di:waypoint x="608" y="237" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1gxtmn8_di" bpmnElement="SequenceFlow_1gxtmn8">
-        <di:waypoint x="642" y="340" />
-        <di:waypoint x="642" y="413" />
+        <di:waypoint x="851" y="383" />
+        <di:waypoint x="851" y="430" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_10u2yb0_di" bpmnElement="TaskAllAssumementsDone">
-        <dc:Bounds x="592" y="260" width="100" height="80" />
+        <dc:Bounds x="801" y="303" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_1bfkdvy_di" bpmnElement="ExGateway_1bfkdvy" isMarkerVisible="true">
-        <dc:Bounds x="617" y="413" width="50" height="50" />
+        <dc:Bounds x="826" y="430" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="667" y="454" width="83" height="27" />
+          <dc:Bounds x="945" y="466" width="83" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0r593fk_di" bpmnElement="SequenceFlow_0r593fk">
-        <di:waypoint x="667" y="438" />
-        <di:waypoint x="737" y="438" />
-        <di:waypoint x="737" y="238" />
-        <di:waypoint x="512" y="238" />
+        <di:waypoint x="826" y="455" />
+        <di:waypoint x="608" y="455" />
+        <di:waypoint x="608" y="273" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_1mqltw5_di" bpmnElement="TextAnnotation_1mqltw5">
         <dc:Bounds x="158" y="-288" width="100" height="113" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0cw6ytl_di" bpmnElement="Association_0cw6ytl">
-        <di:waypoint x="273" y="-193" />
-        <di:waypoint x="258" y="-202" />
+        <di:waypoint x="385" y="-188" />
+        <di:waypoint x="258" y="-220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_1h9tplh_di" bpmnElement="TextAnnotation_1h9tplh">
-        <dc:Bounds x="169" y="587" width="100" height="113" />
+        <dc:Bounds x="283" y="604" width="100" height="113" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0er4m22_di" bpmnElement="Association_0er4m22">
-        <di:waypoint x="227" y="764" />
-        <di:waypoint x="223" y="700" />
+        <di:waypoint x="341" y="781" />
+        <di:waypoint x="337" y="717" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_0wo4rks_di" bpmnElement="TextAnnotation_0wo4rks">
-        <dc:Bounds x="434" y="406" width="100" height="199" />
+        <dc:Bounds x="608" y="652" width="100" height="199" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_022z90p_di" bpmnElement="Association_022z90p">
-        <di:waypoint x="611" y="340" />
-        <di:waypoint x="534" y="441" />
+        <di:waypoint x="832" y="383" />
+        <di:waypoint x="705" y="652" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="MessageFlow_0zrk4uy_di" bpmnElement="MessageFlow_0zrk4uy">
-        <di:waypoint x="288" y="448" />
-        <di:waypoint x="288" y="-166" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_0qqkgo2_di" bpmnElement="SequenceFlow_0qqkgo2">
-        <di:waypoint x="642" y="463" />
-        <di:waypoint x="642" y="511" />
-        <di:waypoint x="839" y="511" />
+        <di:waypoint x="402" y="465" />
+        <di:waypoint x="402" y="-166" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_13gkobw_di" bpmnElement="SequenceFlow_13gkobw">
-        <di:waypoint x="1590" y="300" />
-        <di:waypoint x="1640" y="300" />
+        <di:waypoint x="1704" y="317" />
+        <di:waypoint x="1754" y="317" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_18o5zi2_di" bpmnElement="SequenceFlow_18o5zi2">
-        <di:waypoint x="1472" y="260" />
-        <di:waypoint x="1394" y="260" />
-        <di:waypoint x="1394" y="486" />
+        <di:waypoint x="1586" y="277" />
+        <di:waypoint x="1508" y="277" />
+        <di:waypoint x="1508" y="503" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_1qk7c3h_di" bpmnElement="ExclusiveGateway_1qk7c3h" isMarkerVisible="true">
-        <dc:Bounds x="1369" y="486" width="50" height="50" />
+        <dc:Bounds x="1483" y="503" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0ch8mi7_di" bpmnElement="SequenceFlow_0ch8mi7">
-        <di:waypoint x="1419" y="511" />
-        <di:waypoint x="1490" y="511" />
+        <di:waypoint x="1533" y="528" />
+        <di:waypoint x="1604" y="528" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1l55lzh_di" bpmnElement="SequenceFlow_1l55lzh">
-        <di:waypoint x="544" y="-184" />
+        <di:waypoint x="658" y="-184" />
         <di:waypoint x="879" y="-184" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_1dpwar8_di" bpmnElement="CATCH_MSG_START_REPAIR">
@@ -626,60 +681,48 @@
         <di:waypoint x="915" y="-184" />
         <di:waypoint x="1025" y="-184" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="MessageFlow_1qn9jjk_di" bpmnElement="MessageFlow_1qn9jjk">
-        <di:waypoint x="897" y="471" />
-        <di:waypoint x="897" y="-166" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_0qu7xlo_di" bpmnElement="SequenceFlow_0qu7xlo">
-        <di:waypoint x="939" y="511" />
-        <di:waypoint x="1050" y="511" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EventBasedGateway_1darzt3_di" bpmnElement="MsGwRepairCallback">
-        <dc:Bounds x="1050" y="486" width="50" height="50" />
+        <dc:Bounds x="1164" y="503" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_1eppsxp_di" bpmnElement="IntermediateCatchEvent_1eppsxp">
-        <dc:Bounds x="1158" y="493" width="36" height="36" />
+        <dc:Bounds x="1272" y="510" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1133" y="536" width="87" height="27" />
+          <dc:Bounds x="1247" y="553" width="87" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_162h2mm_di" bpmnElement="SequenceFlow_162h2mm">
-        <di:waypoint x="1100" y="511" />
-        <di:waypoint x="1158" y="511" />
+        <di:waypoint x="1214" y="528" />
+        <di:waypoint x="1272" y="528" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_1g4pn4h_di" bpmnElement="IntermediateCatchEvent_1g4pn4h">
-        <dc:Bounds x="1057" y="270" width="36" height="36" />
+        <dc:Bounds x="1171" y="287" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="960" y="274" width="87" height="27" />
+          <dc:Bounds x="1074" y="291" width="87" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0hl5x1x_di" bpmnElement="SequenceFlow_0hl5x1x">
-        <di:waypoint x="1075" y="486" />
-        <di:waypoint x="1075" y="306" />
+        <di:waypoint x="1189" y="503" />
+        <di:waypoint x="1189" y="323" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_0g000y0_di" bpmnElement="ExclusiveGateway_0g000y0" isMarkerVisible="true">
-        <dc:Bounds x="1249" y="486" width="50" height="50" />
+        <dc:Bounds x="1363" y="503" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1twoir4_di" bpmnElement="SequenceFlow_1twoir4">
-        <di:waypoint x="1194" y="511" />
-        <di:waypoint x="1249" y="511" />
+        <di:waypoint x="1308" y="528" />
+        <di:waypoint x="1363" y="528" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0a22uxm_di" bpmnElement="SequenceFlow_0a22uxm">
-        <di:waypoint x="1093" y="288" />
-        <di:waypoint x="1274" y="288" />
-        <di:waypoint x="1274" y="486" />
+        <di:waypoint x="1207" y="305" />
+        <di:waypoint x="1388" y="305" />
+        <di:waypoint x="1388" y="503" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0cr72l6_di" bpmnElement="SequenceFlow_0cr72l6">
-        <di:waypoint x="1299" y="511" />
-        <di:waypoint x="1369" y="511" />
+        <di:waypoint x="1413" y="528" />
+        <di:waypoint x="1483" y="528" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EndEvent_0zbidy2_di" bpmnElement="EndEvent_0zbidy2">
         <dc:Bounds x="1903" y="-202" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="MessageFlow_1f7o4w7_di" bpmnElement="MessageFlow_1f7o4w7">
-        <di:waypoint x="1075" y="-144" />
-        <di:waypoint x="1075" y="270" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1c5nymt_di" bpmnElement="SequenceFlow_1c5nymt">
         <di:waypoint x="1125" y="-184" />
         <di:waypoint x="1903" y="-184" />
@@ -687,16 +730,69 @@
       <bpmndi:BPMNShape id="UserTask_1xvjzd1_di" bpmnElement="TASK_REPAIR_WAGGON">
         <dc:Bounds x="1025" y="-224" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="UserTask_1l43q6d_di" bpmnElement="TASK_EVALUATE_REPAIR">
-        <dc:Bounds x="839" y="471" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1yoz8ky_di" bpmnElement="TextAnnotation_1yoz8ky">
-        <dc:Bounds x="771" y="235" width="100" height="214" />
+        <dc:Bounds x="953" y="770" width="202" height="99" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0pvxmx7_di" bpmnElement="Association_0pvxmx7">
-        <di:waypoint x="873" y="471" />
-        <di:waypoint x="864" y="449" />
+        <di:waypoint x="968" y="932" />
+        <di:waypoint x="1016" y="869" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Lane_0tnss8c_di" bpmnElement="Lane_0tnss8c">
+        <dc:Bounds x="170" y="199" width="2370" height="700" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0zda05c_di" bpmnElement="Lane_0zda05c">
+        <dc:Bounds x="170" y="899" width="2370" height="316" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SubProcess_1s2wqfm_di" bpmnElement="SubProcess_1s2wqfm" isExpanded="true">
+        <dc:Bounds x="792" y="932" width="870" height="253" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_05cx3x2_di" bpmnElement="TextAnnotation_05cx3x2">
+        <dc:Bounds x="1750" y="955" width="99.99999822778292" height="53.426248548199766" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1s3fkg8_di" bpmnElement="Association_1s3fkg8">
+        <di:waypoint x="1662" y="1001" />
+        <di:waypoint x="1750" y="989" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ax1mlt_di" bpmnElement="SequenceFlow_1ax1mlt">
+        <di:waypoint x="929" y="1063" />
+        <di:waypoint x="1039" y="1063" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1tpr4bc_di" bpmnElement="EndEvent_1tpr4bc">
+        <dc:Bounds x="1196" y="1045" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1lkf4dp_di" bpmnElement="SequenceFlow_1lkf4dp">
+        <di:waypoint x="1139" y="1063" />
+        <di:waypoint x="1196" y="1063" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="StartEvent_1kaddrc_di" bpmnElement="StartEvent_1qobht4">
+        <dc:Bounds x="893" y="1045" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="867" y="1088" width="88" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0mz59wd_di" bpmnElement="TaskSub">
+        <dc:Bounds x="1039" y="1023" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_150gc27_di" bpmnElement="SequenceFlow_150gc27">
+        <di:waypoint x="851" y="480" />
+        <di:waypoint x="851" y="706" />
+        <di:waypoint x="1227" y="706" />
+        <di:waypoint x="1227" y="932" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_11jsxbj_di" bpmnElement="SequenceFlow_11jsxbj">
+        <di:waypoint x="1662" y="1059" />
+        <di:waypoint x="1808" y="1059" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_10y35re_di" bpmnElement="EndEvent_10y35re">
+        <dc:Bounds x="2054" y="1041" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1p42ngv_di" bpmnElement="SequenceFlow_1p42ngv">
+        <di:waypoint x="1908" y="1059" />
+        <di:waypoint x="2054" y="1059" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_1160njn_di" bpmnElement="TaskOut">
+        <dc:Bounds x="1808" y="1019" width="100" height="80" />
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

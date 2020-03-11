@@ -15,6 +15,7 @@ public class AllAssumementsDoneDelegate implements JavaDelegate {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
+		
 		if (execution.getVariable(DepartTrainProcessConstants.VAR_ASSUMED_WAGGONS) == null) {
 			execution.setVariable(DepartTrainProcessConstants.VAR_ASSUMED_WAGGONS, new ArrayList<RepairProcessInfo>());
 		}

@@ -91,7 +91,7 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 		
 		HashMap<String, String> processInstancesToBusinessKeys = runProcesses(true, false, RULE_BREAK_PROCESS_COUNT);
 		
-		List<Task> tasksChooseMeal = ensureTaskCountPresent(TASK_CHOOSE_MEAL, RULE_BREAK_PROCESS_COUNT);
+		List<Task> tasksChooseMeal = ensureTaskCountPresent(TASK_CHOOSE_MEAL, null, RULE_BREAK_PROCESS_COUNT);
 		
 		// choose meals
 		for (int index = 0; index < RULE_BREAK_PROCESS_COUNT; index++) {
@@ -115,9 +115,9 @@ public class PsychatryProcessTestCase extends BpmTestCase {
 		runProcesses(true, false, 5);
 		runProcesses(true, true, 2);
 
-		ensureTaskCountPresent(TASK_RELEASE_PATIENT, 3);
-		ensureTaskCountPresent(TASK_CHOOSE_MEAL, 5);
-		ensureTaskCountPresent(TASK_REVIEW_DATA, 2);
+		ensureTaskCountPresent(TASK_RELEASE_PATIENT, null, 3);
+		ensureTaskCountPresent(TASK_CHOOSE_MEAL, null, 5);
+		ensureTaskCountPresent(TASK_REVIEW_DATA, null, 2);
 	}
 
 	// key --> process instance id, value --> business key

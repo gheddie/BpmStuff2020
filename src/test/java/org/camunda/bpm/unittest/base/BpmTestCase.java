@@ -18,6 +18,7 @@ import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstanceQuery;
 import org.camunda.bpm.engine.runtime.VariableInstance;
 import org.camunda.bpm.engine.task.Task;
+import org.camunda.bpm.engine.task.TaskQuery;
 import org.camunda.bpm.unittest.departtrain.util.RailTestUtil;
 
 public class BpmTestCase {
@@ -43,8 +44,12 @@ public class BpmTestCase {
 		return task;
 	}
 
-	protected List<Task> ensureTaskCountPresent(String taskName, int taskCount) {
-		List<Task> taskList = taskService().createTaskQuery().taskDefinitionKey(taskName).list();
+	protected List<Task> ensureTaskCountPresent(String taskName, String processInstanceId, int taskCount) {
+		TaskQuery query = taskService().createTaskQuery().taskDefinitionKey(taskName);
+		if (processInstanceId != null) {
+			query.processInstanceId(processInstanceId);	
+		}
+		List<Task> taskList = query.list();
 		assertEquals(taskCount, taskList.size());
 		return taskList;
 	}
@@ -104,6 +109,10 @@ public class BpmTestCase {
 		// name is unique in process
 		assertEquals(1, variableInstanceList.size());
 		return variableInstanceList.get(0).getValue();
+	}
+	
+	protected List<ProcessInstance> getProcessesInstances(String processDefinitionKey) {
+		return runtimeService().createProcessInstanceQuery().processDefinitionKey(processDefinitionKey).list();
 	}
 
 	protected void debugEngineState() {
