@@ -4,19 +4,22 @@ import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.assertT
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.camunda.bpm.engine.runtime.VariableInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
 import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessLogic;
+import org.camunda.bpm.unittest.departtrain.businesslogic.RepairProcessInfo;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Waggon;
 import org.camunda.bpm.unittest.departtrain.businesslogic.exception.RailwayStationBusinessLogicException;
 import org.camunda.bpm.unittest.departtrain.constant.DepartTrainProcessConstants;
 import org.camunda.bpm.unittest.util.HashBuilder;
-import org.joda.time.LocalDate;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -60,14 +63,23 @@ public class DepartTrainTestCase extends BpmTestCase {
 		processWaggonRepairAssumement(processInstance, assumementTasks.get(0), 11);
 		processWaggonRepairAssumement(processInstance, assumementTasks.get(1), 4);
 
+		// collect business keys of facility processes...
+		List<String> businessKeys = new ArrayList<String>();
+		HashMap<String, RepairProcessInfo> repairProcessInfos = (HashMap<String, RepairProcessInfo>) getProcessVariableByName(DepartTrainProcessConstants.VAR_ASSUMED_WAGGONS);
+		for (RepairProcessInfo info : repairProcessInfos.values()) {
+			businessKeys.add(info.getBusinessKey());
+		}
+		
 		// 2 facility processes waiting at 'CATCH_MSG_START_REPAIR'...
-		assertEquals(2,
-				processEngine.getRuntimeService().createProcessInstanceQuery()
-						.activityIdIn(DepartTrainProcessConstants.CATCH_MSG_START_REPAIR)
-						.processDefinitionKey(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY).list().size());
+		ensureActiveEventSubscriptionsPresent(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY,
+				DepartTrainProcessConstants.CATCH_MSG_START_REPAIR, BpmTestCase.EventType.MESSAGE,
+				DepartTrainProcessConstants.MSG_START_REPAIR, businessKeys);
 
-		// all assumed --> choose exit track...
-		// assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
+		// main process is wating at 'GW_REPAIR_CALLBACK'...
+		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.GW_REPAIR_CALLBACK);
+		
+		// all sub processes were ordered to repair...
+		ensureTaskCountPresent(DepartTrainProcessConstants.TASK_REPAIR_WAGGON, 2);
 	}
 
 	@Test

@@ -9,7 +9,7 @@
     <bpmn:messageFlow id="MessageFlow_19y0vqj" sourceRef="TASK_ASSUME_REPAIR_TIME" targetRef="CATCH_MSG_WG_REPAIRED" />
     <bpmn:messageFlow id="MessageFlow_0zrk4uy" sourceRef="TaskProcessCriticalErrors" targetRef="StartEvent_14lghgj" />
     <bpmn:messageFlow id="MessageFlow_1qn9jjk" sourceRef="TaskStartRepair" targetRef="CATCH_MSG_START_REPAIR" />
-    <bpmn:messageFlow id="MessageFlow_1f7o4w7" sourceRef="TaskRepairWaggon" targetRef="IntermediateCatchEvent_1g4pn4h" />
+    <bpmn:messageFlow id="MessageFlow_1f7o4w7" sourceRef="TASK_REPAIR_Waggon" targetRef="IntermediateCatchEvent_1g4pn4h" />
   </bpmn:collaboration>
   <bpmn:process id="departTrainProcess" isExecutable="true">
     <bpmn:laneSet id="LaneSet_0870o2p">
@@ -293,7 +293,7 @@
       <bpmn:outgoing>SequenceFlow_1l55lzh</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_1l55lzh" sourceRef="TASK_ASSUME_REPAIR_TIME" targetRef="CATCH_MSG_START_REPAIR" />
-    <bpmn:sequenceFlow id="SequenceFlow_0f5tqfq" sourceRef="CATCH_MSG_START_REPAIR" targetRef="TaskRepairWaggon" />
+    <bpmn:sequenceFlow id="SequenceFlow_0f5tqfq" sourceRef="CATCH_MSG_START_REPAIR" targetRef="TASK_REPAIR_Waggon" />
     <bpmn:intermediateCatchEvent id="CATCH_MSG_START_REPAIR" name="MSG_START_REPAIR">
       <bpmn:incoming>SequenceFlow_1l55lzh</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0f5tqfq</bpmn:outgoing>
@@ -303,8 +303,8 @@
       <bpmn:incoming>SequenceFlow_1c5nymt</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:task id="Task_0hcj0nf" name="Repair time exceeded" />
-    <bpmn:sequenceFlow id="SequenceFlow_1c5nymt" sourceRef="TaskRepairWaggon" targetRef="EndEvent_0zbidy2" />
-    <bpmn:userTask id="TaskRepairWaggon" name="Repair waggon">
+    <bpmn:sequenceFlow id="SequenceFlow_1c5nymt" sourceRef="TASK_REPAIR_Waggon" targetRef="EndEvent_0zbidy2" />
+    <bpmn:userTask id="TASK_REPAIR_Waggon" name="Repair waggon">
       <bpmn:incoming>SequenceFlow_0f5tqfq</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1c5nymt</bpmn:outgoing>
     </bpmn:userTask>
@@ -755,7 +755,7 @@
         <di:waypoint x="1037" y="-184" />
         <di:waypoint x="1903" y="-184" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_1xvjzd1_di" bpmnElement="TaskRepairWaggon">
+      <bpmndi:BPMNShape id="UserTask_1xvjzd1_di" bpmnElement="TASK_REPAIR_Waggon">
         <dc:Bounds x="937" y="-224" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>

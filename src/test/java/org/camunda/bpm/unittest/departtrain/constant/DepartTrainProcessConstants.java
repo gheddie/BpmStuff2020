@@ -11,6 +11,7 @@ public class DepartTrainProcessConstants {
 	public static final String TASK_CONFIRM_ROLLOUT = "TASK_CONFIRM_ROLLOUT";
 	public static final String TASK_ASSUME_REPAIR_TIME = "TASK_ASSUME_REPAIR_TIME";
 	public static final String TASK_SHUNT_WAGGONS = "TASK_SHUNT_WAGGONS";
+	public static final String TASK_REPAIR_WAGGON = "TASK_REPAIR_WAGGON";
 
 	// ##############################################################################
 	// ####################################### signals
@@ -88,6 +89,14 @@ public class DepartTrainProcessConstants {
 	public static final String CATCH_MSG_WG_REPAIRED = "CATCH_MSG_WG_REPAIRED";
 	public static final String CATCH_MSG_SH_DONE = "CATCH_MSG_SH_DONE";
 	public static final String CATCH_MSG_START_REPAIR = "CATCH_MSG_START_REPAIR";
+	
+	// ##############################################################################
+	// ####################################### elements
+	// ##############################################################################
+	
+	// gateways
+	
+	public static final String GW_REPAIR_CALLBACK = "MsGwRepairCallback";
 	
 	// ##############################################################################
 	// ####################################### process definitions

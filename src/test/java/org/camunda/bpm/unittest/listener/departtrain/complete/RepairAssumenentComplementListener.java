@@ -2,7 +2,6 @@ package org.camunda.bpm.unittest.listener.departtrain.complete;
 
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
-import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessLogic;
 import org.camunda.bpm.unittest.departtrain.businesslogic.RepairProcessInfo;
 import org.camunda.bpm.unittest.departtrain.constant.DepartTrainProcessConstants;
 import org.camunda.bpm.unittest.util.HashBuilder;
@@ -23,7 +22,7 @@ public class RepairAssumenentComplementListener implements TaskListener {
 						HashBuilder.create()
 								.withValuePair(DepartTrainProcessConstants.VAR_SINGLE_WAGGON_TO_ASSUME,
 										RepairProcessInfo.fromValues(assumedWaggon, singleAssumedTime,
-												RailwayStationBusinessLogic.getInstance().generateBusinessKey()))
+												delegateTask.getExecution().getBusinessKey()))
 								.build());
 	}
 }

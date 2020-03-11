@@ -4,14 +4,21 @@ import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.managem
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.runtimeService;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskService;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import org.camunda.bpm.engine.impl.jobexecutor.JobExecutor;
 import org.camunda.bpm.engine.impl.util.ClockUtil;
+import org.camunda.bpm.engine.runtime.EventSubscription;
+import org.camunda.bpm.engine.runtime.EventSubscriptionQuery;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.camunda.bpm.engine.runtime.ProcessInstanceQuery;
+import org.camunda.bpm.engine.runtime.VariableInstance;
 import org.camunda.bpm.engine.task.Task;
+import org.camunda.bpm.unittest.departtrain.util.RailTestUtil;
 
 public class BpmTestCase {
 
@@ -72,6 +79,33 @@ public class BpmTestCase {
 		return runtimeService().createProcessInstanceQuery().processDefinitionKey(processDefinitionKey).list().size();
 	}
 
+	protected void ensureActiveEventSubscriptionsPresent(String processDefinitionKey, String activityId,
+			EventType eventType, String eventName, List<String> expectedBusinessKeys) {
+		
+		EventSubscriptionQuery query = runtimeService().createEventSubscriptionQuery().eventName(eventName);
+		if (eventType != null) {
+			query.eventType(eventType.toString().toLowerCase());
+		}
+		List<EventSubscription> list = query.list();
+		List<String> processInstanceIds = new ArrayList<String>();
+		List<String> actualProcessBusinessKeysFromSubscriptions = new ArrayList<String>();
+		for (EventSubscription subscription : list) {
+			processInstanceIds.add(subscription.getProcessInstanceId());
+			for (ProcessInstance instance : runtimeService().createProcessInstanceQuery().processInstanceId(subscription.getProcessInstanceId()).list()) {
+				actualProcessBusinessKeysFromSubscriptions.add(instance.getBusinessKey());
+			};
+		}
+		// business keys must match here...
+		assertTrue(RailTestUtil.areListsEqual(expectedBusinessKeys, actualProcessBusinessKeysFromSubscriptions));
+	}
+	
+	protected Object getProcessVariableByName(String variableName) {
+		List<VariableInstance> variableInstanceList = runtimeService().createVariableInstanceQuery().variableName(variableName).list();
+		// name is unique in process
+		assertEquals(1, variableInstanceList.size());
+		return variableInstanceList.get(0).getValue();
+	}
+
 	protected void debugEngineState() {
 
 		System.out.println("---------------[ENGINE STATE]------------------");
@@ -123,5 +157,11 @@ public class BpmTestCase {
 			sleep(1000);
 		}
 		ClockUtil.reset();
+	}
+
+	// ---
+
+	protected enum EventType {
+		MESSAGE
 	}
 }
