@@ -104,6 +104,5 @@ public class DepartTrainProcessConstants {
 	// ##############################################################################
 	
 	public static final String PROCESS_REPAIR_FACILITY = "PROCESS_REPAIR_FACILITY";
-	
 	public static final String PROCESS_SUB_REPAIR = "PROCESS_SUB_REPAIR";
 }
