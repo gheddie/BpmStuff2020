@@ -56,8 +56,8 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 		return activeOrders;
 	}
 
-	public String generateBusinessKey() {
-		String result = String.valueOf(System.currentTimeMillis()) + "_" + String.valueOf(random.nextInt(1000));
+	public String generateBusinessKey(String processDefinitionKey) {
+		String result = processDefinitionKey + "_" + String.valueOf(System.currentTimeMillis()) + "_" + String.valueOf(random.nextInt(1000));
 		return result;
 	}
 	

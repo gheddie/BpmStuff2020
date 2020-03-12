@@ -302,7 +302,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		List<String> extractedWaggonNumbers = Waggon.getWaggonNumbers(waggonNumbers);
 		ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByMessage(
 				DepartTrainProcessConstants.MSG_DEPARTURE_PLANNED,
-				RailwayStationBusinessLogic.getInstance().generateBusinessKey(),
+				RailwayStationBusinessLogic.getInstance().generateBusinessKey(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY),
 				HashBuilder.create().withValuePair(DepartTrainProcessConstants.VAR_PLANNED_WAGGONS, extractedWaggonNumbers)
 						.withValuePair(DepartTrainProcessConstants.VAR_PLANNED_DEPARTMENT_DATE, plannedDepartureTime).build());
 		return instance;

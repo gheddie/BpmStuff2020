@@ -19,10 +19,12 @@ public class ProcessCriticalErrorsDelegate implements JavaDelegate {
 		String subProcessBusinessKey = null;
 		for (String plannedWaggon : plannedWaggons) {
 			if (RailwayStationBusinessLogic.getInstance().isWaggonCritical(plannedWaggon)) {
-				subProcessBusinessKey = RailwayStationBusinessLogic.getInstance().generateBusinessKey();
+				subProcessBusinessKey = RailwayStationBusinessLogic.getInstance()
+						.generateBusinessKey(execution.getProcessInstance().getProcessDefinitionId());
 				// pass master process business key to call back...
-				execution.getProcessEngine().getRuntimeService()
-						.startProcessInstanceByMessage(DepartTrainProcessConstants.MSG_INVOKE_WAG_ASSUMEMENT, subProcessBusinessKey, HashBuilder.create()
+				execution.getProcessEngine().getRuntimeService().startProcessInstanceByMessage(
+						DepartTrainProcessConstants.MSG_INVOKE_WAG_ASSUMEMENT, subProcessBusinessKey,
+						HashBuilder.create()
 								.withValuePair(DepartTrainProcessConstants.VAR_DEP_PROC_BK, execution.getBusinessKey())
 								.withValuePair(DepartTrainProcessConstants.VAR_SINGLE_WAGGON_TO_ASSUME, plannedWaggon).build());
 				// store waggons to repair in 'VAR_WAGGONS_TO_REPAIR'
