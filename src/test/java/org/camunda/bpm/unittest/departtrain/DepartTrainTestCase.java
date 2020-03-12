@@ -134,7 +134,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		// all prompted --> choose exit track
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
 
-		// TODO ALL processes must be gone in the end...
+		// TODO ALL processes must be gone in the end
 		// assertEquals(0,
 		// processEngine.getRuntimeService().createProcessInstanceQuery().list().size());
 	}
