@@ -47,7 +47,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		RailwayStationBusinessLogic.getInstance().reset();
 
 		// prepare test data
-		RailwayStationBusinessLogic.getInstance().withTracks("Track1@true", "TrackExit")
+		RailwayStationBusinessLogic.getInstance().withTracks("Track1@true", "TrackExit", "TrackReplacement")
 				.withWaggons("Track1", "W1@C1#N1", "W2@C1", "W3@C1", "W4@C1", "W5")
 				.withRoles(DepartTrainProcessConstants.ROLE_DISPONENT, DepartTrainProcessConstants.ROLE_SHUNTER,
 						DepartTrainProcessConstants.ROLE_REPAIR_DUDE, DepartTrainProcessConstants.ROLE_WAGGON_MASTER);
@@ -109,7 +109,8 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 		// we have 2 task of 'TASK_REPAIR_WAGGON' (NOT of this process instance, as we
 		// are the 'master')...
-		ensureTaskCountPresent(DepartTrainProcessConstants.TASK_REPAIR_WAGGON, null, DepartTrainProcessConstants.ROLE_REPAIR_DUDE, 2);
+		ensureTaskCountPresent(DepartTrainProcessConstants.TASK_REPAIR_WAGGON, null, DepartTrainProcessConstants.ROLE_REPAIR_DUDE,
+				2);
 
 		// we prompt 2 new waggons...
 		List<Task> promptReplacementTasks = ensureTaskCountPresent(DepartTrainProcessConstants.TASK_PROMPT_WAGGON_REPLACEMENT,
@@ -123,11 +124,19 @@ public class DepartTrainTestCase extends BpmTestCase {
 		// 2 replacements tobe be processed...
 		processDeliverReplacement(processInstance.getBusinessKey(), "W888", "W999");
 
+		Task chooseReplacementTrackTask = ensureSingleTaskPresent(DepartTrainProcessConstants.TASK_CHOOSE_REPLACEMENT_TRACK,
+				DepartTrainProcessConstants.ROLE_DISPONENT, false);
+		processChooseReplacementTrack(chooseReplacementTrackTask, "TrackReplacement");
+
+		// we must have 2 more waggons (now 5+2=7) in the system...
+		assertEquals(7, RailwayStationBusinessLogic.getInstance().countWaggons());
+
 		// all prompted --> choose exit track
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
-		
+
 		// TODO ALL processes must be gone in the end...
-		// assertEquals(0, processEngine.getRuntimeService().createProcessInstanceQuery().list().size());
+		// assertEquals(0,
+		// processEngine.getRuntimeService().createProcessInstanceQuery().list().size());
 	}
 
 	@Test
@@ -327,7 +336,14 @@ public class DepartTrainTestCase extends BpmTestCase {
 	}
 
 	private void processDeliverReplacement(String businessKey, String... waggonNumbers) {
-		processEngine.getRuntimeService().correlateMessage(DepartTrainProcessConstants.MSG_REPL_WAGG_ARRIVED, businessKey);
+		processEngine.getRuntimeService().correlateMessage(DepartTrainProcessConstants.MSG_REPL_WAGG_ARRIVED, businessKey,
+				HashBuilder.create().withValuePair(DepartTrainProcessConstants.VAR_DELIVERED_REPLACMENT_WAGGONS, waggonNumbers)
+						.build());
+	}
+
+	private void processChooseReplacementTrack(Task task, String replacementTrack) {
+		processEngine.getTaskService().complete(task.getId(), HashBuilder.create()
+				.withValuePair(DepartTrainProcessConstants.VAR_REPLACE_WAGGON_TARGET_TRACK, replacementTrack).build());
 	}
 
 	private LocalDateTime getDefaultPlannedDepartureTime() {

@@ -123,4 +123,8 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 	public void print(boolean showWaggonDefects) {
 		stationData.print(showWaggonDefects);
 	}
+
+	public void addWaggonsToTrack(String trackNumber, List<String> waggonNumbers) {
+		stationData.addWaggonsToTrack(trackNumber, waggonNumbers);
+	}
 }

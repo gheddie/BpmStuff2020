@@ -3,6 +3,13 @@ package org.camunda.bpm.unittest.departtrain.constant;
 public class DepartTrainProcessConstants {
 	
 	// ##############################################################################
+	// ####################################### links
+	// ##############################################################################
+	
+	public static final String CATCH_LINK_ALL_PROMPTED_WAGGON_MASTER = "CatchLinkAllPrompted";
+	public static final String THROW_LINK_ALL_PROMPTED_WAGGON_MASTER = "ThrowLinkAllPrompted";
+	
+	// ##############################################################################
 	// ####################################### roles
 	// ##############################################################################
 	
@@ -25,6 +32,7 @@ public class DepartTrainProcessConstants {
 	public static final String TASK_EVALUATE_WAGGON = "TASK_EVALUATE_WAGGON";
 	public static final String TASK_PROMPT_WAGGON_REPLACEMENT = "TASK_PROMPT_WAGGON_REPLACEMENT";
 	public static final String TASK_PROMPT_WAGGON_REPAIR = "TASK_PROMPT_WAGGON_REPAIR";
+	public static final String TASK_CHOOSE_REPLACEMENT_TRACK = "TASK_CHOOSE_REPLACEMENT_TRACK";
 
 	// ##############################################################################
 	// ####################################### signals
@@ -91,6 +99,14 @@ public class DepartTrainProcessConstants {
 	// single waggon to prompt a replacement...
 	public static final String VAR_PROMPT_REPLACE_WAGGON = "VAR_PROMPT_REPLACE_WAGGON";
 	
+	// target track for replaced waggons
+	public static final String VAR_REPLACE_WAGGON_TARGET_TRACK = "VAR_REPLACE_WAGGON_TARGET_TRACK";
+	
+	// wurden 'waggon' replacements angefragt?
+	public static final String VAR_WG_REPLS_GEN = "VAR_WG_REPLS_GEN";
+	
+	public static final String VAR_DELIVERED_REPLACMENT_WAGGONS = "VAR_DELIVERED_REPLACMENT_WAGGONS";
+	
 	// business key of the 'master' process --> passed to repair 
 	// process to able to call back to master
 	public static final String VAR_DEP_PROC_BK = "VAR_DEP_PROC_BK";
@@ -127,9 +143,13 @@ public class DepartTrainProcessConstants {
 	// ####################################### elements
 	// ##############################################################################
 	
-	// gateways
+	// gateways (exclusive)
 	
 	public static final String GW_REPAIR_CALLBACK = "MsGwRepairCallback";
+	
+	// gateways (parallel)
+	
+	public static final String GW_PLACE_REPLACEMENT_WAGGONS = "GW_PLACE_REPLACEMENT_WAGGONS";
 	
 	// ##############################################################################
 	// ####################################### process definitions

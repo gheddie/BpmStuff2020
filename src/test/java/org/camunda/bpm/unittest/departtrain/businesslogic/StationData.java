@@ -1,6 +1,7 @@
 package org.camunda.bpm.unittest.departtrain.businesslogic;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -108,5 +109,14 @@ public class StationData {
 
 	public void createDepartmentOrder(String businessKey) {
 		departmentOrders.put(businessKey, new DepartmentOrder());
+	}
+
+	public void addWaggonsToTrack(String trackNumber, List<String> waggonNumbers) {
+		List<Waggon> newWaggons = new ArrayList<Waggon>();
+		for (String waggonNumber : waggonNumbers) {
+			newWaggons.add(new Waggon().fromString(waggonNumber));			
+		}
+		Track track = findTrack(trackNumber);
+		track.getWaggons().addAll(newWaggons);
 	}
 }

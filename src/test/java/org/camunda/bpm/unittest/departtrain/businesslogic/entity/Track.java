@@ -13,7 +13,7 @@ public class Track extends RailTestEntity<Track> {
 
 	private String trackNumber;
 	
-	private List<Waggon> waggons;
+	private List<Waggon> waggons = new ArrayList<Waggon>();
 	
 	private boolean exitTrack;
 	
