@@ -83,6 +83,12 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_PROMPT_WAGGON_REPAIR,
 				DepartTrainProcessConstants.TASK_PROMPT_WAGGON_REPLACEMENT);
+		
+		// we have one prompt repair task...
+		ensureTaskCountPresent(DepartTrainProcessConstants.TASK_PROMPT_WAGGON_REPAIR, processInstance.getId(), 1);
+		
+		// ...and one prompt replacement task
+		ensureTaskCountPresent(DepartTrainProcessConstants.TASK_PROMPT_WAGGON_REPLACEMENT, processInstance.getId(), 1);
 	}
 
 	@Test
