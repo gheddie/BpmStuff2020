@@ -96,6 +96,18 @@ public class DepartTrainTestCase extends BpmTestCase {
 		
 		// we have 1 task of 'TASK_REPAIR_WAGGON' (NOT of this process instance, as we are the 'master')...
 		ensureTaskCountPresent(DepartTrainProcessConstants.TASK_REPAIR_WAGGON, null, 1);
+		
+		// we prompt 1 new waggon...
+		List<Task> promptReplacementTasks = ensureTaskCountPresent(DepartTrainProcessConstants.TASK_PROMPT_WAGGON_REPLACEMENT, processInstance.getId(), 1);
+		processPromptReplacement(promptReplacementTasks.get(0));
+		
+		// waiting for replacement
+		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_REP_WAGG_ARRIVED);
+		
+		processDeliverReplacement("999", processInstance.getBusinessKey());
+		
+		// all prompted --> choose exit track
+		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
 	}
 
 	@Test
@@ -287,11 +299,15 @@ public class DepartTrainTestCase extends BpmTestCase {
 	}
 	
 	private void processPromptReplacement(Task task) {
-		// TODO Auto-generated method stub
+		processEngine.getTaskService().complete(task.getId());
 	}
 
 	private void processPromptRepair(Task task) {
 		processEngine.getTaskService().complete(task.getId());
+	}
+	
+	private void processDeliverReplacement(String waggonNumber, String businessKey) {
+		processEngine.getRuntimeService().correlateMessage(DepartTrainProcessConstants.MSG_REPL_WAGG_ARRIVED, businessKey);
 	}
 
 	private LocalDateTime getDefaultPlannedDepartureTime() {

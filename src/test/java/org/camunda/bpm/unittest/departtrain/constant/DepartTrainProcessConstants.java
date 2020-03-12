@@ -95,6 +95,7 @@ public class DepartTrainProcessConstants {
 	public static final String MSG_SH_ORD = "MSG_SH_ORD";
 	public static final String MSG_INVOKE_WAG_ASSUMEMENT = "MSG_INVOKE_WAG_ASSUMEMENT";
 	public static final String MSG_START_REPAIR = "MSG_START_REPAIR";
+	public static final String MSG_REPL_WAGG_ARRIVED = "MSG_REPL_WAGG_ARRIVED";
 	
 	// ##############################################################################
 	// ####################################### errors
@@ -110,6 +111,7 @@ public class DepartTrainProcessConstants {
 	public static final String CATCH_MSG_WG_REPAIRED = "CATCH_MSG_WG_REPAIRED";
 	public static final String CATCH_MSG_SH_DONE = "CATCH_MSG_SH_DONE";
 	public static final String CATCH_MSG_START_REPAIR = "CATCH_MSG_START_REPAIR";
+	public static final String CATCH_MSG_REP_WAGG_ARRIVED = "CATCH_MSG_REP_WAGG_ARRIVED";
 	
 	// ##############################################################################
 	// ####################################### elements
