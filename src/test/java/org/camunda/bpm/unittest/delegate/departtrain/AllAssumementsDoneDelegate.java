@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.camunda.bpm.unittest.departtrain.businesslogic.RepairProcessInfo;
+import org.camunda.bpm.unittest.departtrain.businesslogic.WaggonRepairInfo;
 import org.camunda.bpm.unittest.departtrain.constant.DepartTrainProcessConstants;
 import org.camunda.bpm.unittest.departtrain.util.RailTestUtil;
 
@@ -17,10 +17,10 @@ public class AllAssumementsDoneDelegate implements JavaDelegate {
 	public void execute(DelegateExecution execution) throws Exception {
 		
 		if (execution.getVariable(DepartTrainProcessConstants.VAR_ASSUMED_WAGGONS) == null) {
-			execution.setVariable(DepartTrainProcessConstants.VAR_ASSUMED_WAGGONS, new ArrayList<RepairProcessInfo>());
+			execution.setVariable(DepartTrainProcessConstants.VAR_ASSUMED_WAGGONS, new ArrayList<WaggonRepairInfo>());
 		}
-		List<RepairProcessInfo> assumedWaggons = (List<RepairProcessInfo>) execution.getVariable(DepartTrainProcessConstants.VAR_ASSUMED_WAGGONS);
-		RepairProcessInfo actuallyAssumed = (RepairProcessInfo) execution.getVariable(DepartTrainProcessConstants.VAR_SINGLE_WAGGON_TO_ASSUME);
+		List<WaggonRepairInfo> assumedWaggons = (List<WaggonRepairInfo>) execution.getVariable(DepartTrainProcessConstants.VAR_ASSUMED_WAGGONS);
+		WaggonRepairInfo actuallyAssumed = (WaggonRepairInfo) execution.getVariable(DepartTrainProcessConstants.VAR_SINGLE_WAGGON_TO_ASSUME);
 		assumedWaggons.add(actuallyAssumed);
 		
 		// all waggons assumed?
@@ -37,9 +37,9 @@ public class AllAssumementsDoneDelegate implements JavaDelegate {
 		execution.setVariable(DepartTrainProcessConstants.VAR_SUMMED_UP_ASSUMED_HOURS, assumedUpToNow);
 	}
 
-	private List<String> convert(List<RepairProcessInfo> assumedWaggons) {
+	private List<String> convert(List<WaggonRepairInfo> assumedWaggons) {
 		List<String> result = new ArrayList<String>();
-		for (RepairProcessInfo assumedWaggon : assumedWaggons) {
+		for (WaggonRepairInfo assumedWaggon : assumedWaggons) {
 			result.add(assumedWaggon.getWaggonNumber());
 		}
 		return result;

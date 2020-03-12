@@ -69,6 +69,12 @@ public class DepartTrainProcessConstants {
 	// an evaluation result for a single waggon in the evaluation sub process
 	public static final String VAR_WAGGON_EVALUATION_RESULT = "VAR_WAGGON_EVALUATION_RESULT";
 	
+	// waggons to be promopted to be repaired
+	public static final String VAR_PROMPT_REPAIR_WAGGONS = "VAR_PROMPT_REPAIR_WAGGONS";
+	
+	// waggons to be promopted to be replaced by other waggons
+	public static final String VAR_PROMPT_REPLACE_WAGGONS = "VAR_PROMPT_REPLACE_WAGGONS";
+	
 	// business key of the 'master' process --> passed to repair 
 	// process to able to call back to master
 	public static final String VAR_DEP_PROC_BK = "VAR_DEP_PROC_BK";

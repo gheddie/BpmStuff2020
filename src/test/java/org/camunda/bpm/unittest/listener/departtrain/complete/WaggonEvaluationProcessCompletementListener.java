@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
-import org.camunda.bpm.unittest.departtrain.businesslogic.RepairProcessInfo;
+import org.camunda.bpm.unittest.departtrain.businesslogic.WaggonRepairInfo;
 import org.camunda.bpm.unittest.departtrain.constant.DepartTrainProcessConstants;
 
 public class WaggonEvaluationProcessCompletementListener implements ExecutionListener {
@@ -12,7 +12,7 @@ public class WaggonEvaluationProcessCompletementListener implements ExecutionLis
 	@SuppressWarnings({ "unchecked" })
 	@Override
 	public void notify(DelegateExecution execution) throws Exception {
-		List<RepairProcessInfo> assumedWaggons = (List<RepairProcessInfo>) execution.getProcessEngine().getRuntimeService()
+		List<WaggonRepairInfo> assumedWaggons = (List<WaggonRepairInfo>) execution.getProcessEngine().getRuntimeService()
 				.getVariable(execution.getId(), DepartTrainProcessConstants.VAR_ASSUMED_WAGGONS);
 		int werner = 5;
 	}

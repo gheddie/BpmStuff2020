@@ -17,7 +17,7 @@ import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
 import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessLogic;
-import org.camunda.bpm.unittest.departtrain.businesslogic.RepairProcessInfo;
+import org.camunda.bpm.unittest.departtrain.businesslogic.WaggonRepairInfo;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Waggon;
 import org.camunda.bpm.unittest.departtrain.businesslogic.enumeration.RepairEvaluationResult;
 import org.camunda.bpm.unittest.departtrain.businesslogic.exception.RailwayStationBusinessLogicException;
@@ -78,7 +78,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		assertThat(facilityProcessesInstances.get(0)).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_START_REPAIR);
 		assertThat(facilityProcessesInstances.get(1)).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_START_REPAIR);
 
-		processStartWaggonEvaluation(evaluationTasks.get(0), RepairEvaluationResult.PROCESS_WAGGON);
+		processStartWaggonEvaluation(evaluationTasks.get(0), RepairEvaluationResult.REPAIR_WAGGON);
 		processStartWaggonEvaluation(evaluationTasks.get(1), RepairEvaluationResult.REPLACE_WAGGON);
 
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_PROMPT_WAGGON_REPAIR,
