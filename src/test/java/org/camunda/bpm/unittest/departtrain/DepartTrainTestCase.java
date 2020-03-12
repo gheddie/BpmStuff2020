@@ -121,7 +121,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_REP_WAGG_ARRIVED);
 
 		// 2 replacements tobe be processed...
-		processDeliverReplacement("999", processInstance.getBusinessKey());
+		processDeliverReplacement(processInstance.getBusinessKey(), "W888", "W999");
 
 		// all prompted --> choose exit track
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
@@ -326,7 +326,7 @@ public class DepartTrainTestCase extends BpmTestCase {
 		processEngine.getTaskService().complete(task.getId());
 	}
 
-	private void processDeliverReplacement(String waggonNumber, String businessKey) {
+	private void processDeliverReplacement(String businessKey, String... waggonNumbers) {
 		processEngine.getRuntimeService().correlateMessage(DepartTrainProcessConstants.MSG_REPL_WAGG_ARRIVED, businessKey);
 	}
 
