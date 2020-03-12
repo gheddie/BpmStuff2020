@@ -48,50 +48,56 @@ public class DepartTrainTestCase extends BpmTestCase {
 
 		// prepare test data
 		RailwayStationBusinessLogic.getInstance().withTracks("Track1@true", "TrackExit")
-				.withWaggons("Track1", "W1@C1#N1", "W2@C1", "W3", "W4", "W5")
+				.withWaggons("Track1", "W1@C1#N1", "W2@C1", "W3@C1", "W4@C1", "W5")
 				.withRoles(DepartTrainProcessConstants.ROLE_DISPONENT, DepartTrainProcessConstants.ROLE_SHUNTER,
 						DepartTrainProcessConstants.ROLE_REPAIR_DUDE, DepartTrainProcessConstants.ROLE_WAGGON_MASTER);
 
 		ProcessInstance processInstance = startDepartureProcess(getDefaultPlannedDepartureTime(), "W1", "W2", "W3", "W4");
 
-		// we have two facility processes, so 2 assumement tasks...
-		assertEquals(2, ensureProcessInstanceCount(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY));
+		// we have 4 facility processes, so 4 assumement tasks...
+		assertEquals(4, ensureProcessInstanceCount(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY));
 		List<Task> assumementTasks = ensureTaskCountPresent(DepartTrainProcessConstants.TASK_ASSUME_REPAIR_TIME, null,
-				DepartTrainProcessConstants.ROLE_REPAIR_DUDE, 2);
+				DepartTrainProcessConstants.ROLE_REPAIR_DUDE, 4);
 
 		// assume a waggon (for all 2 waggons)
 		processWaggonRepairAssumement(processInstance, assumementTasks.get(0), 11);
 		processWaggonRepairAssumement(processInstance, assumementTasks.get(1), 4);
+		processWaggonRepairAssumement(processInstance, assumementTasks.get(2), 3);
+		processWaggonRepairAssumement(processInstance, assumementTasks.get(3), 3);
 
-		// 2 evaluations to be done...
+		// 4 evaluations to be done...
 		List<Task> evaluationTasks = ensureTaskCountPresent(DepartTrainProcessConstants.TASK_EVALUATE_WAGGON,
-				processInstance.getId(), DepartTrainProcessConstants.ROLE_SUPERVISOR, 2);
+				processInstance.getId(), DepartTrainProcessConstants.ROLE_SUPERVISOR, 4);
 
-		// 2 facility processes are waiting at 'CATCH_MSG_START_REPAIR'...
+		// 4 facility processes are waiting at 'CATCH_MSG_START_REPAIR'...
 		List<ProcessInstance> facilityProcessesInstances = getProcessesInstances(
 				DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY);
-		assertEquals(2, facilityProcessesInstances.size());
+		assertEquals(4, facilityProcessesInstances.size());
 		assertThat(facilityProcessesInstances.get(0)).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_START_REPAIR);
 		assertThat(facilityProcessesInstances.get(1)).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_START_REPAIR);
+		assertThat(facilityProcessesInstances.get(2)).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_START_REPAIR);
+		assertThat(facilityProcessesInstances.get(3)).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_START_REPAIR);
 
 		processStartWaggonEvaluation(evaluationTasks.get(0), RepairEvaluationResult.REPAIR_WAGGON);
-		processStartWaggonEvaluation(evaluationTasks.get(1), RepairEvaluationResult.REPLACE_WAGGON);
+		processStartWaggonEvaluation(evaluationTasks.get(1), RepairEvaluationResult.REPAIR_WAGGON);
+		processStartWaggonEvaluation(evaluationTasks.get(2), RepairEvaluationResult.REPLACE_WAGGON);
+		processStartWaggonEvaluation(evaluationTasks.get(3), RepairEvaluationResult.REPLACE_WAGGON);
 
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_PROMPT_WAGGON_REPAIR,
 				DepartTrainProcessConstants.TASK_PROMPT_WAGGON_REPLACEMENT);
 
-		// we have one prompt repair task...
+		// we have 2 prompt repair task...
 		List<Task> promptRepairTasks = ensureTaskCountPresent(DepartTrainProcessConstants.TASK_PROMPT_WAGGON_REPAIR,
-				processInstance.getId(), DepartTrainProcessConstants.ROLE_DISPONENT, 1);
+				processInstance.getId(), DepartTrainProcessConstants.ROLE_DISPONENT, 2);
 
-		// ...and one prompt replacement task
+		// ...and 2 prompt replacement task
 		ensureTaskCountPresent(DepartTrainProcessConstants.TASK_PROMPT_WAGGON_REPLACEMENT, processInstance.getId(),
-				DepartTrainProcessConstants.ROLE_DISPONENT, 1);
+				DepartTrainProcessConstants.ROLE_DISPONENT, 2);
 
-		// both facility processes are waiting at 'CATCH_MSG_START_REPAIR'...
+		// all 4 facility processes are waiting at 'CATCH_MSG_START_REPAIR'...
 		List<ProcessInstance> facilityProcessList = processEngine.getRuntimeService().createProcessInstanceQuery()
 				.processDefinitionKey(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY).list();
-		assertEquals(2, facilityProcessList.size());
+		assertEquals(4, facilityProcessList.size());
 		for (ProcessInstance facilityProcessInstance : facilityProcessList) {
 			assertThat(facilityProcessInstance).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_START_REPAIR);
 		}
@@ -99,23 +105,29 @@ public class DepartTrainTestCase extends BpmTestCase {
 		// prompt repair (correlates message 'MSG_START_REPAIR') --> before, facility
 		// process is waiting at 'CATCH_MSG_START_REPAIR'...
 		processPromptRepair(promptRepairTasks.get(0));
+		processPromptRepair(promptRepairTasks.get(1));
 
-		// we have 1 task of 'TASK_REPAIR_WAGGON' (NOT of this process instance, as we
+		// we have 2 task of 'TASK_REPAIR_WAGGON' (NOT of this process instance, as we
 		// are the 'master')...
-		ensureTaskCountPresent(DepartTrainProcessConstants.TASK_REPAIR_WAGGON, null, DepartTrainProcessConstants.ROLE_REPAIR_DUDE, 1);
+		ensureTaskCountPresent(DepartTrainProcessConstants.TASK_REPAIR_WAGGON, null, DepartTrainProcessConstants.ROLE_REPAIR_DUDE, 2);
 
-		// we prompt 1 new waggon...
+		// we prompt 2 new waggons...
 		List<Task> promptReplacementTasks = ensureTaskCountPresent(DepartTrainProcessConstants.TASK_PROMPT_WAGGON_REPLACEMENT,
-				processInstance.getId(), DepartTrainProcessConstants.ROLE_DISPONENT, 1);
+				processInstance.getId(), DepartTrainProcessConstants.ROLE_DISPONENT, 2);
 		processPromptReplacement(promptReplacementTasks.get(0));
+		processPromptReplacement(promptReplacementTasks.get(1));
 
 		// waiting for replacement
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_REP_WAGG_ARRIVED);
 
+		// 2 replacements tobe be processed...
 		processDeliverReplacement("999", processInstance.getBusinessKey());
 
 		// all prompted --> choose exit track
 		assertThat(processInstance).isWaitingAt(DepartTrainProcessConstants.TASK_CHOOSE_EXIT_TRACK);
+		
+		// TODO ALL processes must be gone in the end...
+		// assertEquals(0, processEngine.getRuntimeService().createProcessInstanceQuery().list().size());
 	}
 
 	@Test
