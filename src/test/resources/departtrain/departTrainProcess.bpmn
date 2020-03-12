@@ -661,7 +661,7 @@
       <bpmndi:BPMNShape id="ExclusiveGateway_1bfkdvy_di" bpmnElement="ExGateway_1bfkdvy" isMarkerVisible="true">
         <dc:Bounds x="826" y="430" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="945" y="466" width="83" height="27" />
+          <dc:Bounds x="898" y="441" width="83" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0r593fk_di" bpmnElement="SequenceFlow_0r593fk">
