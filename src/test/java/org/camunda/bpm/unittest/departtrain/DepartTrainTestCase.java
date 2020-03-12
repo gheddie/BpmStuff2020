@@ -4,20 +4,15 @@ import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.assertT
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
+import org.camunda.bpm.engine.runtime.EventSubscription;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
-import org.camunda.bpm.engine.runtime.ProcessInstanceQuery;
-import org.camunda.bpm.engine.runtime.VariableInstance;
-import org.camunda.bpm.engine.runtime.VariableInstanceQuery;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
 import org.camunda.bpm.unittest.departtrain.businesslogic.RailwayStationBusinessLogic;
-import org.camunda.bpm.unittest.departtrain.businesslogic.WaggonRepairInfo;
 import org.camunda.bpm.unittest.departtrain.businesslogic.entity.Waggon;
 import org.camunda.bpm.unittest.departtrain.businesslogic.enumeration.RepairEvaluationResult;
 import org.camunda.bpm.unittest.departtrain.businesslogic.exception.RailwayStationBusinessLogicException;
@@ -46,7 +41,6 @@ public class DepartTrainTestCase extends BpmTestCase {
 		// ...
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	@Deployment(resources = { "departtrain/departTrainProcess.bpmn" })
 	public void testStraightAssumement() {
@@ -85,10 +79,23 @@ public class DepartTrainTestCase extends BpmTestCase {
 				DepartTrainProcessConstants.TASK_PROMPT_WAGGON_REPLACEMENT);
 		
 		// we have one prompt repair task...
-		ensureTaskCountPresent(DepartTrainProcessConstants.TASK_PROMPT_WAGGON_REPAIR, processInstance.getId(), 1);
+		List<Task> promptRepairTasks = ensureTaskCountPresent(DepartTrainProcessConstants.TASK_PROMPT_WAGGON_REPAIR, processInstance.getId(), 1);
 		
 		// ...and one prompt replacement task
 		ensureTaskCountPresent(DepartTrainProcessConstants.TASK_PROMPT_WAGGON_REPLACEMENT, processInstance.getId(), 1);
+		
+		// both facility processes are waiting at 'CATCH_MSG_START_REPAIR'...
+		List<ProcessInstance> facilityProcessList = processEngine.getRuntimeService().createProcessInstanceQuery().processDefinitionKey(DepartTrainProcessConstants.PROCESS_REPAIR_FACILITY).list();
+		assertEquals(2, facilityProcessList.size());
+		for (ProcessInstance facilityProcessInstance : facilityProcessList) {
+			assertThat(facilityProcessInstance).isWaitingAt(DepartTrainProcessConstants.CATCH_MSG_START_REPAIR);	
+		}
+		
+		// prompt repair (correlates message 'MSG_START_REPAIR') --> before, facility process is waiting at 'CATCH_MSG_START_REPAIR'...
+		processPromptRepair(promptRepairTasks.get(0));
+		
+		// we have 1 task of 'TASK_REPAIR_WAGGON' (NOT of this process instance, as we are the 'master')...
+		ensureTaskCountPresent(DepartTrainProcessConstants.TASK_REPAIR_WAGGON, null, 1);
 	}
 
 	@Test
@@ -275,9 +282,16 @@ public class DepartTrainTestCase extends BpmTestCase {
 	}
 
 	private void processStartWaggonEvaluation(Task startWaggonRepairTask, RepairEvaluationResult repairEvaluationResult) {
-		// VAR_SINGLE_ASSUMED_WAGGON
 		processEngine.getTaskService().complete(startWaggonRepairTask.getId(), HashBuilder.create()
 				.withValuePair(DepartTrainProcessConstants.VAR_WAGGON_EVALUATION_RESULT, repairEvaluationResult).build());
+	}
+	
+	private void processPromptReplacement(Task task) {
+		// TODO Auto-generated method stub
+	}
+
+	private void processPromptRepair(Task task) {
+		processEngine.getTaskService().complete(task.getId());
 	}
 
 	private LocalDateTime getDefaultPlannedDepartureTime() {

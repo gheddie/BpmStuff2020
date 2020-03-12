@@ -8,6 +8,7 @@
     <bpmn:messageFlow id="MessageFlow_1i1pw2i" sourceRef="TASK_SHUNT_WAGGONS" targetRef="CATCH_MSG_SH_DONE" />
     <bpmn:messageFlow id="MessageFlow_19y0vqj" sourceRef="TASK_ASSUME_REPAIR_TIME" targetRef="CATCH_MSG_WG_REPAIRED" />
     <bpmn:messageFlow id="MessageFlow_0zrk4uy" sourceRef="TaskProcessCriticalErrors" targetRef="StartEvent_14lghgj" />
+    <bpmn:messageFlow id="MessageFlow_0c1d5ln" sourceRef="TASK_PROMPT_WAGGON_REPAIR" targetRef="CATCH_MSG_START_REPAIR" />
   </bpmn:collaboration>
   <bpmn:process id="PROCESS_DEPART_TRAIN" isExecutable="true">
     <bpmn:laneSet id="LaneSet_0870o2p">
@@ -290,12 +291,22 @@
       <bpmn:incoming>SequenceFlow_05rvjdz</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="TASK_PROMPT_WAGGON_REPLACEMENT" name="Prompt waggon replacement">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="org.camunda.bpm.unittest.listener.departtrain.complete.PromptWaggonReplacementComplementListener" event="complete" />
+      </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_16zpy9y</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1affjan</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="VAR_PROMPT_REPLACE_WAGGONS_LIST">
+        <bpmn:completionCondition xsi:type="bpmn:tFormalExpression">VAR_PROMPT_REPLACE_WAGGON</bpmn:completionCondition>
+      </bpmn:multiInstanceLoopCharacteristics>
     </bpmn:userTask>
     <bpmn:userTask id="TASK_PROMPT_WAGGON_REPAIR" name="Prompt waggon repair">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="org.camunda.bpm.unittest.listener.departtrain.complete.PromptWaggonRepairComplementListener" event="complete" />
+      </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1da6nc0</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0epvt40</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="VAR_PROMPT_REPAIR_WAGGONS_LIST" camunda:elementVariable="VAR_PROMPT_REPAIR_WAGGON" />
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_1da6nc0" sourceRef="ExclusiveGateway_0g2agjo" targetRef="TASK_PROMPT_WAGGON_REPAIR" />
     <bpmn:sequenceFlow id="SequenceFlow_16zpy9y" sourceRef="ExclusiveGateway_0g2agjo" targetRef="TASK_PROMPT_WAGGON_REPLACEMENT" />
@@ -316,11 +327,11 @@
     <bpmn:textAnnotation id="TextAnnotation_1yoz8ky">
       <bpmn:text>Alle Reparaturen abgeschätzt. Jetzt muss pro Waggon beurteilt werden, ob er verwendet werden kann oder ob ggf.Ersatzwagen beschafft werden müssen.</bpmn:text>
     </bpmn:textAnnotation>
-    <bpmn:textAnnotation id="TextAnnotation_0wo4rks">
-      <bpmn:text>Speichert alle rückgemeldeten Wagen in 'VAR_REPAIRED_WAGGONS'. Schaltet durch, wenn ('VAR_WAGGONS_TO_REPAIR' == 'VAR_REPAIRED_WAGGONS').</bpmn:text>
-    </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_05cx3x2">
       <bpmn:text>A sub process for every waggon.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0wo4rks">
+      <bpmn:text>Speichert alle rückgemeldeten Wagen in 'VAR_REPAIRED_WAGGONS'. Schaltet durch, wenn ('VAR_WAGGONS_TO_REPAIR' == 'VAR_REPAIRED_WAGGONS').</bpmn:text>
     </bpmn:textAnnotation>
   </bpmn:process>
   <bpmn:message id="Message_00coaok" name="MSG_DEPARTURE_PLANNED" />
@@ -334,15 +345,15 @@
       <bpmn:incoming>SequenceFlow_1llmj3e</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1lz38ap</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:startEvent id="IntermediateThrowEvent_041qgz3" name="MSG_SH_ORD">
-      <bpmn:outgoing>SequenceFlow_1llmj3e</bpmn:outgoing>
-      <bpmn:messageEventDefinition messageRef="Message_0xtnbts" />
-    </bpmn:startEvent>
     <bpmn:endEvent id="EndEvent_1qamnt2">
       <bpmn:incoming>SequenceFlow_1lz38ap</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1lz38ap" sourceRef="TASK_SHUNT_WAGGONS" targetRef="EndEvent_1qamnt2" />
     <bpmn:sequenceFlow id="SequenceFlow_1llmj3e" sourceRef="IntermediateThrowEvent_041qgz3" targetRef="TASK_SHUNT_WAGGONS" />
+    <bpmn:startEvent id="IntermediateThrowEvent_041qgz3" name="MSG_SH_ORD">
+      <bpmn:outgoing>SequenceFlow_1llmj3e</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_0xtnbts" />
+    </bpmn:startEvent>
   </bpmn:process>
   <bpmn:message id="Message_0lj90x5" name="MSG_SH_DONE" />
   <bpmn:message id="Message_0xtnbts" name="MSG_SH_ORD" />
@@ -350,18 +361,17 @@
   <bpmn:process id="PROCESS_REPAIR_FACILITY" isExecutable="true">
     <bpmn:sequenceFlow id="SequenceFlow_0juzu23" sourceRef="StartEvent_14lghgj" targetRef="TASK_ASSUME_REPAIR_TIME" />
     <bpmn:sequenceFlow id="SequenceFlow_1l55lzh" sourceRef="TASK_ASSUME_REPAIR_TIME" targetRef="CATCH_MSG_START_REPAIR" />
-    <bpmn:sequenceFlow id="SequenceFlow_0f5tqfq" sourceRef="CATCH_MSG_START_REPAIR" targetRef="TASK_REPAIR_WAGGON" />
     <bpmn:endEvent id="EndEvent_0zbidy2">
       <bpmn:incoming>SequenceFlow_1c5nymt</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1c5nymt" sourceRef="TASK_REPAIR_WAGGON" targetRef="EndEvent_0zbidy2" />
     <bpmn:userTask id="TASK_REPAIR_WAGGON" name="Repair waggon">
-      <bpmn:incoming>SequenceFlow_0f5tqfq</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0w7mrww</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1c5nymt</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:intermediateCatchEvent id="CATCH_MSG_START_REPAIR" name="MSG_START_REPAIR">
       <bpmn:incoming>SequenceFlow_1l55lzh</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0f5tqfq</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0w7mrww</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_1v4ctnp" />
     </bpmn:intermediateCatchEvent>
     <bpmn:userTask id="TASK_ASSUME_REPAIR_TIME" name="Assume repair time">
@@ -375,6 +385,7 @@
       <bpmn:outgoing>SequenceFlow_0juzu23</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_1hobrwx" />
     </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0w7mrww" sourceRef="CATCH_MSG_START_REPAIR" targetRef="TASK_REPAIR_WAGGON" />
     <bpmn:association id="Association_0cw6ytl" sourceRef="StartEvent_14lghgj" targetRef="TextAnnotation_1mqltw5" />
     <bpmn:textAnnotation id="TextAnnotation_1mqltw5">
       <bpmn:text>Der zu reparierende Wagen wird 'VAR_SINGLE_WAGGON_TO_REPAIR' verwaltet.</bpmn:text>
@@ -526,7 +537,9 @@
         <dc:Bounds x="110" y="1265" width="2431" height="258" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1llmj3e_di" bpmnElement="SequenceFlow_1llmj3e">
-        <di:waypoint x="582" y="1420" />
+        <di:waypoint x="629" y="1412" />
+        <di:waypoint x="657" y="1412" />
+        <di:waypoint x="657" y="1420" />
         <di:waypoint x="684" y="1420" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EndEvent_1qamnt2_di" bpmnElement="EndEvent_1qamnt2">
@@ -544,14 +557,14 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="MessageFlow_1mf5jru_di" bpmnElement="MessageFlow_1mf5jru">
         <di:waypoint x="1779" y="568" />
-        <di:waypoint x="1779" y="583" />
-        <di:waypoint x="564" y="594" />
-        <di:waypoint x="564" y="1402" />
+        <di:waypoint x="1779" y="1317" />
+        <di:waypoint x="611" y="1317" />
+        <di:waypoint x="611" y="1394" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="StartEvent_0ym7dcl_di" bpmnElement="IntermediateThrowEvent_041qgz3">
-        <dc:Bounds x="546" y="1402" width="36" height="36" />
+        <dc:Bounds x="593" y="1394" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="525" y="1445" width="78" height="14" />
+          <dc:Bounds x="572" y="1437" width="78" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="MessageFlow_1i1pw2i_di" bpmnElement="MessageFlow_1i1pw2i">
@@ -671,11 +684,11 @@
         <di:waypoint x="337" y="717" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_0wo4rks_di" bpmnElement="TextAnnotation_0wo4rks">
-        <dc:Bounds x="608" y="652" width="100" height="199" />
+        <dc:Bounds x="623" y="650" width="100" height="199" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_022z90p_di" bpmnElement="Association_022z90p">
-        <di:waypoint x="832" y="383" />
-        <di:waypoint x="705" y="652" />
+        <di:waypoint x="834" y="383" />
+        <di:waypoint x="717" y="650" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="MessageFlow_0zrk4uy_di" bpmnElement="MessageFlow_0zrk4uy">
         <di:waypoint x="402" y="465" />
@@ -707,10 +720,6 @@
           <dc:Bounds x="853" y="-239" width="88" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_0f5tqfq_di" bpmnElement="SequenceFlow_0f5tqfq">
-        <di:waypoint x="915" y="-184" />
-        <di:waypoint x="1025" y="-184" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EventBasedGateway_1darzt3_di" bpmnElement="MsGwRepairCallback">
         <dc:Bounds x="1164" y="503" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -852,6 +861,18 @@
       <bpmndi:BPMNShape id="UserTask_0gyloxv_di" bpmnElement="TASK_PROMPT_WAGGON_REPLACEMENT">
         <dc:Bounds x="2078" y="1096" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="MessageFlow_0c1d5ln_di" bpmnElement="MessageFlow_0c1d5ln">
+        <di:waypoint x="2128" y="948" />
+        <di:waypoint x="2128" y="733" />
+        <di:waypoint x="2440" y="733" />
+        <di:waypoint x="2440" y="92" />
+        <di:waypoint x="897" y="107" />
+        <di:waypoint x="897" y="-166" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0w7mrww_di" bpmnElement="SequenceFlow_0w7mrww">
+        <di:waypoint x="915" y="-184" />
+        <di:waypoint x="1025" y="-184" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

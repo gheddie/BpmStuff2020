@@ -70,10 +70,16 @@ public class DepartTrainProcessConstants {
 	public static final String VAR_WAGGON_EVALUATION_RESULT = "VAR_WAGGON_EVALUATION_RESULT";
 	
 	// waggons to be promopted to be repaired
-	public static final String VAR_PROMPT_REPAIR_WAGGONS = "VAR_PROMPT_REPAIR_WAGGONS";
+	public static final String VAR_PROMPT_REPAIR_WAGGONS_LIST = "VAR_PROMPT_REPAIR_WAGGONS_LIST";
 	
 	// waggons to be promopted to be replaced by other waggons
-	public static final String VAR_PROMPT_REPLACE_WAGGONS = "VAR_PROMPT_REPLACE_WAGGONS";
+	public static final String VAR_PROMPT_REPLACE_WAGGONS_LIST = "VAR_PROMPT_REPLACE_WAGGONS_LIST";
+	
+	// single waggon to prompt a repair... 
+	public static final String VAR_PROMPT_REPAIR_WAGGON = "VAR_PROMPT_REPAIR_WAGGON";
+
+	// single waggon to prompt a replacement...
+	public static final String VAR_PROMPT_REPLACE_WAGGON = "VAR_PROMPT_REPLACE_WAGGON";
 	
 	// business key of the 'master' process --> passed to repair 
 	// process to able to call back to master
