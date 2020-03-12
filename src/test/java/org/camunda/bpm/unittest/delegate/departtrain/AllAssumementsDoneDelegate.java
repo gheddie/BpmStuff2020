@@ -1,7 +1,6 @@
 package org.camunda.bpm.unittest.delegate.departtrain;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;

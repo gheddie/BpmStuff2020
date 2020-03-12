@@ -1,6 +1,16 @@
 package org.camunda.bpm.unittest.departtrain.constant;
 
 public class DepartTrainProcessConstants {
+	
+	// ##############################################################################
+	// ####################################### roles
+	// ##############################################################################
+	
+	public static final String ROLE_WAGGON_MASTER = "ROLE_WAGGON_MASTER";
+	public static final String ROLE_REPAIR_DUDE = "ROLE_REPAIR_DUDE";
+	public static final String ROLE_SHUNTER = "ROLE_SHUNTER";
+	public static final String ROLE_DISPONENT = "ROLE_DISPONENT";
+	public static final String ROLE_SUPERVISOR = "ROLE_SUPERVISOR";
 
 	// ##############################################################################
 	// ####################################### tasks

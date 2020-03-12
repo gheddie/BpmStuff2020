@@ -4,11 +4,8 @@ import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.runtime
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskService;
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
-
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
-import org.camunda.bpm.engine.task.TaskQuery;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.unittest.base.BpmTestCase;
@@ -36,14 +33,14 @@ public class SignalsTestCase extends BpmTestCase {
 		runtimeService().startProcessInstanceByKey(PROCESS_SIGNALS_MAIN);
 		
 		// start three sub processes
-		ProcessInstance subProcess1 = runtimeService().startProcessInstanceByKey(PROCESS_SIGNALS_SUB);
-		ProcessInstance subProcess2 = runtimeService().startProcessInstanceByKey(PROCESS_SIGNALS_SUB);
-		ProcessInstance subProcess3 = runtimeService().startProcessInstanceByKey(PROCESS_SIGNALS_SUB);
+		runtimeService().startProcessInstanceByKey(PROCESS_SIGNALS_SUB);
+		runtimeService().startProcessInstanceByKey(PROCESS_SIGNALS_SUB);
+		runtimeService().startProcessInstanceByKey(PROCESS_SIGNALS_SUB);
 		
 		// 3+1 processes are there...
 		assertEquals(4, runtimeService().createProcessInstanceQuery().list().size());
 		
-		Task taskMainProcess = ensureSingleTaskPresent("TaskA", false);
+		Task taskMainProcess = ensureSingleTaskPresent("TaskA", null, false);
 		
 		// execute user task A in main --> signal fires from delegate code
 		// TODO: do it from bpm element 'throw signal intermediate event' ?!?

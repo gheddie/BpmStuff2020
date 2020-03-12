@@ -35,17 +35,17 @@ public class CollaborationTestCase extends BpmTestCase {
 		// 1 process
 		ensureProcessesRunning(1);
 		
-		taskService().complete(ensureSingleTaskPresent(TASK_A, false).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_A, null, false).getId());
 		
 		// 2 processes
 		ensureProcessesRunning(2);
 		
-		taskService().complete(ensureSingleTaskPresent(TASK_C, false).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_C, null, false).getId());
 		
 		// 1 process
 		ensureProcessesRunning(1);
 		
-		taskService().complete(ensureSingleTaskPresent(TASK_E, false).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_E, null, false).getId());
 		
 		// 0 processes
 		ensureProcessesRunning(0);

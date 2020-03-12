@@ -110,7 +110,7 @@
       <bpmn:incoming>SequenceFlow_04qyvr6</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0rbvy8h</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:userTask id="TASK_CONFIRM_ROLLOUT" name="Confirm rollout">
+    <bpmn:userTask id="TASK_CONFIRM_ROLLOUT" name="Confirm rollout" camunda:assignee="ROLE_DISPONENT">
       <bpmn:incoming>SequenceFlow_1dbkbrx</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_01mca4f</bpmn:outgoing>
     </bpmn:userTask>
@@ -141,7 +141,7 @@
       <bpmn:incoming>SequenceFlow_0iv6lm4</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_13gkobw</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:userTask id="TASK_CHOOSE_EXIT_TRACK" name="Choose exit track">
+    <bpmn:userTask id="TASK_CHOOSE_EXIT_TRACK" name="Choose exit track" camunda:assignee="ROLE_DISPONENT">
       <bpmn:incoming>SequenceFlow_0ch8mi7</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0iv6lm4</bpmn:outgoing>
     </bpmn:userTask>
@@ -227,7 +227,7 @@
       <bpmn:startEvent id="StartEvent_1qobht4">
         <bpmn:outgoing>SequenceFlow_1ax1mlt</bpmn:outgoing>
       </bpmn:startEvent>
-      <bpmn:userTask id="TASK_EVALUATE_WAGGON" name="Evaluate waggon">
+      <bpmn:userTask id="TASK_EVALUATE_WAGGON" name="Evaluate waggon" camunda:assignee="ROLE_SUPERVISOR">
         <bpmn:extensionElements>
           <camunda:taskListener class="org.camunda.bpm.unittest.listener.departtrain.complete.EvaluateWaggonCompletementListener" event="complete" />
         </bpmn:extensionElements>
@@ -257,7 +257,7 @@
       <bpmn:incoming>SequenceFlow_1nlus19</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_08c1yzk</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:userTask id="TASK_PROMPT_WAGGON_REPLACEMENT" name="Prompt waggon replacement">
+    <bpmn:userTask id="TASK_PROMPT_WAGGON_REPLACEMENT" name="Prompt waggon replacement" camunda:assignee="ROLE_DISPONENT">
       <bpmn:extensionElements>
         <camunda:taskListener class="org.camunda.bpm.unittest.listener.departtrain.complete.PromptWaggonReplacementComplementListener" event="complete" />
       </bpmn:extensionElements>
@@ -265,7 +265,7 @@
       <bpmn:outgoing>SequenceFlow_1affjan</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics camunda:collection="VAR_PROMPT_REPLACE_WAGGONS_LIST" camunda:elementVariable="VAR_PROMPT_REPLACE_WAGGON" />
     </bpmn:userTask>
-    <bpmn:userTask id="TASK_PROMPT_WAGGON_REPAIR" name="Prompt waggon repair">
+    <bpmn:userTask id="TASK_PROMPT_WAGGON_REPAIR" name="Prompt waggon repair" camunda:assignee="ROLE_DISPONENT">
       <bpmn:extensionElements>
         <camunda:taskListener class="org.camunda.bpm.unittest.listener.departtrain.complete.PromptWaggonRepairComplementListener" event="complete" />
       </bpmn:extensionElements>
@@ -318,7 +318,7 @@
   <bpmn:signal id="Signal_0sxtkd6" name="SIG_RO_CANC" />
   <bpmn:error id="Error_1vb65d1" name="ERR_CREATE_DO" />
   <bpmn:process id="PROCESS_SHUNTER" isExecutable="true">
-    <bpmn:userTask id="TASK_SHUNT_WAGGONS" name="Shunt waggons">
+    <bpmn:userTask id="TASK_SHUNT_WAGGONS" name="Shunt waggons" camunda:assignee="ROLE_SHUNTER">
       <bpmn:extensionElements>
         <camunda:taskListener class="org.camunda.bpm.unittest.listener.departtrain.complete.ShuntWaggonsComplementListener" event="complete" />
       </bpmn:extensionElements>
@@ -345,7 +345,7 @@
       <bpmn:incoming>SequenceFlow_1c5nymt</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1c5nymt" sourceRef="TASK_REPAIR_WAGGON" targetRef="EndEvent_0zbidy2" />
-    <bpmn:userTask id="TASK_REPAIR_WAGGON" name="Repair waggon">
+    <bpmn:userTask id="TASK_REPAIR_WAGGON" name="Repair waggon" camunda:assignee="ROLE_REPAIR_DUDE">
       <bpmn:incoming>SequenceFlow_0w7mrww</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1c5nymt</bpmn:outgoing>
     </bpmn:userTask>
@@ -354,7 +354,7 @@
       <bpmn:outgoing>SequenceFlow_0w7mrww</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_1v4ctnp" />
     </bpmn:intermediateCatchEvent>
-    <bpmn:userTask id="TASK_ASSUME_REPAIR_TIME" name="Assume repair time">
+    <bpmn:userTask id="TASK_ASSUME_REPAIR_TIME" name="Assume repair time" camunda:assignee="ROLE_REPAIR_DUDE">
       <bpmn:extensionElements>
         <camunda:taskListener class="org.camunda.bpm.unittest.listener.departtrain.complete.RepairAssumenentComplementListener" event="complete" />
       </bpmn:extensionElements>
@@ -518,9 +518,7 @@
         <dc:Bounds x="110" y="1265" width="2431" height="258" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1llmj3e_di" bpmnElement="SequenceFlow_1llmj3e">
-        <di:waypoint x="629" y="1412" />
-        <di:waypoint x="657" y="1412" />
-        <di:waypoint x="657" y="1420" />
+        <di:waypoint x="628" y="1420" />
         <di:waypoint x="684" y="1420" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EndEvent_1qamnt2_di" bpmnElement="EndEvent_1qamnt2">
@@ -539,13 +537,13 @@
       <bpmndi:BPMNEdge id="MessageFlow_1mf5jru_di" bpmnElement="MessageFlow_1mf5jru">
         <di:waypoint x="1779" y="568" />
         <di:waypoint x="1779" y="1317" />
-        <di:waypoint x="611" y="1317" />
-        <di:waypoint x="611" y="1394" />
+        <di:waypoint x="610" y="1317" />
+        <di:waypoint x="610" y="1402" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="StartEvent_0ym7dcl_di" bpmnElement="IntermediateThrowEvent_041qgz3">
-        <dc:Bounds x="593" y="1394" width="36" height="36" />
+        <dc:Bounds x="592" y="1402" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="572" y="1437" width="78" height="14" />
+          <dc:Bounds x="571" y="1445" width="78" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="MessageFlow_1i1pw2i_di" bpmnElement="MessageFlow_1i1pw2i">

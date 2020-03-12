@@ -1,15 +1,14 @@
 package org.camunda.bpm.unittest;
 
+import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.managementService;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.runtimeService;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.taskService;
 import static org.junit.Assert.assertEquals;
-import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.managementService;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.camunda.bpm.engine.runtime.Job;
-import org.camunda.bpm.engine.runtime.JobQuery;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
@@ -44,7 +43,7 @@ public class InterruptingVsNotInterruptingTestCase extends BpmTestCase {
 		variables.put(VAR_INTERRUPTING, true);
 		runtimeService().startProcessInstanceByKey(PROCESS, variables);
 		
-		ensureSingleTaskPresent(TASK_B, false);
+		ensureSingleTaskPresent(TASK_B, null, false);
 		
 		// we have a (timer) job...
 		List<Job> jobs = managementService().createJobQuery().list();
@@ -56,7 +55,7 @@ public class InterruptingVsNotInterruptingTestCase extends BpmTestCase {
 		// we have 'TaskF', but 'TaskB' and 'TaskE' are gone...
 		ensureTaskNotPresent(TASK_E);
 		ensureTaskNotPresent(TASK_B);
-		taskService().complete(ensureSingleTaskPresent(TASK_F, false).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_F, null, false).getId());
 		
 		// execution is gone
 		assertEquals(0, runtimeService().createProcessInstanceQuery().list().size());
@@ -70,7 +69,7 @@ public class InterruptingVsNotInterruptingTestCase extends BpmTestCase {
 		variables.put(VAR_INTERRUPTING, false);
 		runtimeService().startProcessInstanceByKey(PROCESS, variables);
 		
-		 ensureSingleTaskPresent(TASK_A, false);
+		 ensureSingleTaskPresent(TASK_A, null, false);
 		
 		// we have a (timer) job...
 		List<Job> jobs = managementService().createJobQuery().list();
@@ -80,15 +79,15 @@ public class InterruptingVsNotInterruptingTestCase extends BpmTestCase {
 		managementService().executeJob(jobs.get(0).getId());
 		
 		// we still have 'TaskA' and also 'TaskC' and NOT 'TaskD'...
-		Task taskA = ensureSingleTaskPresent(TASK_A, false);
-		ensureSingleTaskPresent(TASK_C, false);
+		Task taskA = ensureSingleTaskPresent(TASK_A, null, false);
+		ensureSingleTaskPresent(TASK_C, null, false);
 		ensureTaskNotPresent(TASK_D);
 		
 		// execute 'A'
 		taskService().complete(taskA.getId());
 		
-		taskService().complete(ensureSingleTaskPresent(TASK_C, false).getId());
-		taskService().complete(ensureSingleTaskPresent(TASK_D, false).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_C, null, false).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_D, null, false).getId());
 		
 		// execution is gone
 		assertEquals(0, runtimeService().createProcessInstanceQuery().list().size());

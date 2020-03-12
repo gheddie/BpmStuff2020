@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import lombok.Data;
-
 public class DataGrid<T> {
 
 	private static final String SUBVALUE_NULL = "<Hauptwert nicht gesetzt>";

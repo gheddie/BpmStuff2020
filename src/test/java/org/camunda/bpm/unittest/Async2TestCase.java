@@ -39,7 +39,7 @@ public class Async2TestCase extends BpmTestCase {
 		variables.put(VAR_RAISE_ERROR, true);
 		runtimeService().startProcessInstanceByKey(PROCESS_ASYNC_2, variables);
 		
-		taskService().complete(ensureSingleTaskPresent(TASK_DO_IT, false).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_DO_IT, null, false).getId());
 		
 		// 'Do it' is 'async after' --> process still there...
 		assertEquals(1, runtimeService().createExecutionQuery().list().size());

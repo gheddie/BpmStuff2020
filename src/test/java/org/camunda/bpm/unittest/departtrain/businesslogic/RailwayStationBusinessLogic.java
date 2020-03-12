@@ -111,6 +111,10 @@ public class RailwayStationBusinessLogic implements IRailwayStationBusinessLogic
 		stationData.addWaggons(trackNumber, waggonNumbers);
 		return this;
 	}
+	
+	public RailwayStationBusinessLogic withRoles(String... roles) {
+		return this;
+	}
 
 	public void reset() {
 		stationData.reset();

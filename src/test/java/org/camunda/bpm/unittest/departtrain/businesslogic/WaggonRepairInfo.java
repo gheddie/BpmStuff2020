@@ -32,8 +32,4 @@ public class WaggonRepairInfo implements Serializable {
 		waggonRepairInfo.setBusinessKey(businessKey);
 		return waggonRepairInfo;
 	}
-	
-	public void setRepairEvaluationResult(RepairEvaluationResult repairEvaluationResult) {
-		int werner = 5;
-	}
 }

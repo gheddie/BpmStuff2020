@@ -40,9 +40,9 @@ public class EventSubProcessVerySimpleTest extends BpmTestCase {
 		variables.put(VAR_ENOUGH_DATA, false);
 		runtimeService().startProcessInstanceByKey(PROCESS, variables);
 		
-		taskService().complete(ensureSingleTaskPresent(TASK_REVIEW, false).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_REVIEW, null, false).getId());
 		
-		taskService().complete(ensureSingleTaskPresent(TASK_PROVIDE, false).getId());
+		taskService().complete(ensureSingleTaskPresent(TASK_PROVIDE, null, false).getId());
 		
 		// all processes gone
 		assertEquals(0, runtimeService().createProcessInstanceQuery().list().size());

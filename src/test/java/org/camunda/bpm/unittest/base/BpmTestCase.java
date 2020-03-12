@@ -15,7 +15,6 @@ import org.camunda.bpm.engine.impl.util.ClockUtil;
 import org.camunda.bpm.engine.runtime.EventSubscription;
 import org.camunda.bpm.engine.runtime.EventSubscriptionQuery;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
-import org.camunda.bpm.engine.runtime.ProcessInstanceQuery;
 import org.camunda.bpm.engine.runtime.VariableInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
@@ -23,18 +22,26 @@ import org.camunda.bpm.unittest.departtrain.util.RailTestUtil;
 
 public class BpmTestCase {
 
-	protected Task ensureSingleTaskPresent(String taskName, boolean executeTask) {
-		return ensureSingleTaskPresent(taskName, null, executeTask);
+	protected Task ensureSingleTaskPresent(String taskName, String role, boolean executeTask) {
+		return ensureSingleTaskPresent(taskName, null, role, executeTask);
 	}
 
-	protected Task ensureSingleTaskPresent(String taskName, String businessKey, boolean executeTask) {
+	protected Task ensureSingleTaskPresent(String taskName, String businessKey, String role, boolean executeTask) {
 		List<Task> taskList = null;
 		if (businessKey != null) {
 			// regard business key in addition...
-			taskList = taskService().createTaskQuery().taskDefinitionKey(taskName).processInstanceBusinessKey(businessKey).list();
+			TaskQuery queryBk = taskService().createTaskQuery().taskDefinitionKey(taskName).processInstanceBusinessKey(businessKey);
+			if (role != null) {
+				queryBk.taskAssignee(role);
+			}
+			taskList = queryBk.list();
 		} else {
 			// do not regard business key...
-			taskList = taskService().createTaskQuery().taskDefinitionKey(taskName).list();
+			TaskQuery queryNoBk = taskService().createTaskQuery().taskDefinitionKey(taskName);
+			if (role != null) {
+				queryNoBk.taskAssignee(role);
+			}
+			taskList = queryNoBk.list();
 		}
 		assertEquals(1, taskList.size());
 		Task task = taskList.get(0);
@@ -44,10 +51,13 @@ public class BpmTestCase {
 		return task;
 	}
 
-	protected List<Task> ensureTaskCountPresent(String taskName, String processInstanceId, int taskCount) {
+	protected List<Task> ensureTaskCountPresent(String taskName, String processInstanceId, String role, int taskCount) {
 		TaskQuery query = taskService().createTaskQuery().taskDefinitionKey(taskName);
+		if (role != null) {
+			query.taskAssignee(role);
+		}
 		if (processInstanceId != null) {
-			query.processInstanceId(processInstanceId);	
+			query.processInstanceId(processInstanceId);
 		}
 		List<Task> taskList = query.list();
 		assertEquals(taskCount, taskList.size());
@@ -69,8 +79,8 @@ public class BpmTestCase {
 		assertEquals(count, processInstancesList.size());
 	}
 
-	protected void executeSingleTask(String taskDefinitionKey, String businessKey) {
-		List<Task> taskList = taskService().createTaskQuery().taskDefinitionKey(taskDefinitionKey)
+	protected void executeSingleTask(String taskDefinitionKey, String role, String businessKey) {
+		List<Task> taskList = taskService().createTaskQuery().taskDefinitionKey(taskDefinitionKey).taskAssignee(role)
 				.processInstanceBusinessKey(businessKey).list();
 		assertEquals(1, taskList.size());
 		taskService().complete(taskList.get(0).getId());
@@ -84,9 +94,9 @@ public class BpmTestCase {
 		return runtimeService().createProcessInstanceQuery().processDefinitionKey(processDefinitionKey).list().size();
 	}
 
-	protected void ensureActiveEventSubscriptionsPresent(String processDefinitionKey, String activityId,
-			EventType eventType, String eventName, List<String> expectedBusinessKeys) {
-		
+	protected void ensureActiveEventSubscriptionsPresent(String processDefinitionKey, String activityId, EventType eventType,
+			String eventName, List<String> expectedBusinessKeys) {
+
 		EventSubscriptionQuery query = runtimeService().createEventSubscriptionQuery().eventName(eventName);
 		if (eventType != null) {
 			query.eventType(eventType.toString().toLowerCase());
@@ -96,21 +106,24 @@ public class BpmTestCase {
 		List<String> actualProcessBusinessKeysFromSubscriptions = new ArrayList<String>();
 		for (EventSubscription subscription : list) {
 			processInstanceIds.add(subscription.getProcessInstanceId());
-			for (ProcessInstance instance : runtimeService().createProcessInstanceQuery().processInstanceId(subscription.getProcessInstanceId()).list()) {
+			for (ProcessInstance instance : runtimeService().createProcessInstanceQuery()
+					.processInstanceId(subscription.getProcessInstanceId()).list()) {
 				actualProcessBusinessKeysFromSubscriptions.add(instance.getBusinessKey());
-			};
+			}
+			;
 		}
 		// business keys must match here...
 		assertTrue(RailTestUtil.areListsEqual(expectedBusinessKeys, actualProcessBusinessKeysFromSubscriptions));
 	}
-	
+
 	protected Object getProcessVariableByName(String variableName) {
-		List<VariableInstance> variableInstanceList = runtimeService().createVariableInstanceQuery().variableName(variableName).list();
+		List<VariableInstance> variableInstanceList = runtimeService().createVariableInstanceQuery().variableName(variableName)
+				.list();
 		// name is unique in process
 		assertEquals(1, variableInstanceList.size());
 		return variableInstanceList.get(0).getValue();
 	}
-	
+
 	protected List<ProcessInstance> getProcessesInstances(String processDefinitionKey) {
 		return runtimeService().createProcessInstanceQuery().processDefinitionKey(processDefinitionKey).list();
 	}

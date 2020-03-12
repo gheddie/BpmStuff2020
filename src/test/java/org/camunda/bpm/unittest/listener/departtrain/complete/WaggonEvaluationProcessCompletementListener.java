@@ -14,6 +14,5 @@ public class WaggonEvaluationProcessCompletementListener implements ExecutionLis
 	public void notify(DelegateExecution execution) throws Exception {
 		List<WaggonRepairInfo> assumedWaggons = (List<WaggonRepairInfo>) execution.getProcessEngine().getRuntimeService()
 				.getVariable(execution.getId(), DepartTrainProcessConstants.VAR_ASSUMED_WAGGONS);
-		int werner = 5;
 	}
 }
